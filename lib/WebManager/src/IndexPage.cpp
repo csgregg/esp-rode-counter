@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of index.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -44,16 +44,16 @@ SOFTWARE. */
 
 // Function to initialize AJAX on this page
 void ICACHE_FLASH_ATTR IndexPage::InitializeAjax(){
-    LOG_HIGH( PSTR("(Page) Index - Initialize AJAX") );
+    LOG( PSTR("(Page) Index - Initialize AJAX") );
 }
 
 
 // Function to handle AJAX requests for this page
 void ICACHE_FLASH_ATTR IndexPage::HandleAjax(){
-    LOG_HIGH( PSTR("(Page) Index - Handle AJAX") );    
+    LOG( PSTR("(Page) Index - Handle AJAX") );    
 
     // Toggle LED
-    if( website.AjaxID == F("btn_led") ) DEBUG("Toggle"); 
+    if( website.AjaxID == F("btn_led") ) LOG("Toggle"); 
 }
 
 

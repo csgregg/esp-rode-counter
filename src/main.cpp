@@ -34,28 +34,23 @@ Setup and Loop
 #include "Logger.h"
 #include "NetworkManager.h"
 #include "WebManager.h"
-#ifndef UPDATER_DISABLE
-    #include "OTAUpdater.h"
-#endif
-#include "TimeLocation.h"
-//#include "ThingManager.h"
 
 
 void ICACHE_FLASH_ATTR setup() {
+
+#ifndef NO_LOGGING
     delay( 1000 );
-Serial.begin(115200);
-    // Services started in the proper order
-    device.Begin();
-    config.Begin();
-    logger.Begin( network.GetWiFiClient(), config.settings.loggerSettings );  
-    network.Begin( config.settings.networkSettings );
-    timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
-    website.Begin( config.settings.networkSettings.dnsSettings.hostName );
-#ifndef UPDATER_DISABLE
-    updater.Begin( network.GetWiFiClient(), config.settings.otaUpdaterSettings );
+    Serial.begin(flag_MONITOR_SPEED);
 #endif
 
-    LOG(PSTR("(Loop) Starting"));        // TODO - Check all LOG levels for all instances
+    // Services started in the proper order
+
+    device.Begin();
+    config.Begin( true );
+    network.Begin( config.settings.networkSettings );
+    website.Begin( flag_DEVICE_NAME );
+
+    LOG(PSTR("(Loop) Starting"));
     
 }
 
@@ -66,10 +61,5 @@ void loop() {
     device.Handle();
     network.Handle();
     website.Handle();
-#ifndef UPDATER_DISABLE
-    updater.Handle();
-#endif
-    logger.Handle();
-    timelocation.Handle();
 
 }

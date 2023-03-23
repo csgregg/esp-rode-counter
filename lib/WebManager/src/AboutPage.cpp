@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of about.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -44,7 +44,7 @@ SOFTWARE. */
 // Function to initialize AJAX on this page
 void ICACHE_FLASH_ATTR AboutPage::InitializeAjax(){
 
-    LOG_HIGH( PSTR("(Page) About - Initialize AJAX") );
+    LOG( PSTR("(Page) About - Initialize AJAX") );
 
     device_id.setValue( device.GetChipId() );
     build_env.setValue( device.GetBuildEnv() );
@@ -56,7 +56,7 @@ void ICACHE_FLASH_ATTR AboutPage::InitializeAjax(){
 
 // Function to handle AJAX requests for this page
 void ICACHE_FLASH_ATTR AboutPage::HandleAjax(){
-    LOG_HIGH(PSTR("(Page) About - Handle AJAX"));    
+    LOG(PSTR("(Page) About - Handle AJAX"));    
 }
 
 

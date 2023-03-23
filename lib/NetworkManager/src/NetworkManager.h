@@ -4,7 +4,7 @@
  * 
  * @brief       Manages Network Services
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -38,8 +38,6 @@ SOFTWARE. */
 
     // Project Libraries
     #include "WiFiManager.h"
-    #include "DNSManager.h"
-    #include "NetCheckManager.h"
 
  
     /** @class Network settings
@@ -52,20 +50,14 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR SetDefaults();
 
             WiFiSettings wifiSettings;                  // WiFi settings
-            NetCheckSettings netCheckSettings;          // Connectivity checker settings
-            DNSSettings dnsSettings;                    // DNS settings
         
             // Create a compare operators
             
             bool operator== ( const NetworkSettings& other ) const {
-                return wifiSettings == other.wifiSettings
-                    && netCheckSettings == other.netCheckSettings
-                    && dnsSettings == other.dnsSettings;
+                return wifiSettings == other.wifiSettings;
             }
             bool operator!= ( const NetworkSettings& other ) const {
-                return wifiSettings != other.wifiSettings
-                    || netCheckSettings != other.netCheckSettings
-                    || dnsSettings != other.dnsSettings;
+                return wifiSettings != other.wifiSettings;
             }
 
     };
@@ -77,12 +69,6 @@ SOFTWARE. */
 
         public:
 
-            // Status of the network connection
-            enum NetworkStatus : uint {
-                DISCONNECTED = 0,                   // No network connection
-                NORMAL = 1,                         // Connected to WiFi and internet
-                NOINETERNET = 2                     // Connected to WiFi but no internet
-            };
 
             /** Start network services
              * @param settings      Reference to struct containing network settings */
@@ -124,17 +110,6 @@ SOFTWARE. */
              *  @return     Pointer to char array of IP address */
             char* ICACHE_FLASH_ATTR GetAssignedIP() { return _wifi.GetAssignedIP(); }
 
-            /** Gets the current status of the network
-             *  @return NetworkStatus         Status of network */
-            NetworkStatus ICACHE_FLASH_ATTR GetNetworkStatus();
-
-            /** Gets the host name for the device on the network
-             *  @return char*   Host name */
-            const char* ICACHE_FLASH_ATTR GetHostName() { return _settings->dnsSettings.hostName; }
-
-            /** Restarts the DNS services */
-            void ICACHE_FLASH_ATTR RestartDNS() { _dns.Begin( _settings->dnsSettings, _wifi.IsAPRunning() ); };
-
 
         protected:
 
@@ -142,8 +117,6 @@ SOFTWARE. */
 
             // The only instances of the network services
             WiFiManager _wifi;              // WiFi service
-            DNSManager _dns;                // DNS service
-            NetCheckManager _netCheck;      // Net Check service
 
     };
 

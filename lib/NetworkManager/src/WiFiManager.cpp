@@ -4,7 +4,7 @@
  * 
  * @brief       Manages WiFi Functions
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -156,17 +156,17 @@ bool ICACHE_FLASH_ATTR WiFiManager::ConnectWiFiStation( const int id ) {
     ResetConnectedStatus();
 
     if( _settings->wifiMode != WIFI_STA && _settings->wifiMode != WIFI_AP_STA ) {
-        LOG_HIGH( PSTR("Not in station mode") );
+        LOG( PSTR("Not in station mode") );
         return false;
     }
 
-    LOGF( PSTR("(Network) WiFi mode - Station %i: %s"), id, _settings->stationSettings[id].SSID );
+    LOGF( PSTR("(Network) WiFi mode - Station %i: %s\n"), id, _settings->stationSettings[id].SSID );
 
     bool ssid = strcmp( _settings->stationSettings[id].SSID, "" ) != 0;
 	bool password = strcmp( _settings->stationSettings[id].password, "" ) != 0;
 
 	if( !ssid ) {
-        LOG_HIGH( PSTR("(Network) Station has no SSID") );
+        LOG( PSTR("(Network) Station has no SSID") );
         return false;
     }
 
@@ -192,9 +192,14 @@ bool ICACHE_FLASH_ATTR WiFiManager::ConnectWiFiStation( const int id ) {
 		int i = 0;
 		while( WiFi.status() != WL_CONNECTED && i++ <= NET_STATION_TRY_TIME ) {
 			delay(500);
-			if( logger.IsSerialOn() && (logger.GetLogLevel() > LOGGING_LEVEL_NORMAL) ) Serial.print( PSTR(".") );
+
+            #ifndef NO_LOGGING
+                Serial.print( PSTR(".") );
+            #endif
 		}
-        if( logger.IsSerialOn() && (logger.GetLogLevel() > LOGGING_LEVEL_NORMAL) ) Serial.print( PSTR("\n") );
+        #ifndef NO_LOGGING
+            Serial.print( PSTR("\n") );
+        #endif
 
 		ret = ( WiFi.status() == WL_CONNECTED );
 
@@ -208,14 +213,14 @@ bool ICACHE_FLASH_ATTR WiFiManager::ConnectWiFiStation( const int id ) {
             _settings->stationSettings[id].dns1 = WiFi.dnsIP(0);
             _settings->stationSettings[id].dns2 = WiFi.dnsIP(1);
 
-    		if( logger.IsSerialOn() ) {
+            #ifndef NO_LOGGING
                 IPAddress ip;
-                ip = _settings->stationSettings[id].ip; LOGF( PSTR("(Network) WiFi station connected - IP: %s"), ip.toString().c_str() );   
-                ip = _settings->stationSettings[id].subnet; LOGF_HIGH( PSTR("(Network) Subnet: %s"), ip.toString().c_str() );         
-                ip = _settings->stationSettings[id].gateway; LOGF_HIGH( PSTR("(Network) Gateway: %s"), ip.toString().c_str() );
-                ip = _settings->stationSettings[id].dns1; LOGF_HIGH( PSTR("(Network) DNS 1: %s"), ip.toString().c_str() );
-                ip = _settings->stationSettings[id].dns2; LOGF_HIGH( PSTR("(Network) DNS 2: %s"), ip.toString().c_str() );
-            }
+                ip = _settings->stationSettings[id].ip; LOGF( PSTR("(Network) WiFi station connected - IP: %s\n"), ip.toString().c_str() );   
+                ip = _settings->stationSettings[id].subnet; LOGF( PSTR("(Network) Subnet: %s\n"), ip.toString().c_str() );         
+                ip = _settings->stationSettings[id].gateway; LOGF( PSTR("(Network) Gateway: %s\n"), ip.toString().c_str() );
+                ip = _settings->stationSettings[id].dns1; LOGF( PSTR("(Network) DNS 1: %s\n"), ip.toString().c_str() );
+                ip = _settings->stationSettings[id].dns2; LOGF( PSTR("(Network) DNS 2: %s\n"), ip.toString().c_str() );
+            #endif
         }
         else LOG( PSTR("(Network) WiFi Station not connected") );
 
@@ -303,7 +308,7 @@ bool WiFiManager::HandleWiFiAP(const bool force) {
     uint connections = WiFi.softAPgetStationNum();
 
     if( connections != _nAPConnections ) {
-        LOGF( PSTR("(Network) WiFi AP - Clients: %i"), connections );
+        LOGF( PSTR("(Network) WiFi AP - Clients: %i\n"), connections );
         _nAPConnections = connections;
     }
 
@@ -333,8 +338,8 @@ bool ICACHE_FLASH_ATTR WiFiManager::StartWiFiAccessPoint() {
                             _settings->apSettings.password,
                             _settings->apSettings.channel );
 
-    if( ret ) LOGF( PSTR("(Network) Access point started with SSID: %s, IP: %s"), _settings->apSettings.SSID, WiFi.softAPIP().toString().c_str() );
-    else LOG( PSTR("(Network) WiFi Access point not started") );
+    if( ret ) LOGF( PSTR("(Network) Access point started with SSID: %s, IP: %s\n"), _settings->apSettings.SSID, WiFi.softAPIP().toString().c_str() )
+    else LOG( PSTR("(Network) WiFi Access point not started") )
 
     return ret;
 }

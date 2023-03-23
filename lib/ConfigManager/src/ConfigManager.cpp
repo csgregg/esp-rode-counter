@@ -6,7 +6,7 @@
  *              sector before file system). Settings are read and write on block and accessed
  *              through the settings member.
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -50,9 +50,6 @@ SOFTWARE. */
 // Resets all the settings to the default values */
 void ICACHE_FLASH_ATTR DeviceSettings::SetDefaults() {
     networkSettings.SetDefaults();
-    loggerSettings.SetDefaults();
-    otaUpdaterSettings.SetDefaults();
-    timelocSettings.SetDefaults();
 }
 
 
@@ -113,11 +110,11 @@ void ICACHE_FLASH_ATTR ConfigManager::SetDefaults()
 void ICACHE_FLASH_ATTR ConfigManager::Read()
 {
 
-    LOG_HIGH( PSTR("(Config) Reading settings") );
+    LOG( PSTR("(Config) Reading settings") );
 
     // Don't do anything unless ready to use
     if( !_isInitialized ) {
-        LOG_CRITICAL( PSTR("(Config) Flash not yet initialized - cannot read") );
+        LOG( PSTR("(Config) Flash not yet initialized - cannot read") );
         return;
     }
 
@@ -133,7 +130,7 @@ void ICACHE_FLASH_ATTR ConfigManager::Save( const bool force )
 
     // Don't do anything unless ready to use
     if( !_isInitialized ) {
-        LOG_CRITICAL( PSTR("(Config) Flash not yet initialized - cannot save") );
+        LOG( PSTR("(Config) Flash not yet initialized - cannot save") );
         return;
     }
 
@@ -144,7 +141,7 @@ void ICACHE_FLASH_ATTR ConfigManager::Save( const bool force )
         // Check to see what is there first and only save if different 
         if( readset == settings ) {
 
-            LOG_HIGH( PSTR("(Config) Settings unchanged - not saving") );
+            LOG( PSTR("(Config) Settings unchanged - not saving") );
 
             return;
         }

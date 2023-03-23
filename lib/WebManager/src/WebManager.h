@@ -7,7 +7,7 @@
  * Builds on EmbAJAX Library - https://github.com/tfry-git/EmbAJAX
  * Uses either inlined flash files or LittleFS to server web files, and handles AJAX calls
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -44,7 +44,7 @@ SOFTWARE. */
     #include <EmbAJAX.h>
 
     // Project Libraries
-    #include "TimeLocation.h"
+
 
 
     #define WEB_PORT 80
@@ -298,8 +298,8 @@ SOFTWARE. */
 
 
     // Elements that go on every page and are declared in this lib
-    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message,&date_time
-    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 3
+    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message
+    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 2
 
 
 
@@ -317,7 +317,7 @@ SOFTWARE. */
 
             /** Initializes the web manager
              * @param hostname      Hostname to use in the user agent */
-            void ICACHE_FLASH_ATTR Begin( char* hostname );
+            void ICACHE_FLASH_ATTR Begin( const char* hostname );
 
             /** Handle repeating web server tasks */
             void Handle() { _ajax.loopHook(); }
@@ -362,9 +362,8 @@ SOFTWARE. */
             bool ICACHE_FLASH_ATTR CheckCaptivePortal();
 
             char _message[WEB_MAX_MESSAGE_LEN];                 // Stored copy of message
-            char _dateTime[TLO_MAX_LONG_DATETIME_LEN];          // Store the date time string for the footer
 
-            char * _hostName;                                   // Host name on the network
+            const char * _hostName;                             // Host name on the network
 
             WiFiClient* _client;                                // Pointer to reusable WiFi client
             ESP8266WebServer _server;                           // Web server instance
@@ -376,7 +375,6 @@ SOFTWARE. */
 
     extern EmbAJAXVarInt net_status;                // Status indicator state
     extern EmbAJAXClientFunction post_message;      // Message popup function
-    extern EmbAJAXMutableSpan date_time;            // Date and time element
 
     extern WebsiteManager website;                  // Declaring the global instance
 

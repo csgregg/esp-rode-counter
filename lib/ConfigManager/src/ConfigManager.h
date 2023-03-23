@@ -6,7 +6,7 @@
  *              sector before file system). Settings are read and write on block and accessed
  *              through the 'settings' member. 
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -41,9 +41,6 @@ SOFTWARE. */
     // Project Libraries
     #include "NetworkManager.h"
     #include "Logger.h"
-    #include "OTAUpdater.h"
-    #include "TimeLocation.h"
-   // #include "ThingManager.h"
 
     #define CONFIG_START_MARKER "CONFIG_START_23"               // Marker used to confirm presence of configs in EEPROM
     #define CONFIG_START_MARKER_SIZE 16
@@ -57,9 +54,6 @@ SOFTWARE. */
         public:
 
             NetworkSettings networkSettings;            // Settings for Network Manager Class
-            LoggerSettings loggerSettings;              // Settings for Logger Class
-            OTAUpdaterSettings otaUpdaterSettings;      // Settings for OTA Update Manager Class
-            TimeLocationSettings timelocSettings;       // Settings Time and Location Manager Class
 
             /** Resets all the settings to the default values */
             void ICACHE_FLASH_ATTR SetDefaults();
@@ -67,16 +61,10 @@ SOFTWARE. */
             // Create a compare operators
             
             bool operator== ( const DeviceSettings& other ) const {
-                return networkSettings == other.networkSettings
-                    && loggerSettings == other.loggerSettings
-                    && otaUpdaterSettings == other.otaUpdaterSettings
-                    && timelocSettings == other.timelocSettings;
+                return networkSettings == other.networkSettings;
             }
             bool operator!= ( const DeviceSettings& other ) const {
-                return networkSettings != other.networkSettings
-                    || loggerSettings != other.loggerSettings
-                    || otaUpdaterSettings != other.otaUpdaterSettings
-                    || timelocSettings != other.timelocSettings;
+                return networkSettings != other.networkSettings;
             }
 
     };

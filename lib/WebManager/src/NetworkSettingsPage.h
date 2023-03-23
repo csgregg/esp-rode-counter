@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of netsettings.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -89,31 +89,8 @@ SOFTWARE. */
 
             EmbAJAXClientFunction ClearLoader;                      // Client side function clear the spinning loader
 
-            // Internet check elements
-
-            EmbAJAXCheckButton net_ck_enabled;                      // Check box for connectivity checker enabled
-            EmbAJAXTextInput<4> net_ck_int;                         // Input box for connectivity checker interval (secs)
-            EmbAJAXTextInput<NETCHECK_MAX_SERVICE_LEN> net_ck_url;  // Input box for connectivity checker URL
-            EmbAJAXServerFunction net_ck_save;                      // Connectivity checker save button
-
-            // DNS mode elements
-
-            EmbAJAXCheckButton dns_enabled;                         // Check box for DNS enabled
-            EmbAJAXCheckButton dns_mdns;                            // Check box for mDNS
-            EmbAJAXTextInput<DNS_MAX_HOSTNAME_LEN> dns_name;        // Input box for hostname           // TODO - check this functionality
-            EmbAJAXServerFunction dns_save;                         // DNS save button
-
-            // Time and Location elemetns
-
-            EmbAJAXServerFunction tlo_detect;                       // Detect location function
-            EmbAJAXTextInput<TLO_IPINFO_MAX_TOKEN_LEN> tlo_token;   // Input box for IPInfo.io token
-            EmbAJAXMutableSpan tlo_loc;                             // Span for reported location
-            EmbAJAXMutableSpan tlo_tz;                              // Span for reported timezone
-            EmbAJAXCheckButton tlo_ntp;                             // Check box for NTP enabled
-            EmbAJAXServerFunction tlo_save;                         // Time and Locations save button
-
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 42] = {
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 28] = {
 
                 WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
 
@@ -149,24 +126,7 @@ SOFTWARE. */
                 &wifi_stn_dns2,
                 &wifi_stn_asip,
 
-                &ClearLoader,
-
-                &net_ck_enabled,
-                &net_ck_int,
-                &net_ck_url,
-                &net_ck_save,
-
-                &dns_enabled,
-                &dns_mdns,
-                &dns_name,
-                &dns_save,
-
-                &tlo_detect,
-                &tlo_token,
-                &tlo_loc,
-                &tlo_tz,
-                &tlo_ntp,
-                &tlo_save,
+                &ClearLoader
 
             };
 
@@ -209,23 +169,6 @@ SOFTWARE. */
 
                 ClearLoader( "ClearLoader" ),
 
-                net_ck_enabled( "net_ck_enabled", "" ),
-                net_ck_int( "net_ck_int" ),
-                net_ck_url( "net_ck_url" ),
-                net_ck_save( "net_ck_save" ),
-
-                dns_enabled( "dns_enabled", "" ),
-                dns_mdns( "dns_mdns", "" ),
-                dns_name( "dns_name" ),
-                dns_save( "dns_save" ),
-
-                tlo_detect( "tlo_detect" ),
-                tlo_token( "tlo_token" ),
-                tlo_loc( "tlo_loc" ),
-                tlo_tz( "tlo_tz" ),
-                tlo_ntp( "tlo_ntp", "" ),
-                tlo_save( "tlo_save" ),
-
                 // Setup the EmbAJAX page base
                 ajax( page_elements, "" )
                 {
@@ -263,21 +206,6 @@ SOFTWARE. */
 
             /** Save AP settings from page */
             void ICACHE_FLASH_ATTR SaveAP();
-
-            /** Save connectivity checker settings from page */
-            void ICACHE_FLASH_ATTR SaveNetCheck();
-
-            /** Save DNS settings from page */
-            void ICACHE_FLASH_ATTR SaveDNS();
-
-            /** Save time and location settings from page */
-            void ICACHE_FLASH_ATTR SaveTimeLocation();
-
-            /** Load time and location settings to page */
-            void ICACHE_FLASH_ATTR LoadTimeLocation();
-
-            /** Call detect location using IPInfo.io */
-            void ICACHE_FLASH_ATTR DetectLocation();
 
     };
     

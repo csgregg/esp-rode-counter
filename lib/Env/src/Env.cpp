@@ -5,7 +5,7 @@
  * @brief       Defines the physical attributes of the IOT device and the build environment.
  *              Build flags are loaded from platformio.ini
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
