@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="w3.css">
+    <link rel="stylesheet" href="common.css">
+</head>
+
+<body class="w3-white">
+
+    <!-- !HEADER! -->
+    <span class="pre-include" src="header.htm"></span>
+
+    <!-- !PAGE CONTENT! -->
+    <div id="main" class="w3-main" style="margin-left:300px;">
+
+        <!-- Message bar -->
+        <span class="pre-include" src="msg.htm"></span>
+
+        <!-- Header -->
+        <div class="w3-container w3-padding-notop">
+            <div class="w3-row w3-padding-8 w3-text-dark-grey w3-border w3-round w3-light-grey">
+                <div class="w3-cell w3-large">
+                    <b>Home</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="w3-row">
+
+            <!-- Page Content -->
+            <div class="">
+                <div class="w3-container w3-padding-notop">
+                    <div class="w3-col w3-border w3-round w3-light-grey w3-text-dark-grey w3-padding-8">
+                        <div class="w3-row">
+                            <b>Content</b>
+                        </div>
+
+                        <div class="w3-row">
+                            <div class="w3-cell">
+                                <span class="statusdot" id="led" style="background: gray;" onclick="doRequest('btn_led');"></span>
+                            </div>
+                            <div class="w3-cell w3-padding-small">LED</div>
+                        </div>                          
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- !FOOTER! -->
+        <span class="pre-include" src="footer.htm"></span>
+
+    </div>
+
+    <!-- End page content -->
+
+    <script src="index.js"></script>
+    <script src="common.js"></script>
+
+</body>
+
+</html>
+

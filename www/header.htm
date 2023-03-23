@@ -1,0 +1,62 @@
+<!-- Top container -->
+<div class="w3-bar w3-large" style="height:41px;z-index:4;">
+    <div class="w3-top w3-white">
+        <div class="w3-bar-item w3-margin-left w3-button w3-hover-none" onclick="menu_open();"><div class="hamburger"></div><div class="hamburger"></div><div class="hamburger"></div></div>
+        <span class="w3-bar-item w3-display-right">
+            <span class="pre-replace">DEVICE_NAME</span>
+        </span>
+        <div class="w3-display-left w3-padding-small">
+            <span class="statusdot" id="EmbAjaxStatusInd" style="background:red"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Sidebar/menu -->
+<div class="w3-sidebar w3-collapse w3-light-grey w3-animate-left w3-border-right w3-border-top w3-border-bottom" style="z-index:3;width:300px;border-radius: 0px 2px 2px 0px;" id="mySidebar">
+    <div class="w3-bar-block">
+        <a href="index.html" class="w3-bar-item w3-button w3-padding">Home</a>
+        <a href="netsettings.html" class="w3-bar-item w3-button w3-padding">Network Settings</a>
+        <a href="system.html" class="w3-bar-item w3-button w3-padding">System</a>
+        <a href="about.html" class="w3-bar-item w3-button w3-padding">About</a>
+    </div>
+</div>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="menu_close()" style="cursor:pointer;margin-top:41px;" id="myOverlay"></div>
+
+
+<!-- Common Dialogs -->
+
+<!-- Are you sure dialog -->
+
+<div id="sure_dlg" class="w3-modal">
+    <div class="w3-modal-content w3-center w3-card-4" style="max-width:200px;margin:0 auto;">
+        <div class="w3-container w3-center w3-padding-8">
+            <b>Are you sure?</b>
+        </div>
+        <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+            <button onclick="SureYes()" type="button" class="w3-button w3-green w3-left w3-padding-small" style="width:70px">Yes</button>
+            <button onclick="SureNo()" type="button" class="w3-button w3-red w3-right w3-padding-small" style="width:70px">No</button>
+        </div>
+    </div>
+</div>
+
+        
+<!-- Loading spinner -->
+
+<div id="loader" style="display:none;" class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+
+<!-- Message popup -->
+
+<div id="popup_dlg" class="w3-modal">
+    <div class="w3-modal-content w3-center" style="max-width:300px">
+        <div class="w3-container w3-padding-8" style="height:35px">
+            <b>Message</b>
+            <span onclick="popup_ack();" class="w3-button w3-large w3-padding-small w3-hover-red w3-display-topright">X</span>
+        </div>
+        <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+            <span id="popup_text"></span>
+        </div>
+    </div>
+</div>
