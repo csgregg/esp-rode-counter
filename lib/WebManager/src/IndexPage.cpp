@@ -51,9 +51,6 @@ void ICACHE_FLASH_ATTR IndexPage::InitializeAjax(){
 // Function to handle AJAX requests for this page
 void ICACHE_FLASH_ATTR IndexPage::HandleAjax(){
     LOG( PSTR("(Page) Index - Handle AJAX") );    
-
-    // Toggle LED
-    if( website.AjaxID == F("btn_led") ) LOG("Toggle"); 
 }
 
 

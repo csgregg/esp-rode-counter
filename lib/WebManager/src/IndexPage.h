@@ -47,26 +47,19 @@ SOFTWARE. */
 
             PageHandler handler;                // Handler for this page
 
-            EmbAJAXVarBool thing_led;           // LED icon
-            EmbAJAXServerFunction btn_led;      // LED button
 
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 2] = {
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT] = {
       
-                WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
-
-                &thing_led,                     // Basic LED
-                &btn_led,                       // LED button
+                WEB_PAGE_COMMON_ELEMENTS       // Add the elements comment to every page
 
             };
 
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
+            
             IndexPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
-
-                thing_led( "thing_led" ),
-                btn_led( "btn_led" ),
 
                 ajax( page_elements, "" )
                 {

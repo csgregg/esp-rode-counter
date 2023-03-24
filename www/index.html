@@ -33,17 +33,24 @@
             <!-- Page Content -->
             <div class="">
                 <div class="w3-container w3-padding-notop">
-                    <div class="w3-col w3-border w3-round w3-light-grey w3-text-dark-grey w3-padding-8">
-                        <div class="w3-row">
-                            <b>Content</b>
-                        </div>
+                    <div class="w3-col w3-border w3-round w3-text-dark-grey w3-padding-8">
 
                         <div class="w3-row">
-                            <div class="w3-cell">
-                                <span class="statusdot" id="led" style="background: gray;" onclick="doRequest('btn_led');"></span>
+                            <div class="chain">
+                                <span class="chain__element"></span>
+                                <span class="chain__element"></span>
+                                <span class="chain__element"></span>
+                                <span class="chain__element"></span>
+                                <span class="chain__element"></span>
+                                <span class="chain__element"></span>
                             </div>
-                            <div class="w3-cell w3-padding-small">LED</div>
-                        </div>                          
+                            <div id="gauge2" class="gauge-container two"></div>
+                            <img src="anchor.png" class="anchor">
+                        </div>    
+
+                        <div class="w3-row">
+
+                        </div>   
 
                     </div>
                 </div>
@@ -58,6 +65,7 @@
 
     <!-- End page content -->
 
+    <script src="gauge.js"></script>
     <script src="index.js"></script>
     <script src="common.js"></script>
 
