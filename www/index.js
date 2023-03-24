@@ -26,23 +26,14 @@ var gauge2 = Gauge(
     }
   );
 
-
-
 function initPage() {
     // console.log("Status - Initialize Page");
-
-
 
     updatePage();
 }
 
 function updatePage() {
-     console.log("Status - Update Page");
-
+    // console.log("Status - Update Page");
           // Set gauge value
           gauge2.setValue(20.1);
-
 }
-
-
-

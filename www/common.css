@@ -69,14 +69,14 @@ input[type=password]::-ms-clear
 .anchor {
   position:absolute;
   left:19.3em;
-  top:16em;
+  top:13em;
   width:6em;
   height:6em;
 }
 
 .chain {
   position: absolute;
-  top: 7.5em;
+  top: 4.5em;
   left: 22em;
   display: flex;
 	z-index: 100000;

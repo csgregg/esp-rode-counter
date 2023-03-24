@@ -5,6 +5,6 @@
 ?>
 
 <?php
-echo "This is ESP Based Rode Counter";
+echo "This is esp-rode-v1";
 ?>
 <a href="/app/">App</a>

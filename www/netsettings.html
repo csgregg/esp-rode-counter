@@ -175,6 +175,168 @@
         </div>
 
 
+        <div class="w3-row">
+
+            <div class="w3-half">
+
+                <!-- Connectivity -->
+                <div class="w3-container w3-padding-notop">
+                    <div id="net_ck_box" class="w3-col w3-border w3-round w3-light-grey w3-text-dark-grey w3-padding-horz">
+                        <div class="w3-row w3-padding-vert">
+                            <b>Connectivity</b>
+                        </div>
+
+                        <div class="w3-row">
+                            <div class="w3-cell w3-padding-8">
+                                <label class="switch">
+                                    <input id="net_ck_enabled" type="checkbox" value="t" onchange="enableElmt('net_ck_save','net_ck_cancel');">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="w3-cell w3-padding-small">Check</div>
+                        </div>  
+
+                        <div class="w3-container w3-padding-horz">
+                            <div class="w3-col" style="line-height: 40px;width:100px;">
+                                Check interval
+                            </div>
+                            <div class="w3-col w3-padding-small" style="width:75px">
+                                <input id="net_ck_int" class="w3-input w3-border w3-padding-small" type="text" maxlength="3"  onchange="enableElmt('net_ck_save','net_ck_cancel');">
+                            </div>
+                            <div class="w3-col" style="line-height: 40px;width:90px;">
+                                (Seconds)
+                            </div>
+                        </div>
+
+                        <div class="w3-container w3-padding-horz">
+                            <div class="w3-col" style="line-height: 40px;width:100px;">
+                                Check URL
+                            </div>
+                            <div class="w3-col w3-padding-small" style="width:150px">
+                                <input id="net_ck_url" class="w3-input w3-border w3-padding-small" type="text" maxlength="35" onchange="enableElmt('net_ck_save','net_ck_cancel');">
+                            </div>
+                        </div>
+
+                        <!-- Save / Cancel -->
+                        <div class="w3-container w3-padding-8" style="margin-bottom:6px;">
+                            <button id="net_ck_save" disabled onclick="SureDlg(this);" type="button" class="w3-button w3-green w3-padding-small">Save</button>
+                            <button id="net_ck_cancel" disabled onclick="disableElmt('net_ck_save','net_ck_cancel');doRequestAll();" type="button" class="w3-button w3-red w3-padding-small">Cancel</button>
+                        </div>
+                        
+                    </div>
+                </div> 
+
+                <!-- Location -->
+                <div class="w3-container w3-padding-notop">
+                    <div id="tlo_box" class="w3-col w3-border w3-round w3-light-grey w3-text-dark-grey w3-padding-horz">
+                        <div class="w3-row w3-padding-vert">
+                            <b>Location and Time</b>
+                        </div>
+
+                        <!-- Detect -->
+                        <div class="w3-container w3-padding-8">
+                            <button id="tlo_detect" onclick="DetectLocation();" type="button" class="w3-button w3-blue w3-padding-small">Detect Location</button>
+                        </div>
+
+                        <div class="w3-row">
+                            <div class="w3-cell w3-padding-small">
+                                Location: <span id="tlo_loc"></span>
+                            </div>
+                        </div> 
+
+                        <div class="w3-row">
+                            <div class="w3-cell w3-padding-small">
+                                Timezone: <span id="tlo_tz"></span>
+                            </div>
+                        </div> 
+
+                        <div class="w3-container w3-padding-horz">
+                            <div class="w3-col" style="line-height: 40px;width:100px;">
+                                IPInfo Token
+                            </div>
+                            <div class="w3-col w3-padding-small" style="width:150px">
+                                <input id="tlo_token" class="w3-input w3-border w3-padding-small" type="text" maxlength="35" onchange="enableElmt('tlo_save','tlo_cancel');">
+                            </div>
+                        </div>
+
+                        <div class="w3-row">
+                            <div class="w3-cell w3-padding-8">
+                                <label class="switch">
+                                    <input id="tlo_ntp" type="checkbox" value="t" onchange="enableElmt('tlo_save','tlo_cancel');">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="w3-cell w3-padding-small">
+                                Auto detect time
+                            </div>
+                        </div>  
+
+                        <!-- Save / Cancel -->
+                        <div class="w3-container w3-padding-8" style="margin-bottom:6px;">
+                            <button id="tlo_save" disabled onclick="SureDlg(this);" type="button" class="w3-button w3-green w3-padding-small">Save</button>
+                            <button id="tlo_cancel" disabled onclick="disableElmt('tlo_save','tlo_cancel');doRequestAll();" type="button" class="w3-button w3-red w3-padding-small">Cancel</button>
+                        </div>
+                        
+                    </div>
+                </div> 
+
+            </div>
+
+            <div class="w3-half">
+                <!-- Domain Names -->
+                <div class="w3-container w3-padding-notop">
+                    <div id="dns_box" class="w3-col w3-border w3-round w3-light-grey w3-text-dark-grey w3-padding-horz">
+                        <div class="w3-row w3-padding-vert">
+                            <b>DNS</b>
+                        </div>
+
+                        <div class="w3-container w3-padding-horz">
+                            <div class="w3-col" style="line-height: 40px;width:100px;">
+                                Host name
+                            </div>
+                            <div class="w3-col w3-padding-small" style="width:150px">
+                                <input id="dns_name" class="w3-input w3-border w3-padding-small" type="text" maxlength="35" onchange="enableElmt('dns_save','dns_cancel');">
+                            </div>
+                        </div>
+
+                        <div class="w3-row">
+                            <div class="w3-cell w3-padding-8">
+                                <label class="switch">
+                                    <input id="dns_enabled" type="checkbox" value="t" onchange="enableElmt('dns_save','dns_cancel');this.checked?enableElmt('dns_mdnselmt','dns_mdns'):disableElmt('dns_mdnselmt','dns_mdns');">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="w3-cell w3-padding-small">DNS Enabled</div>
+                        </div>  
+
+                        <div class="w3-row">
+                            <div class="w3-cell w3-padding-8">
+                                <label class="switch">
+                                    <input id="dns_mdns" type="checkbox" value="t" onchange="enableElmt('dns_save','dns_cancel');">
+                                    <span id="dns_mdnselmt" class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="w3-cell w3-padding-small">mDNS (Bonjour)</div>
+                        </div>
+
+                        <!-- Save / Cancel -->
+                        <div class="w3-container w3-padding-8">
+                            <button id="dns_save" disabled onclick="SureDlg(this);" type="button" class="w3-button w3-green w3-padding-small">Save</button>
+                            <button id="dns_cancel" disabled onclick="disableElmt('dns_save','dns_cancel');doRequestAll();" type="button" class="w3-button w3-red w3-padding-small">Cancel</button>
+                        </div>
+
+                        <div class="w3-row w3-padding-8 w3-small">
+                            DNS changes take effect on next restart
+                        </div>
+                        
+                    </div>
+                </div> 
+            </div>
+
+        </div>
+
+
+
         <!-- Dialogs -->
     
         <!-- Wifi Network Dialog -->

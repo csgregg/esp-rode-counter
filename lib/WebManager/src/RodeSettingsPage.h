@@ -1,10 +1,10 @@
 /**
- * @file        AboutPage.h
+ * @file        RodeSettingsPage.h
  * @author      Chris Gregg
  * 
- * @brief       Server-side functions of about.html
+ * @brief       Server-side functions of rodesettings.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -29,57 +29,64 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 
-#ifndef ABOUT_PAGE_H
+#ifndef RODESETTINGS_PAGE_H
 
-    #define ABOUT_PAGE_H
+    #define RODESETTINGS_PAGE_H
 
     // Global Libraries
     #include <Arduino.h>
-    
+
     // Project Libraries
     #include "WebManager.h"
 
-
-    /** @class AboutPage
-     *  @brief Server-side functions for about.html page */
-    class AboutPage {
+    /** @class RodeSettingsPage
+     *  @brief Server-side functions for rodesettings.html page */
+    class RodeSettingsPage {
 
         public:
 
             PageHandler handler;                // Handler for this page
 
-            EmbAJAXMutableSpan device_id;       // Span that holds device ID
-            EmbAJAXMutableSpan build_env;       // Span that holds build environment
-            EmbAJAXMutableSpan build_no;        // Span that holds build number
-            EmbAJAXMutableSpan build_time;      // Span that holds build timestamp
+            EmbAJAXTextInput<4> windlass_dia;   // Input box for windlass diameter
+            EmbAJAXTextInput<4> windlass_rpm;   // Input box for windlass speed
+            EmbAJAXCheckButton windlass_rev;    // Check box for windlass reverse
+            EmbAJAXTextInput<5> chain_len;      // Input box for overall chain length
+            EmbAJAXTextInput<5> water_line;     // Input box for chain water line 
+            EmbAJAXServerFunction btn_reset;    // Reset chain button
+            EmbAJAXServerFunction rode_save;    // Save settings button
 
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 4] = {
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 7] = {
       
                 WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
 
-                &device_id,
-                &build_env,
-                &build_no,
-                &build_time,
+                &windlass_dia,
+                &windlass_rpm,
+                &windlass_rev,
+                &chain_len,
+                &water_line,
+                &btn_reset,
+                &rode_save
 
             };
 
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
-            AboutPage( void(*ajaxHander)(), void(*initHandler)() ) : 
-               
-                device_id( "device_id" ),
-                build_env( "build_env" ),
-                build_no( "build_no" ),
-                build_time( "build_time" ),
+            RodeSettingsPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
 
-                // Setup the EmbAJAX page base
+                windlass_dia("windlass_dia"),
+                windlass_rpm("windlass_rpm"),
+                windlass_rev("windlass_rev",""),
+                chain_len("chain_len"),
+                water_line("water_line"),
+                btn_reset("btn_reset"),
+                rode_save("rode_save"),
+
                 ajax( page_elements, "" )
                 {
-                    handler.URL = "/about.html";
-                    handler.ajaxHander = ajaxHander;
+                    handler.URL = "/rodesettings.html";
+                    handler.ajaxHander = ajaxHandler;
                     handler.initHandler = initHandler;
                 };
 
@@ -91,9 +98,11 @@ SOFTWARE. */
             /** Function to handle AJAX requests for this page */
             void ICACHE_FLASH_ATTR HandleAjax();
 
+            /** Save the logger settings */
+            void ICACHE_FLASH_ATTR SaveRodeSettings();
     };
     
+    
+    extern RodeSettingsPage rodesettingspage;     // Global instance of this page
 
-    extern AboutPage aboutpage;     // Global instance of this page
-
-#endif      // ABOUT_PAGE_H
+#endif          // RODESETTINGS_PAGE_H

@@ -5,7 +5,7 @@
  * @brief       Manages the storage of string literals in program memory
  *              Based on ideas from https://github.com/jjssoftware/iD8266
  * 
- * @copyright   Copyright (c) 2023
+ * @copyright   Copyright (c) 2020
  * 
  */
 

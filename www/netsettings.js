@@ -105,6 +105,10 @@ function updatePage() {
     document.getElementById("wifi_mode_ap").checked ? 
         document.getElementById("wifi_ap_icon").style = "opacity: 1.0;"
         : document.getElementById("wifi_ap_icon").style = "opacity: 0.2;"
+
+    // Update mDNS switch
+    if( document.getElementById("dns_enabled").checked ) enableElmt("dns_mdns","dns_mdnselmt");
+    else disableElmt("dns_mdns","dns_mdnselmt");
     
 }
 
@@ -153,6 +157,9 @@ function SureNo() {
     }
 
     if( sureAction == "wifi_ap_save" ) disableElmt("wifi_ap_save","wifi_ap_cancel");
+    if( sureAction == "net_ck_save" ) disableElmt("net_ck_save","net_ck_cancel");
+    if( sureAction == "dns_save" ) disableElmt("dns_save","dns_cancel");
+    if( sureAction == "tlo_save" ) disableElmt("tlo_save","tlo_cancel");
 
     doRequestAll();
 }
@@ -249,4 +256,63 @@ function SureYes() {
         doRequest('wifi_stn_cnct',wifiStationID);
     }
 
+    if( sureAction == "net_ck_save" ) {
+
+        // Send updates data
+        x = document.getElementById('net_ck_enabled');
+        doRequestWait(x.id, x.checked ? 't' : 'f');
+        x = document.getElementById('net_ck_int');
+        doRequestWait(x.id, x.value);
+        x = document.getElementById('net_ck_url');
+        doRequestWait(x.id, x.value);
+        
+        showLoader(document.getElementById('net_ck_box'));
+
+        // Send Save command and update AP
+        doRequest(sureAction,1,ClearLoader);
+
+        disableElmt("net_ck_save","net_ck_cancel");
+    }
+
+    if( sureAction == "dns_save" ) {
+
+        // Send updates data
+        x = document.getElementById('dns_enabled');
+        doRequestWait(x.id, x.checked ? 't' : 'f');
+        x = document.getElementById('dns_name');
+        doRequestWait(x.id, x.value);
+        x = document.getElementById('dns_mdns');
+        doRequestWait(x.id, x.checked ? 't' : 'f');
+        
+        showLoader(document.getElementById('dns_box'));
+
+        // Send Save command and update AP
+        doRequest(sureAction,1,ClearLoader);
+
+        disableElmt("dns_save","dns_cancel");
+    }
+
+    if( sureAction == "tlo_save" ) {
+
+        // Send updates data
+        x = document.getElementById('tlo_token');
+        doRequestWait(x.id, x.value);
+        x = document.getElementById('tlo_ntp');
+        doRequestWait(x.id, x.checked ? 't' : 'f');
+        
+        showLoader(document.getElementById('tlo_box'));
+
+        // Send Save command and update AP
+        doRequest(sureAction,1,ClearLoader);
+
+        disableElmt("tlo_save","tlo_cancel");
+    }
+
+}
+
+
+function DetectLocation() {
+    showLoader(document.getElementById('tlo_box'));
+    enableElmt("tlo_save","tlo_cancel");
+    doRequest("tlo_detect",1,ClearLoader);
 }

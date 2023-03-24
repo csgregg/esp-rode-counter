@@ -1,8 +1,8 @@
-/* ESP Based Rode Counter
+/* Demonstration ESP Base Platform
 
 MIT License
 
-Copyright (c) 2023 Chris Gregg
+Copyright (c) 2020 Chris Gregg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,23 +34,27 @@ Setup and Loop
 #include "Logger.h"
 #include "NetworkManager.h"
 #include "WebManager.h"
+#ifndef UPDATER_DISABLE
+    #include "OTAUpdater.h"
+#endif
+#include "TimeLocation.h"
 
 
 void ICACHE_FLASH_ATTR setup() {
-
-#ifndef NO_LOGGING
     delay( 1000 );
-    Serial.begin(flag_MONITOR_SPEED);
+Serial.begin(115200);
+    // Services started in the proper order
+    device.Begin();
+    config.Begin();
+    logger.Begin( network.GetWiFiClient(), config.settings.loggerSettings );  
+    network.Begin( config.settings.networkSettings );
+    timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
+    website.Begin( config.settings.networkSettings.dnsSettings.hostName );
+#ifndef UPDATER_DISABLE
+    updater.Begin( network.GetWiFiClient(), config.settings.otaUpdaterSettings );
 #endif
 
-    // Services started in the proper order
-
-    device.Begin();
-    config.Begin( true );
-    network.Begin( config.settings.networkSettings );
-    website.Begin( flag_DEVICE_NAME );
-
-    LOG(PSTR("(Loop) Starting"));
+    LOG(PSTR("(Loop) Starting"));        // TODO - Check all LOG levels for all instances
     
 }
 
@@ -61,5 +65,10 @@ void loop() {
     device.Handle();
     network.Handle();
     website.Handle();
+#ifndef UPDATER_DISABLE
+    updater.Handle();
+#endif
+    logger.Handle();
+    timelocation.Handle();
 
 }

@@ -4,7 +4,7 @@
  * 
  * @brief       Manages WiFi Functions
  * 
- * @copyright   Copyright (c) 2023
+ * @copyright   Copyright (c) 2020
  * 
  */
 

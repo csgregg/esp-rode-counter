@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of netsettings.html
  * 
- * @copyright   Copyright (c) 2023
+ * @copyright   Copyright (c) 2020
  * 
  */
 
@@ -43,7 +43,7 @@ SOFTWARE. */
 // Function to initialize AJAX on this page
 void ICACHE_FLASH_ATTR NetworkSettingsPage::InitializeAjax(){
 
-    LOG( PSTR("(Page) Network Settings - Initialize AJAX") );
+    LOG_HIGH( PSTR("(Page) Network Settings - Initialize AJAX") );
 
     wifi_stn_asip.setValue( network.GetAssignedIP() );
 
@@ -61,13 +61,35 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::InitializeAjax(){
     wifi_mode_stn.setChecked( wifimode == WIFI_STA || wifimode == WIFI_AP_STA );
     wifi_mode_ap.setChecked( wifimode == WIFI_AP || wifimode == WIFI_AP_STA );
 
+    // Connectivity Settings
+    char buffer[5];
+    NetCheckSettings netStatus = config.settings.networkSettings.netCheckSettings;
+    net_ck_enabled.setChecked( netStatus.enabled );
+    net_ck_int.setValue( itoa( netStatus.interval, buffer, 10 ) );
+    net_ck_url.setValue( netStatus.checkService );
+    net_ck_save.setEnabled( false );
+
+    // DNS Settings
+    DNSSettings dns = config.settings.networkSettings.dnsSettings;
+    dns_enabled.setChecked( dns.dnsEnabled );
+    dns_mdns.setChecked( dns.mDnsEnabled );
+    dns_name.setValue( dns.hostName );
+    dns_save.setEnabled( false );
+
+    // Time and Location Settings
+    TimeLocationSettings tlo = config.settings.timelocSettings;
+    tlo_ntp.setChecked( tlo.enabled );
+    tlo_token.setValue( tlo.ipInfoToken );
+    LoadTimeLocation();
+    tlo_save.setEnabled( false );
+
 }
 
 
 // Function to handle AJAX requests for this page
 void ICACHE_FLASH_ATTR NetworkSettingsPage::HandleAjax(){
 
-    LOG( PSTR("(Page) Network Settings - Handle AJAX") );
+    LOG_HIGH( PSTR("(Page) Network Settings - Handle AJAX") );
 
     // Save WiFi settings
     if( website.AjaxID == F("wifi_stn_save") ) {
@@ -106,6 +128,30 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::HandleAjax(){
         return;
     }
 
+    // Save connectivity checker settings
+    if( website.AjaxID == F("net_ck_save") ) {
+        SaveNetCheck();
+        return;
+    }
+
+    // Save DNS settings
+    if( website.AjaxID == F("dns_save") ) {
+        SaveDNS();
+        return;
+    }
+
+    // Save Time and Location settings
+    if( website.AjaxID == F("tlo_save") ) {
+        SaveTimeLocation();
+        return;
+    }
+
+    // Call location detection
+    if( website.AjaxID == F("tlo_detect") ) {
+        DetectLocation();
+        return;
+    }
+
 }
 
 
@@ -130,7 +176,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SetWifiMode(WiFiMode mode) {
 // Load a specific WiFi station into the dialog
 void ICACHE_FLASH_ATTR NetworkSettingsPage::LoadWifiStation( uint id ) {
 
-    LOG( PSTR("(Page) Network Settings - Load Wifi Station") );
+    LOG_HIGH( PSTR("(Page) Network Settings - Load Wifi Station") );
 
     wifiStation = config.settings.networkSettings.wifiSettings.stationSettings[id];
 
@@ -149,7 +195,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::LoadWifiStation( uint id ) {
 // Save a specific WiFi station from the dialog
 void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveWifiStation( uint id ) {
 
-    LOG( PSTR("(Page) Network Settings - Save Wifi Station") );
+    LOG_HIGH( PSTR("(Page) Network Settings - Save Wifi Station") );
 
     strncpy( wifiStation.SSID, wifi_stn_ssid.value(), NET_MAX_SSID_LEN );
     strncpy( wifiStation.password, wifi_stn_pwd.value(), NET_MAX_PASSWORD_LEN );
@@ -181,7 +227,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveWifiStation( uint id ) {
 // Connect a specific WiFi station
 void ICACHE_FLASH_ATTR NetworkSettingsPage::ConnectWifiStation( uint id ) {
 
-    LOG( PSTR("(Page) Network Settings - Connect Wifi Station") );
+    LOG_HIGH( PSTR("(Page) Network Settings - Connect Wifi Station") );
     
     if( network.ConnectWiFiStation( id ) ) config.Save();
     else network.ReconnectWifi();
@@ -196,7 +242,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::ConnectWifiStation( uint id ) {
 // Save AP settings from page
 void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveAP() {
 
-    LOG( PSTR("(Page) Network Settings - Save AP")) ;
+    LOG_HIGH( PSTR("(Page) Network Settings - Save AP")) ;
     
     APSettings ap;
     strncpy( ap.SSID, wifi_ap_ssid.value(), NET_MAX_SSID_LEN );
@@ -216,6 +262,73 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveAP() {
     }
     else  website.PostMessage( PSTR("Invlaid IP address") );
 
+}
+
+
+// Save connectivity checker settings from page
+void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveNetCheck() {
+
+    LOG_HIGH( PSTR("(Page) Network Settings - Save Connection Checker") );
+
+    NetCheckSettings netStatus;
+    netStatus.enabled = net_ck_enabled.isChecked();
+    strncpy( netStatus.checkService, net_ck_url.value(), NETCHECK_MAX_SERVICE_LEN );
+    netStatus.interval = atoi( net_ck_int.value() );
+
+    config.settings.networkSettings.netCheckSettings = netStatus;
+    config.Save();
+
+    network.RestartDNS();
+
+}
+
+
+// Save DNS settings from page
+void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveDNS() {
+
+    LOG_HIGH( PSTR("(Page) Network Settings - Save DNS") );
+
+    DNSSettings dns;
+    dns.dnsEnabled = dns_enabled.isChecked();
+    strncpy( dns.hostName, dns_name.value(), DNS_MAX_HOSTNAME_LEN );
+    dns.mDnsEnabled = dns_mdns.isChecked();
+
+    config.settings.networkSettings.dnsSettings = dns;
+    config.Save();
+    
+}
+
+
+// Save time and location settings from page
+void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveTimeLocation() {
+
+    LOG_HIGH( PSTR("(Page) Network Settings - Save Time/Location") );
+
+    strncpy( config.settings.timelocSettings.ipInfoToken, tlo_token.value(), TLO_IPINFO_MAX_TOKEN_LEN );
+    config.settings.timelocSettings.enabled = tlo_ntp.isChecked();
+    // Note location, if updated, is already saved to config.settings.tloconfig by timelocation.detectlocation
+
+    config.Save();
+}
+
+
+// Load time and location settings to page
+void ICACHE_FLASH_ATTR NetworkSettingsPage::LoadTimeLocation() {
+
+    if( timelocation.IsLocationSet() ) {
+        tlo_loc.setValue( config.settings.timelocSettings.location.region );
+        tlo_tz.setValue( config.settings.timelocSettings.location.timezone );
+    }
+    else {
+        tlo_loc.setValue( "<b>Not set</b>", true );
+        tlo_tz.setValue( "<b>Not set</b> <span class=\"w3-small\">(Using UTC)</span>", true );
+    }
+}
+
+
+// Call detect location using IPInfo.io
+void ICACHE_FLASH_ATTR NetworkSettingsPage::DetectLocation() {
+    if( timelocation.DetectLocation() ) LoadTimeLocation();
 }
 
 

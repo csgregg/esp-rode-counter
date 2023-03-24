@@ -5,6 +5,7 @@
 #include "AboutPage.h"
 #include "IndexPage.h"
 #include "SystemPage.h"
+#include "RodeSettingsPage.h"
 
 #include "WebFiles.h"       // Use flash instead of LittleFS for web files
 
@@ -15,5 +16,6 @@ PageHandler webpages[] = {
     networksettingspage.handler,
     aboutpage.handler,
     indexpage.handler,
-    systempage.handler
+    systempage.handler,
+    rodesettingspage.handler
 };

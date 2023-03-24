@@ -5,7 +5,7 @@
  * @brief       Defines the physical attributes of the IOT device and the build environment.
  *              Build flags are loaded from platformio.ini 
  * 
- * @copyright   Copyright (c) 2023
+ * @copyright   Copyright (c) 2020
  * 
  */
 
@@ -53,6 +53,34 @@ SOFTWARE. */
 
     // In case build flags are missing for non-string flags
 
+    #ifndef UPDATER_SKIP
+        #define UPDATER_SKIP 1
+    #endif
+
+    #ifndef LOGGER_AS_SERIAL
+        #define LOGGER_AS_SERIAL 1
+    #endif
+
+    #ifndef LOGGER_AS_SERVICE
+        #define LOGGER_AS_SERVICE 0
+    #endif
+
+    #ifndef UPDATER_INTERVAL
+        #define UPDATER_INTERVAL 300
+    #endif   
+
+    #ifndef LOGGER_TICK_INTERVAL
+        #define LOGGER_TICK_INTERVAL 60
+    #endif
+
+    #ifndef LOGGER_TICKER
+        #define LOGGER_TICKER 0
+    #endif
+
+    #ifndef LOGGER_LEVEL
+        #define LOGGER_LEVEL 3
+    #endif
+
     #ifndef MONITOR_SPEED
         #define MONITOR_SPEED 115200
     #endif
@@ -85,14 +113,42 @@ SOFTWARE. */
     static const char flag_BOARD [] PROGMEM = ESCAPEQUOTE(BOARD);                               // Specific board
 
     // General build details
-    static const char flag_BUILD_TAG [] PROGMEM = ESCAPEQUOTE(BUILD_TAG);                       // Build tag
-    static const char flag_BUILD_ENV [] PROGMEM = ESCAPEQUOTE(BUILD_ENV);                       // Build environmoent - Local
+    static const char flag_BUILD_TAG [] PROGMEM = ESCAPEQUOTE(BUILD_TAG);                       // Build tag - when used in Travis-CI comes from the GitHub Release
+    static const char flag_BUILD_ENV [] PROGMEM = ESCAPEQUOTE(BUILD_ENV);                       // Build environmoent - Local or Travis-CI
     static const char flag_DEVICE_CODE [] PROGMEM = ESCAPEQUOTE(DEVICE_CODE);                   // Short code name for the device
     static const char flag_DEVICE_NAME [] PROGMEM = ESCAPEQUOTE(DEVICE_NAME);                   // Full device name
     static const uint flag_BUILD_NO = atoi(ESCAPEQUOTE(BUILD_NUMBER));                          // Get build number
     static const char flag_BUILD_TIMESTAMP [] PROGMEM = ESCAPEQUOTE(BUILD_TIMESTAMP);           // Set build date and time
     
+    // Used by Netork Manager
+    static const bool flag_NET_CHECKER = atoi(ESCAPEQUOTE(NET_CHECKER));                        // 0 - 1 to turn on internet connectivity checker
+    static const char flag_NET_CHECK_SERVICE [] PROGMEM = ESCAPEQUOTE(NET_CHECK_SERVICE);       // Generate 204 script
+    static const uint flag_NET_CHECK_INTERVAL = atoi(ESCAPEQUOTE(NET_CHECK_INTERVAL));          // Interval between checks for internet connectivity
+
+#ifndef UPDATER_DISABLE
+    // Used by Remote OTA library
+    static const char flag_UPDATER_REPO [] PROGMEM = ESCAPEQUOTE(UPDATER_REPO);                 // GitHub reprositary holding this code
+    static const char flag_UPDATER_USER [] PROGMEM = ESCAPEQUOTE(UPDATER_USER);                 // GitHub API user
+    static const char flag_UPDATER_TOKEN [] PROGMEM = ESCAPEQUOTE(UPDATER_TOKEN);               // GitHub API OAUTH token
+    static const char flag_UPDATER_SERVICE [] PROGMEM = ESCAPEQUOTE(UPDATER_SERVICE);           // Path to PHP used to return GitHub assets
+    static const bool flag_UPDATER_SKIP = atoi(ESCAPEQUOTE(UPDATER_SKIP));                      // Skip any updates
+    static const uint flag_UPDATER_INTERVAL = atoi(ESCAPEQUOTE(UPDATER_INTERVAL));              // Interval between update checks (sec)
+#endif
+
+    // Used by Logger library
+    static const bool flag_LOGGER_AS_SERIAL = atoi(ESCAPEQUOTE(LOGGER_AS_SERIAL));              // 0 - 1 to turn on serial logging
+    static const bool flag_LOGGER_AS_SERVICE = atoi(ESCAPEQUOTE(LOGGER_AS_SERVICE));            // 0 - 1 to turn on logging to Loggly service
+    static const bool flag_LOGGER_TICKER = atoi(ESCAPEQUOTE(LOGGER_TICKER));                    // 0 - 1 to turn on ticking to Loggly service
+    static const uint flag_LOGGER_TICK_INTERVAL = atoi(ESCAPEQUOTE(LOGGER_TICK_INTERVAL));      // Internal between ticks (sec)
+    static const uint flag_LOGGER_LEVEL = atoi(ESCAPEQUOTE(LOGGER_LEVEL));                      // 0 - 4 to set log level
+    static const char flag_LOGGER_SERVICE [] PROGMEM = ESCAPEQUOTE(LOGGER_SERVICE);             // Path to Loggly API
+    static const char flag_LOGGER_SERVICE_KEY [] PROGMEM = ESCAPEQUOTE(LOGGER_SERVICE_KEY);     // Loggly API key - stored in credentials.h for privacy
+    static const char flag_LOGGER_GLOBAL_TAGS [] PROGMEM = ESCAPEQUOTE(LOGGER_GLOBAL_TAGS);     // Tags to globally apply to logs
     static const uint flag_MONITOR_SPEED = atoi(ESCAPEQUOTE(MONITOR_SPEED));                    // Monitor baud
+
+    // Used by Time / Location Library
+    static const char flag_TLO_IPINFO_TOKEN [] PROGMEM = ESCAPEQUOTE(TLO_IPINFO_TOKEN);         // Token for IPInfo.io service
+    static const char flag_TLO_IPINFO_SERVICE [] PROGMEM = ESCAPEQUOTE(TLO_IPINFO_SERVICE);     // URL for IPInfo.io service
 
 
     /** @class IOT Device Class

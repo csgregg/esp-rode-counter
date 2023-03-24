@@ -4,7 +4,7 @@
  * 
  * @brief       Manages Network Services
  * 
- * @copyright   Copyright (c) 2023
+ * @copyright   Copyright (c) 2020
  * 
  */
 
@@ -43,6 +43,8 @@ SOFTWARE. */
 // Resets network settings to default
 void ICACHE_FLASH_ATTR NetworkSettings::SetDefaults() {
     wifiSettings.SetDefaults();
+    netCheckSettings.setDefaults();
+    dnsSettings.setDefaults();
 }
 
 
@@ -68,14 +70,31 @@ void ICACHE_FLASH_ATTR NetworkManager::Begin( NetworkSettings& settings ) {
 
     // Start all network services
     _wifi.Begin( _settings->wifiSettings );
+    _dns.Begin( _settings->dnsSettings, _wifi.IsAPRunning() );
+    _netCheck.Begin( _wifi.GetWiFiClient(), _settings->netCheckSettings );
 
 }
 
+
+// Get the status of the network
+NetworkManager::NetworkStatus ICACHE_FLASH_ATTR NetworkManager::GetNetworkStatus() {
+    if( _settings->netCheckSettings.enabled ) {                                             // If we are using NetChecker, then needs to validate before returning normal
+        if( _netCheck.isInternetConnected() ) return NetworkStatus::NORMAL;
+        if( _wifi.IsWiFiConnected() || _wifi.CountAPConnections() > 0 ) return NetworkStatus::NOINETERNET;
+    }
+    else {
+        // If we are not using NetChecker, then just check that we are connected as Wifi client or if in AP mode, if there are any connected clients
+        if( _wifi.IsWiFiConnected() || _wifi.CountAPConnections() > 0 ) return NetworkStatus::NORMAL;                         
+    }
+    return NetworkStatus::DISCONNECTED;
+}
 
 
 // Handle any repeating network tasks
 void NetworkManager::Handle() {
     _wifi.Handle();
+    _netCheck.Handle();
+    _dns.Handle();
 }
 
 

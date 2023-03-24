@@ -1,10 +1,10 @@
 /**
- * @file        IndexPage.cpp
+ * @file        RodeSettingsPage.cpp
  * @author      Chris Gregg
  * 
- * @brief       Server-side functions of index.html
+ * @brief       Server-side functions of rodesettings.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -30,41 +30,76 @@ SOFTWARE. */
 
 
 // Project Libraries
-#include "IndexPage.h"
+#include "RodeSettingsPage.h"
 #include "Logger.h"
 #include "Env.h"
 #include "NetworkManager.h"
-//#include "ThingManager.h"
 
 
 ////////////////////////////////////////////
-//// Index Page Class
+//// Rode Settings Page Class
 
 // Public:
 
 // Function to initialize AJAX on this page
-void ICACHE_FLASH_ATTR IndexPage::InitializeAjax(){
-    LOG_HIGH( PSTR("(Page) Index - Initialize AJAX") );
+void ICACHE_FLASH_ATTR RodeSettingsPage::InitializeAjax(){
+
+    LOG_HIGH( PSTR("(Page) Rode Settings - Initialize AJAX") );
+
+    static char buffer[8];
+
+    windlass_dia.setValue(itoa(316, buffer, 10));
+    windlass_rpm.setValue(itoa(78, buffer, 10));
+    windlass_rev.setChecked( true );
+    chain_len.setValue(itoa(5000, buffer, 10));
+    water_line.setValue(itoa(150, buffer, 10));
+    rode_save.setEnabled( false ) ;
+
 }
 
 
 // Function to handle AJAX requests for this page
-void ICACHE_FLASH_ATTR IndexPage::HandleAjax(){
-    LOG_HIGH( PSTR("(Page) Index - Handle AJAX") );    
+void ICACHE_FLASH_ATTR RodeSettingsPage::HandleAjax(){
+
+    LOG_HIGH( PSTR("(Page) Rode Settings - Handle AJAX") );    
+
+    // Reset Chain
+    if( website.AjaxID == F("btn_reset") ) {
+        DEBUG("Reset Chain");
+    }
+
+    // Save rode settings
+    if( website.AjaxID == F("rode_save") ) {
+        SaveRodeSettings();
+        return;
+    }
+}
+
+
+// Save the logger settings
+void ICACHE_FLASH_ATTR RodeSettingsPage::SaveRodeSettings() {
+    
+        
+    DEBUG(windlass_dia.value());
+    DEBUG(windlass_rpm.value());
+    DEBUG(windlass_rev.isChecked());
+    DEBUG(chain_len.value());
+    DEBUG(water_line.value());
 
 }
 
 
+
 // Create instance of page class and wrap methods for EmbAJAX
-IndexPage indexpage(
+RodeSettingsPage rodesettingspage(
     []() { 
-        indexpage.ajax.handleRequest( 
+        rodesettingspage.ajax.handleRequest( 
             []() {
-                indexpage.HandleAjax();
+                rodesettingspage.HandleAjax();
             }
         ); 
     },
     []() { 
-        indexpage.InitializeAjax();
+        rodesettingspage.InitializeAjax();
     }
 );

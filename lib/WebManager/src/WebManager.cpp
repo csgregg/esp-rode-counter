@@ -7,7 +7,7 @@
  * Builds on EmbAJAX Library - https://github.com/tfry-git/EmbAJAX
  * Uses either inlined flash files or LittleFS to server web files, and handles AJAX calls
  * 
- * @copyright   Copyright (c) 2023
+ * @copyright   Copyright (c) 2020
  * 
  */
 
@@ -36,9 +36,9 @@ SOFTWARE. */
 
 
 // Project Libraries
-#include "Env.h"
 #include "WebManager.h"
 #include "Logger.h"
+#include "TimeLocation.h"
 #include "NetworkManager.h"
 
 #include "WebFiles.h"
@@ -207,7 +207,7 @@ void EmbAJAXStyle::setStyle( const char* style ) {
 // Public:
 
 // Initialize web manaber
-void ICACHE_FLASH_ATTR WebsiteManager::Begin( const char* hostName ) {
+void ICACHE_FLASH_ATTR WebsiteManager::Begin( char* hostName ) {
 
     _hostName = hostName;
 
@@ -229,11 +229,15 @@ void ICACHE_FLASH_ATTR WebsiteManager::Begin( const char* hostName ) {
                 // Poll requests only
                 if( AjaxID == "" ) {
                     // Update status icon
-                    net_status.setValue( true );
+                    net_status.setValue( network.GetNetworkStatus() );
 
                     // Clear the message and don't need acknowledgement
                     if( post_message.getStatus() == EmbAJAXClientFunction::SUCCESS ) post_message.Call();
 
+                    // Update date time string
+                    if( timelocation.IsTimeSet() ) timelocation.StrcpyTimeDate(_dateTime);                              
+                    else strcpy_P( _dateTime, PSTR("Time not set") );
+                    date_time.setValue( _dateTime );
                 }
 
                 // Find and call AJAX handler
@@ -253,11 +257,11 @@ void ICACHE_FLASH_ATTR WebsiteManager::Begin( const char* hostName ) {
             
             // Check for captive portal requests and redirecct
             if( CheckCaptivePortal() ) {
-                LOG( PSTR("(Website) Captive Portal Detection") );
+                LOG_HIGH( PSTR("(Website) Captive Portal Detection") );
                 return;
             }
 
-            LOGF( PSTR("(Website) Web server - File not found: %s\n"), URL.c_str() );
+            LOGF( PSTR("(Website) Web server - File not found: %s"), URL.c_str() );
 
             // Respond with a 404 (Not Found) error if nothing else works
             _server.send( 404, PSTR("text/html"), PSTR("404: Not Found") );
@@ -278,7 +282,7 @@ void ICACHE_FLASH_ATTR WebsiteManager::Begin( const char* hostName ) {
 // Detect if request is from a captive portal
 bool ICACHE_FLASH_ATTR WebsiteManager::CheckCaptivePortal() {
 
-    char redirectto[16+sizeof("http://.local/")];
+    char redirectto[DNS_MAX_HOSTNAME_LEN+sizeof("http://.local/")];
     strcpy( redirectto, PSTR("http://") );
     strcat( redirectto, _hostName );
     strcat_P( redirectto, PSTR(".local/") );
@@ -331,7 +335,7 @@ bool ICACHE_FLASH_ATTR WebsiteManager::HandleFileRequest() {
     for( uint i=0; i<(sizeof(websiteFiles)/sizeof(t_websitefiles)); i++ ) {
         if( strcmp_P( URL.c_str(), websiteFiles[i].path ) == 0 ) {
 
-            LOGF( PSTR("(Website) Web server - flash: %s\n"), URL.c_str() );
+            LOGF_HIGH( PSTR("(Website) Web server - flash: %s"), URL.c_str() );
 
             _server.sendHeader(PSTR("Content-Encoding"),PSTR("gzip"));
             _server.setContentLength(websiteFiles[i].len);
@@ -375,9 +379,9 @@ void ICACHE_FLASH_ATTR WebsiteManager::RedirectCaptivePortal() {
     LOG( PSTR("(Website) Request redirected to captive portal") );
 
     // Full local URL of device
-    char buffer[16+sizeof("http://")];
+    char buffer[DNS_MAX_HOSTNAME_LEN+sizeof("http://")];
     strcpy_P( buffer, PSTR("http://") );
-    strncat( buffer, flag_DEVICE_NAME, sizeof(buffer) );
+    strncat( buffer, network.GetHostName(), sizeof(buffer) );
 
     // Respond with redirecg
     _server.sendHeader( PSTR("Location"), buffer, true );
@@ -390,4 +394,5 @@ void ICACHE_FLASH_ATTR WebsiteManager::RedirectCaptivePortal() {
 // Create the global instances
 EmbAJAXVarInt net_status("net_status",0);
 EmbAJAXClientFunction post_message("post_message");
+EmbAJAXMutableSpan date_time("date_time");
 WebsiteManager website;
