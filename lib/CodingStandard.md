@@ -447,14 +447,14 @@ if( !( fileHandle = open(fileName, "w") ) ) {
 ``` 
 /* MIT License
 
-Copyright (c) 2020 Chris Gregg
+Copyright (c) 2023 Chris Gregg
 
 ...
 
 /** Description of the library
  *  @file   template.h
  *  @author Chris Gregg
- *  @date   2020
+ *  @date   2023
  *  @version
  */
 ```

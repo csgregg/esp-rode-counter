@@ -4,7 +4,7 @@
  * 
  * @brief       Manages DNS Functions
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

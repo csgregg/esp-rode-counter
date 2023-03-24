@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of system.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -127,6 +127,14 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         config.settings.timelocSettings.SetDefaults();
         config.Save();
         timelocation.Restart( config.settings.timelocSettings );
+        return;
+    }
+
+    // Reset rode settings
+    if( website.AjaxID == F("btn_rst_rode") ) {
+        config.settings.rodeSettings.SetDefaults();
+        config.Save();
+        rodecounter.Begin(config.settings.rodeSettings);
         return;
     }
 

@@ -4,7 +4,7 @@
  * 
  * @brief       Description of file
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

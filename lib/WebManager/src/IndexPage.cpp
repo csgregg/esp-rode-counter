@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of index.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -33,8 +33,7 @@ SOFTWARE. */
 #include "IndexPage.h"
 #include "Logger.h"
 #include "Env.h"
-#include "NetworkManager.h"
-//#include "ThingManager.h"
+#include "RodeCounter.h"
 
 
 ////////////////////////////////////////////
@@ -44,7 +43,11 @@ SOFTWARE. */
 
 // Function to initialize AJAX on this page
 void ICACHE_FLASH_ATTR IndexPage::InitializeAjax(){
+
     LOG_HIGH( PSTR("(Page) Index - Initialize AJAX") );
+
+    UpdateWindlassStatus();
+
 }
 
 
@@ -52,6 +55,15 @@ void ICACHE_FLASH_ATTR IndexPage::InitializeAjax(){
 void ICACHE_FLASH_ATTR IndexPage::HandleAjax(){
     LOG_HIGH( PSTR("(Page) Index - Handle AJAX") );    
 
+}
+
+
+// Updates windlass status to page
+void ICACHE_FLASH_ATTR IndexPage::UpdateWindlassStatus( ) {
+
+    chain_up.setValue( rodecounter.isChainUp() );
+    chain_down.setValue( rodecounter.isChainDown() );
+    current_rode.setValue( rodecounter.getCurrentRode() );
 }
 
 

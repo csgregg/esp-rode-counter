@@ -32,8 +32,7 @@ SOFTWARE. */
 // Project Libraries
 #include "RodeSettingsPage.h"
 #include "Logger.h"
-#include "Env.h"
-#include "NetworkManager.h"
+#include "ConfigManager.h"
 
 
 ////////////////////////////////////////////
@@ -46,13 +45,15 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::InitializeAjax(){
 
     LOG_HIGH( PSTR("(Page) Rode Settings - Initialize AJAX") );
 
+    RodeSettings settings = config.settings.rodeSettings;
+
     static char buffer[8];
 
-    windlass_dia.setValue(itoa(316, buffer, 10));
-    windlass_rpm.setValue(itoa(78, buffer, 10));
-    windlass_rev.setChecked( true );
-    chain_len.setValue(itoa(5000, buffer, 10));
-    water_line.setValue(itoa(150, buffer, 10));
+    windlass_dia.setValue( itoa(settings.windlassDiameter, buffer, 10) );
+    windlass_rpm.setValue( itoa(settings.windlassSpeed, buffer, 10) );
+    windlass_rev.setChecked( settings.windlassReversed );
+    chain_len.setValue(itoa( settings.chainLength, buffer, 10) );
+    water_line.setValue(itoa( settings.waterLine, buffer, 10) );
     rode_save.setEnabled( false ) ;
 
 }
@@ -65,7 +66,7 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::HandleAjax(){
 
     // Reset Chain
     if( website.AjaxID == F("btn_reset") ) {
-        DEBUG("Reset Chain");
+        rodecounter.ResetToZero();
     }
 
     // Save rode settings
@@ -79,12 +80,17 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::HandleAjax(){
 // Save the logger settings
 void ICACHE_FLASH_ATTR RodeSettingsPage::SaveRodeSettings() {
     
+    RodeSettings settings;
         
-    DEBUG(windlass_dia.value());
-    DEBUG(windlass_rpm.value());
-    DEBUG(windlass_rev.isChecked());
-    DEBUG(chain_len.value());
-    DEBUG(water_line.value());
+    settings.windlassDiameter = atoi( windlass_dia.value() );
+    settings.windlassSpeed = atoi( windlass_rpm.value() );
+    settings.windlassReversed = windlass_rev.isChecked();
+    settings.chainLength = atoi( chain_len.value() );
+    settings.waterLine = atoi( water_line.value() );
+
+    config.settings.rodeSettings = settings;
+    config.Save();
+    rodecounter.Begin( settings );
 
 }
 

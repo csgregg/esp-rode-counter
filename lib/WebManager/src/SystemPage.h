@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of system.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -63,6 +63,7 @@ SOFTWARE. */
             EmbAJAXServerFunction btn_rst_log;      // Reset logger settings button
             EmbAJAXServerFunction btn_rst_ota;      // Reset OTA updater settings button
             EmbAJAXServerFunction btn_rst_tlo;      // Reset Time and Location settings button
+            EmbAJAXServerFunction btn_rst_rode;     // Reset rode settings button
 
             // Logger elements
 
@@ -94,7 +95,7 @@ SOFTWARE. */
             #endif
 
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 6 + 10 // + 5
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 7 + 10 // + 5
                 #ifndef UPDATER_DISABLE
                     + 8
                 #endif
@@ -108,6 +109,7 @@ SOFTWARE. */
                 &btn_rst_log,
                 &btn_rst_ota,
                 &btn_rst_tlo,
+                &btn_rst_rode,
 
                 &log_srl,
                 &log_baud,
@@ -144,6 +146,7 @@ SOFTWARE. */
                 btn_rst_log("btn_rst_log"),
                 btn_rst_ota("btn_rst_ota"),
                 btn_rst_tlo("btn_rst_tlo"),
+                btn_rst_rode("btn_rst_rode"),
 
                 log_srl("log_srl",""),
                 log_baud("log_baud"),

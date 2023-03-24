@@ -6,7 +6,7 @@
  *              sector before file system). Settings are read and write on block and accessed
  *              through the settings member.
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -55,6 +55,7 @@ void ICACHE_FLASH_ATTR DeviceSettings::SetDefaults() {
     otaUpdaterSettings.SetDefaults();
 #endif
     timelocSettings.SetDefaults();
+    rodeSettings.SetDefaults();
 }
 
 

@@ -314,4 +314,4 @@ function doPoll() {
 ajaxstatus = new embajaxstatus(document.getElementById('EmbAjaxStatusInd'));
 initPage();
 menu_highlight();
-setInterval(doPoll,1000);
+setInterval(doPoll,500);

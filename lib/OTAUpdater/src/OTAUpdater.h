@@ -5,7 +5,7 @@
  * @brief       Implements a remote update service for ESP using GitHub
  *              to store code and binaries built by Travis-CI.
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

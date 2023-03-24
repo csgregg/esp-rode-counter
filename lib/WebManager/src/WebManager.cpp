@@ -7,7 +7,7 @@
  * Builds on EmbAJAX Library - https://github.com/tfry-git/EmbAJAX
  * Uses either inlined flash files or LittleFS to server web files, and handles AJAX calls
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

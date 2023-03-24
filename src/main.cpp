@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2020 Chris Gregg
+Copyright (c) 2023 Chris Gregg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ Setup and Loop
     #include "OTAUpdater.h"
 #endif
 #include "TimeLocation.h"
+#include "RodeCounter.h"
 
 
 void ICACHE_FLASH_ATTR setup() {
@@ -48,11 +49,12 @@ Serial.begin(115200);
     config.Begin();
     logger.Begin( network.GetWiFiClient(), config.settings.loggerSettings );  
     network.Begin( config.settings.networkSettings );
-    timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
+//    timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
     website.Begin( config.settings.networkSettings.dnsSettings.hostName );
 #ifndef UPDATER_DISABLE
     updater.Begin( network.GetWiFiClient(), config.settings.otaUpdaterSettings );
 #endif
+    rodecounter.Begin( config.settings.rodeSettings );
 
     LOG(PSTR("(Loop) Starting"));        // TODO - Check all LOG levels for all instances
     
@@ -69,6 +71,7 @@ void loop() {
     updater.Handle();
 #endif
     logger.Handle();
-    timelocation.Handle();
+//    timelocation.Handle();
+    rodecounter.Handle();
 
 }

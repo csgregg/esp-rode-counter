@@ -6,7 +6,7 @@
  *              sector before file system). Settings are read and write on block and accessed
  *              through the 'settings' member. 
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -45,6 +45,7 @@ SOFTWARE. */
     #include "OTAUpdater.h"
 #endif
     #include "TimeLocation.h"
+    #include "RodeCounter.h"
 
     #define CONFIG_START_MARKER "CONFIG_START_23"               // Marker used to confirm presence of configs in EEPROM
     #define CONFIG_START_MARKER_SIZE 16
@@ -63,6 +64,7 @@ SOFTWARE. */
             OTAUpdaterSettings otaUpdaterSettings;      // Settings for OTA Update Manager Class
 #endif
             TimeLocationSettings timelocSettings;       // Settings Time and Location Manager Class
+            RodeSettings rodeSettings;                  // Rode counter settings class
 
             /** Resets all the settings to the default values */
             void ICACHE_FLASH_ATTR SetDefaults();
@@ -75,7 +77,8 @@ SOFTWARE. */
 #ifndef UPDATER_DISABLE
                     && otaUpdaterSettings == other.otaUpdaterSettings
 #endif
-                    && timelocSettings == other.timelocSettings;
+                    && timelocSettings == other.timelocSettings
+                    && rodeSettings == other.rodeSettings;
             }
             bool operator!= ( const DeviceSettings& other ) const {
                 return networkSettings != other.networkSettings
@@ -83,7 +86,8 @@ SOFTWARE. */
 #ifndef UPDATER_DISABLE
                     || otaUpdaterSettings != other.otaUpdaterSettings
 #endif
-                    || timelocSettings != other.timelocSettings;
+                    || timelocSettings != other.timelocSettings
+                    || rodeSettings != other.rodeSettings;
             }
 
     };

@@ -4,7 +4,7 @@
  * @brief       Packages debug and logging to the Loggly.com service for simple logging or
  *              debug of code. Macros are defined for to simplifiy common usage.
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

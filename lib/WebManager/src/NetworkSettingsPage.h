@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of netsettings.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

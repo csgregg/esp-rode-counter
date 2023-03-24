@@ -4,7 +4,7 @@
  * @brief       Packages debug and logging to the serial port and Loggly.com service for
  *              simple logging or debug of code. Macros are defined to simplifiy common usage. 
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 

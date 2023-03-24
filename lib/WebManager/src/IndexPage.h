@@ -4,7 +4,7 @@
  * 
  * @brief       Server-side functions of index.html
  * 
- * @copyright   Copyright (c) 2020
+ * @copyright   Copyright (c) 2023
  * 
  */
 
@@ -47,16 +47,28 @@ SOFTWARE. */
 
             PageHandler handler;                // Handler for this page
 
-            EmbAJAXVarBool thing_led;           // LED icon
-            EmbAJAXServerFunction btn_led;      // LED button
+            EmbAJAXVarBool chain_up;            // Chain is moving up
+            EmbAJAXVarBool chain_down;          // Chain is moving up
+            EmbAJAXVarInt current_rode;         // Current rode deployed
+            EmbAJAXVarInt water_line;           // Water line
+            EmbAJAXVarInt rode_len;             // Overall length
+            EmbAJAXVarInt warn_limit_1;         // 1st warning limit
+            EmbAJAXVarInt warn_limit_2;         // 2nd warning limit
+            EmbAJAXVarInt warn_limit_3;         // 2nd warning limit
 
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 2] = {
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 8] = {
       
                 WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
 
-                &thing_led,                     // Basic LED
-                &btn_led,                       // LED button
+                &chain_up,                      
+                &chain_down,
+                &current_rode,
+                &water_line,
+                &rode_len,
+                &warn_limit_1,
+                &warn_limit_2,
+                &warn_limit_3,
 
             };
 
@@ -65,8 +77,14 @@ SOFTWARE. */
              * @param initHandler       Pointer to the lamda function that initializes this page */
             IndexPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
 
-                thing_led( "thing_led" ),
-                btn_led( "btn_led" ),
+                chain_up("chain_up"),
+                chain_down("chain_down"),
+                current_rode("current_rode"),
+                water_line("water_line"),
+                rode_len("rode_len"),
+                warn_limit_1("warn_limit_1"),
+                warn_limit_2("warn_limit_2"),
+                warn_limit_3("warn_limit_3"),
 
                 ajax( page_elements, "" )
                 {
@@ -83,6 +101,8 @@ SOFTWARE. */
             /** Function to handle AJAX requests for this page */
             void ICACHE_FLASH_ATTR HandleAjax();
 
+            /** Updates windlass status to page */
+            void ICACHE_FLASH_ATTR UpdateWindlassStatus();
     };
     
     
