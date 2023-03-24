@@ -250,10 +250,3 @@ function SureYes() {
     }
 
 }
-
-
-function DetectLocation() {
-    showLoader(document.getElementById('tlo_box'));
-    enableElmt("tlo_save","tlo_cancel");
-    doRequest("tlo_detect",1,ClearLoader);
-}

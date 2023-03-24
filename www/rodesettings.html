@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Rode Settings</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="w3.css">
+    <link rel="stylesheet" href="common.css">
+</head>
+
+<body class="w3-white">
+
+    <!-- !HEADER! -->
+    <span class="pre-include" src="header.htm"></span>
+
+    <!-- !PAGE CONTENT! -->
+    <div id="main" class="w3-main" style="margin-left:300px;">
+
+        <!-- Message bar -->
+        <span class="pre-include" src="msg.htm"></span>
+
+        <!-- Header -->
+        <div class="w3-container w3-padding-notop">
+            <div class="w3-row w3-padding-8 w3-text-dark-grey w3-border w3-round w3-light-grey">
+                <div class="w3-cell w3-large">
+                    <b>Rode Settings</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="w3-row">
+
+            <!-- Page Content -->
+            <div class="w3-half">
+                <div class="w3-container w3-padding-notop">
+                    <div id="windchain_box" class="w3-col w3-border w3-light-grey w3-round w3-text-dark-grey">
+                        <div class="w3-row w3-padding-8">
+                            <b>Windlass</b>
+                        </div>
+                        <div class="w3-row w3-padding-small">
+                            <div class="w3-cell" style="line-height: 35px;width:60px;">
+                                Diameter
+                            </div>
+                            <div class="w3-cell w3-padding-small" style="width:150px">
+                                <input id="windlass_dia" class="w3-input w3-border w3-padding-small" type="text" maxlength="3">
+                            </div>
+                            <div class="w3-cell" style="line-height: 35px">
+                                mm
+                            </div>
+                        </div>
+                        <div class="w3-row w3-padding-small">
+                            <div class="w3-cell" style="line-height: 35px;width:60px;">
+                                Speed
+                            </div>
+                            <div class="w3-cell w3-padding-small" style="width:150px">
+                                <input id="windlass_rpm" class="w3-input w3-border w3-padding-small" type="text" maxlength="4">
+                            </div>
+                            <div class="w3-cell" style="line-height: 35px">
+                                rpm
+                            </div>
+                        </div>
+                        <div class="w3-row w3-padding-small">
+                            <div class="w3-cell">
+                                <label class="switch">
+                                    <input id="windlass_rev" type="checkbox" value="t">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="w3-cell w3-padding-small">Reverse</div>
+
+                            <div class="w3-row w3-padding-8 w3-margin-top">
+                                <b>Chain</b>
+                            </div>
+                            <div class="w3-row w3-padding-small">
+                                <div class="w3-cell" style="line-height: 35px;width:100px;">
+                                    Overall Length
+                                </div>
+                                <div class="w3-cell w3-padding-small" style="width:150px">
+                                    <input id="windlass_dia" class="w3-input w3-border w3-padding-small" type="text" maxlength="4">
+                                </div>
+                                <div class="w3-cell" style="line-height: 35px">
+                                    cm
+                                </div>
+                            </div>
+                            <div class="w3-row w3-padding-small">
+                                <div class="w3-cell" style="line-height: 35px;width:100px;">
+                                    Water Line
+                                </div>
+                                <div class="w3-cell w3-padding-small" style="width:150px">
+                                    <input id="windlass_dia" class="w3-input w3-border w3-padding-small" type="text" maxlength="4">
+                                </div>
+                                <div class="w3-cell" style="line-height: 35px">
+                                    cm
+                                </div>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+
+                <div class="w3-container w3-padding-notop">
+                    <div id="save_box" class="w3-col w3-border w3-light-grey w3-round w3-text-dark-grey">
+                        <!-- Save / Cancel -->
+                        <div class="w3-container w3-padding" style="margin-bottom:2px;">
+                            <button id="windlass_save" disabled onclick="SureDlg(this);" type="button" class="w3-button w3-green w3-padding-small">Save</button>
+                            <button id="windlass_cancel" disabled onclick="disableElmt('windlass_save','windlass_cancel');doRequestAll();" type="button" class="w3-button w3-red w3-padding-small">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- !FOOTER! -->
+        <span class="pre-include" src="footer.htm"></span>
+
+    </div>
+
+    <!-- End page content -->
+
+    <script src="rodesettings.js"></script>
+    <script src="common.js"></script> 
+    
+</body>
+
+</html>
+
