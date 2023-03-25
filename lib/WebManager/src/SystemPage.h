@@ -60,45 +60,63 @@ SOFTWARE. */
             EmbAJAXServerFunction btn_restart;      // Restart device button
             EmbAJAXServerFunction btn_rst_net;      // Reset network settings button
             EmbAJAXServerFunction btn_rst_all;      // Reset all settings button
+#ifndef NO_LOGGING
             EmbAJAXServerFunction btn_rst_log;      // Reset logger settings button
+#endif
+#ifndef UPDATER_DISABLE
             EmbAJAXServerFunction btn_rst_ota;      // Reset OTA updater settings button
+#endif
+#ifndef TIMELOC_DISABLE
             EmbAJAXServerFunction btn_rst_tlo;      // Reset Time and Location settings button
+#endif
             EmbAJAXServerFunction btn_rst_rode;     // Reset rode settings button
 
+#ifndef NO_LOGGING
             // Logger elements
 
             EmbAJAXCheckButton log_srl;                                 // Check box for serial mode
             EmbAJAXTextInput<7> log_baud;                               // Input box for serial baud
+#ifndef LOG_SERIAL_ONLY
             EmbAJAXCheckButton log_ser;                                 // Check box for service mode
             EmbAJAXTextInput<LOG_MAX_SERVICE_LEN> log_url;              // Input box for Loggly URL
             EmbAJAXTextInput<LOG_MAX_KEY_LEN> log_key;                  // Input box for Loggly token
             EmbAJAXCheckButton log_tick;                                // Check box for tick service
             EmbAJAXTextInput<4> log_tick_int;                           // Input box for tick interval
+#endif
             EmbAJAXTextInput<LOG_MAX_GLOBAL_TAG_LEN> log_tags;          // Input box for global tags
             EmbAJAXOptionSelect<5> log_level;                           // Dropdown for logging level
             const char* logLevels[5] = {"0","1","2","3","4"};           // Options for logging level dropdown
             EmbAJAXServerFunction log_save;                             // Save logger settings button
+#endif
 
-            // Logger elements
+#ifndef UPDATER_DISABLE
+            /// OTA Updater elements
 
-            #ifndef UPDATER_DISABLE
-                /// OTA Updater elements
-
-                EmbAJAXCheckButton ota_mode;                            // Check box for mode
-                EmbAJAXTextInput<OTA_MAX_SERVICE_LEN> ota_url;          // Input box for service URL
-                EmbAJAXTextInput<OTA_MAX_USER_LEN> ota_user;            // Input box for GitHub user
-                EmbAJAXTextInput<OTA_MAX_REPO_LEN> ota_repo;            // Input box for GitHub repo
-                EmbAJAXTextInput<OTA_MAX_TOKEN_LEN> ota_key;            // Input box for GitHub token
-                EmbAJAXCheckButton ota_skip;                            // Check box for update skip
-                EmbAJAXTextInput<4> ota_ck_int;                         // Input box for check interval
-                EmbAJAXServerFunction ota_save;                         // Save udpater settings button
-            #endif
+            EmbAJAXCheckButton ota_mode;                            // Check box for mode
+            EmbAJAXTextInput<OTA_MAX_SERVICE_LEN> ota_url;          // Input box for service URL
+            EmbAJAXTextInput<OTA_MAX_USER_LEN> ota_user;            // Input box for GitHub user
+            EmbAJAXTextInput<OTA_MAX_REPO_LEN> ota_repo;            // Input box for GitHub repo
+            EmbAJAXTextInput<OTA_MAX_TOKEN_LEN> ota_key;            // Input box for GitHub token
+            EmbAJAXCheckButton ota_skip;                            // Check box for update skip
+            EmbAJAXTextInput<4> ota_ck_int;                         // Input box for check interval
+            EmbAJAXServerFunction ota_save;                         // Save udpater settings button
+#endif
 
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 7 + 10 // + 5
-                #ifndef UPDATER_DISABLE
-                    + 8
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 4 // + 5
+                #ifndef NO_LOGGING
+                    + 6
+                    #ifndef LOG_SERIAL_ONLY
+                        + 5
+                    #endif
                 #endif
+                #ifndef UPDATER_DISABLE
+                    + 9
+                #endif
+                #ifndef TIMELOC_DISABLE
+                    + 1
+                #endif
+
             ] = {
       
                 WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
@@ -106,32 +124,42 @@ SOFTWARE. */
                 &btn_restart,
                 &btn_rst_net,
                 &btn_rst_all,
+#ifndef NO_LOGGING
                 &btn_rst_log,
+#endif
+#ifndef UPDATER_DISABLE
                 &btn_rst_ota,
+#endif
+#ifndef TIMELOC_DISABLE
                 &btn_rst_tlo,
+#endif
                 &btn_rst_rode,
 
+#ifndef NO_LOGGING
                 &log_srl,
                 &log_baud,
+#ifndef LOG_SERIAL_ONLY
                 &log_ser,
                 &log_url,
                 &log_key,
                 &log_tick,
                 &log_tick_int,
+#endif
                 &log_tags,
                 &log_level,
                 &log_save,
+#endif
 
-                #ifndef UPDATER_DISABLE
-                    &ota_mode,
-                    &ota_url,
-                    &ota_user,
-                    &ota_repo,
-                    &ota_key,
-                    &ota_skip,
-                    &ota_ck_int,
-                    &ota_save,
-                #endif
+#ifndef UPDATER_DISABLE
+                &ota_mode,
+                &ota_url,
+                &ota_user,
+                &ota_repo,
+                &ota_key,
+                &ota_skip,
+                &ota_ck_int,
+                &ota_save,
+#endif
 
             };
 
@@ -143,32 +171,42 @@ SOFTWARE. */
                 btn_restart("btn_restart"),
                 btn_rst_net("btn_rst_net"),
                 btn_rst_all("btn_rst_all"),
+#ifndef NO_LOGGING
                 btn_rst_log("btn_rst_log"),
+#endif
+#ifndef UPDATER_DISABLE
                 btn_rst_ota("btn_rst_ota"),
+#endif
+#ifndef TIMELOC_DISABLE
                 btn_rst_tlo("btn_rst_tlo"),
+#endif
                 btn_rst_rode("btn_rst_rode"),
 
+#ifndef NO_LOGGING
                 log_srl("log_srl",""),
                 log_baud("log_baud"),
+#ifndef LOG_SERIAL_ONLY
                 log_ser("log_ser",""),
                 log_url("log_url"),
                 log_key("log_key"),
                 log_tick("log_tick",""),
                 log_tick_int("log_tick_int"),
+#endif
                 log_tags("log_tags"),
                 log_level("log_level",logLevels),
                 log_save("log_save"),
+#endif
 
-                #ifndef UPDATER_DISABLE
-                    ota_mode("ota_mode",""),
-                    ota_url("ota_url"),
-                    ota_user("ota_user"),
-                    ota_repo("ota_repo"),
-                    ota_key("ota_key"),
-                    ota_skip("ota_skip",""),
-                    ota_ck_int("ota_ck_int"),
-                    ota_save("ota_save"),
-                #endif
+#ifndef UPDATER_DISABLE
+                ota_mode("ota_mode",""),
+                ota_url("ota_url"),
+                ota_user("ota_user"),
+                ota_repo("ota_repo"),
+                ota_key("ota_key"),
+                ota_skip("ota_skip",""),
+                ota_ck_int("ota_ck_int"),
+                ota_save("ota_save"),
+#endif
 
                 // Setup the EmbAJAX page base
                 ajax(page_elements, "")
@@ -189,8 +227,10 @@ SOFTWARE. */
 
         protected:
 
-            /** Save the logger settings */
-            void ICACHE_FLASH_ATTR SaveLoggerSettings();
+            #ifndef NO_LOGGING
+                /** Save the logger settings */
+                void ICACHE_FLASH_ATTR SaveLoggerSettings();
+            #endif
 
             #ifndef UPDATER_DISABLE
                 /** Save OTA Updater settings */

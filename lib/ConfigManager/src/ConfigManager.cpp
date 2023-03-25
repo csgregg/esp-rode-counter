@@ -50,7 +50,9 @@ SOFTWARE. */
 // Resets all the settings to the default values */
 void ICACHE_FLASH_ATTR DeviceSettings::SetDefaults() {
     networkSettings.SetDefaults();
+#ifndef NO_LOGGING
     loggerSettings.SetDefaults();
+#endif
 #ifndef UPDATER_DISABLE
     otaUpdaterSettings.SetDefaults();
 #endif

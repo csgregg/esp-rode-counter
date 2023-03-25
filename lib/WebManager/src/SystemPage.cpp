@@ -50,35 +50,43 @@ void ICACHE_FLASH_ATTR SystemPage::InitializeAjax(){
 
     LOG_HIGH( PSTR("(Page) System - Initialize AJAX") );
 
+#ifndef NO_LOGGING
     LoggerSettings log = config.settings.loggerSettings;
+#endif
 
-    #ifndef UPDATER_DISABLE
-        OTAUpdaterSettings ota = config.settings.otaUpdaterSettings;
-    #endif
+#ifndef UPDATER_DISABLE
+    OTAUpdaterSettings ota = config.settings.otaUpdaterSettings;
+#endif
 
+#if not defined NO_LOGGING || not defined UPDATER_DISABLE || not defined LOG_SERIAL_ONLY
     static char buffer[8];
+#endif
 
+#ifndef NO_LOGGING
     log_srl.setChecked( log.serialModeOn );
     log_baud.setValue( itoa( log.serialBaud, buffer, 10 ) );
+#ifndef LOG_SERIAL_ONLY
     log_ser.setChecked( log.serviceModeOn );
     log_url.setValue( log.serviceURL );
     log_key.setValue( log.serviceKey );
     log_tick.setChecked( log.tickModeOn );
     log_tick_int.setValue( itoa( log.tickInterval,buffer, 10 ) );
+#endif
     log_tags.setValue( log.globalTags );
     log_level.selectOption( log.level );
     log_save.setEnabled( false ) ;
+#endif
 
-    #ifndef UPDATER_DISABLE
-        ota_mode.setChecked( ota.enabled );
-        ota_url.setValue( ota.service );
-        ota_user.setValue( ota.user );
-        ota_repo.setValue( ota.repo );
-        ota_key.setValue( ota.token );
-        ota_skip.setChecked( ota.skipUpdates );
-        ota_ck_int.setValue( itoa( ota.interval, buffer, 10 ) );
-        ota_save.setEnabled( false );
-    #endif
+#ifndef UPDATER_DISABLE
+    ota_mode.setChecked( ota.enabled );
+    ota_url.setValue( ota.service );
+    ota_user.setValue( ota.user );
+    ota_repo.setValue( ota.repo );
+    ota_key.setValue( ota.token );
+    ota_skip.setChecked( ota.skipUpdates );
+    ota_ck_int.setValue( itoa( ota.interval, buffer, 10 ) );
+    ota_save.setEnabled( false );
+#endif
 }
 
 
@@ -97,6 +105,7 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         return;
     }
 
+#ifndef NO_LOGGING
     // Reset logger settings
     if( website.AjaxID == F("btn_rst_log") ){
         config.settings.loggerSettings.SetDefaults();
@@ -104,6 +113,7 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         logger.Restart( config.settings.loggerSettings );
         return;
     }
+#endif
 
     // Reset all settings
     if( website.AjaxID == F("btn_rst_all") ){
@@ -112,15 +122,15 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         return;
     }
 
-    #ifndef UPDATER_DISABLE
-        // Reset OTA Update settings
-        if( website.AjaxID == F("btn_rst_ota") ){
-            config.settings.otaUpdaterSettings.SetDefaults();
-            config.Save();
-            updater.Restart( config.settings.otaUpdaterSettings );
-            return;
-        }
-    #endif
+#ifndef UPDATER_DISABLE
+    // Reset OTA Update settings
+    if( website.AjaxID == F("btn_rst_ota") ){
+        config.settings.otaUpdaterSettings.SetDefaults();
+        config.Save();
+        updater.Restart( config.settings.otaUpdaterSettings );
+        return;
+    }
+#endif
 
 #ifndef TIMELOC_DISABLE
     // Reset time and location settings
@@ -140,23 +150,25 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         return;
     }
 
+#ifndef NO_LOGGING
     // Save logger settings
     if( website.AjaxID == F("log_save") ) {
         SaveLoggerSettings();
         return;
     }
+#endif
 
-    #ifndef UPDATER_DISABLE
-        // Save OTA update settings
-        if( website.AjaxID == F("ota_save") ) {
-            SaveUpdaterSettings();
-            return;
-        }
-    #endif
+#ifndef UPDATER_DISABLE
+    // Save OTA update settings
+    if( website.AjaxID == F("ota_save") ) {
+        SaveUpdaterSettings();
+        return;
+    }
+#endif
 
 }
 
-
+#ifndef NO_LOGGING
 // Save the logger settings
 void ICACHE_FLASH_ATTR SystemPage::SaveLoggerSettings() {
     
@@ -164,11 +176,13 @@ void ICACHE_FLASH_ATTR SystemPage::SaveLoggerSettings() {
         
     log.serialModeOn = log_srl.isChecked();   
     log.serialBaud = atoi( log_baud.value() );
+#ifndef LOG_SERIAL_ONLY
     log.serviceModeOn = log_ser.isChecked();
     strncpy( log.serviceURL,log_url.value(), LOG_MAX_SERVICE_LEN );
     strncpy( log.serviceKey,log_key.value(), LOG_MAX_KEY_LEN );
     log.tickModeOn = log_tick.isChecked();
     log.tickInterval = atoi( log_tick_int.value() );
+#endif
     strncpy( log.globalTags,log_tags.value(), LOG_MAX_GLOBAL_TAG_LEN );
     log.level = LogLevel(atoi( log_level.value() ));
 
@@ -177,6 +191,7 @@ void ICACHE_FLASH_ATTR SystemPage::SaveLoggerSettings() {
     logger.Restart( config.settings.loggerSettings );
 
 }
+#endif
 
 
 #ifndef UPDATER_DISABLE

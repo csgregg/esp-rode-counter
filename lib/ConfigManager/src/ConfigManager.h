@@ -61,7 +61,9 @@ SOFTWARE. */
         public:
 
             NetworkSettings networkSettings;            // Settings for Network Manager Class
+#ifndef NO_LOGGING
             LoggerSettings loggerSettings;              // Settings for Logger Class
+#endif
 #ifndef UPDATER_DISABLE
             OTAUpdaterSettings otaUpdaterSettings;      // Settings for OTA Update Manager Class
 #endif
@@ -77,7 +79,9 @@ SOFTWARE. */
             
             bool operator== ( const DeviceSettings& other ) const {
                 return networkSettings == other.networkSettings
+#ifndef NO_LOGGING
                     && loggerSettings == other.loggerSettings
+#endif
 #ifndef UPDATER_DISABLE
                     && otaUpdaterSettings == other.otaUpdaterSettings
 #endif
@@ -88,7 +92,9 @@ SOFTWARE. */
             }
             bool operator!= ( const DeviceSettings& other ) const {
                 return networkSettings != other.networkSettings
+#ifndef NO_LOGGING
                     || loggerSettings != other.loggerSettings
+#endif
 #ifndef UPDATER_DISABLE
                     || otaUpdaterSettings != other.otaUpdaterSettings
 #endif

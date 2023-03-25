@@ -31,15 +31,15 @@ function SureYes() {
         x = document.getElementById('log_baud');
         doRequestWait(x.id, x.value);
         x = document.getElementById('log_ser');
-        doRequestWait(x.id, x.checked ? 't' : 'f');
+        if( x != null ) doRequestWait(x.id, x.checked ? 't' : 'f'); // TODO - javascript passer to avoid doing this
         x = document.getElementById('log_url');
-        doRequestWait(x.id, x.value);
+        if( x != null ) doRequestWait(x.id, x.value);
         x = document.getElementById('log_key');
-        doRequestWait(x.id, x.value);
+        if( x != null ) doRequestWait(x.id, x.value);
         x = document.getElementById('log_tick');
-        doRequestWait(x.id, x.checked ? 't' : 'f');
+        if( x != null ) doRequestWait(x.id, x.checked ? 't' : 'f');
         x = document.getElementById('log_tick_int');
-        doRequestWait(x.id, x.value);
+        if( x != null ) doRequestWait(x.id, x.value);
         x = document.getElementById('log_tags');
         doRequestWait(x.id, x.value);
         x = document.getElementById('log_level');

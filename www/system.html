@@ -64,18 +64,20 @@
                             <div class="w3-container w3-cell w3-padding-8">
                                 <button id="btn_rst_net" class="w3-button w3-blue w3-padding-small" style="width:120px;" onclick="SureDlg(this);">Network</button>
                             </div>
-                            <div class="w3-container w3-cell w3-padding-8">
+
+                            <!-- Conditional Elements -->
+                            <div buildflag="NO_LOGGING" class="pre-conditional w3-container w3-cell w3-padding-8">
                                 <button id="btn_rst_log" class="w3-button w3-blue w3-padding-small" style="width:120px;" onclick="SureDlg(this);">Logger</button>
                             </div>
                         </div>
                         <div class="w3-row w3-padding-horz"> 
 
                             <!-- Conditional Elements -->
-
                             <div buildflag="UPDATER_DISABLE" class="pre-conditional w3-container w3-cell w3-padding-8">
                                 <button id="btn_rst_ota" class="w3-button w3-blue w3-padding-small" style="width:120px;" onclick="SureDlg(this);">Updater</button>
                             </div>
 
+                            <!-- Conditional Elements -->
                             <div buildflag="TIMELOC_DISABLE" class="pre-conditional w3-container w3-cell w3-padding-8">
                                 <button id="btn_rst_tlo" class="w3-button w3-blue w3-padding-small" style="width:120px;" onclick="SureDlg(this);">Time/Location</button>
                             </div>
@@ -87,7 +89,6 @@
                 </div>
 
                 <!-- Conditional Elements -->
-
                 <span class="pre-conditional" buildflag="UPDATER_DISABLE">
                     <div class="w3-container w3-padding-notop">
                         <div id="firmware_box" class="w3-col w3-border w3-light-grey w3-round w3-text-dark-grey">
@@ -176,7 +177,8 @@
                 </span>
             </div>
 
-            <div class="w3-half">
+            <!-- Conditional Elements -->
+            <div buildflag="NO_LOGGING" class="pre-conditional w3-half">
                 <div class="w3-container w3-padding-notop">
                     <div id="logger_box" class="w3-col w3-border w3-light-grey w3-round w3-text-dark-grey w3-padding-horz">
                         <div class="w3-row w3-padding-vert">
@@ -201,56 +203,58 @@
                             </div>
                         </div>
 
-                        <div class="w3-row">
-                            <div class="w3-cell w3-padding-8">
-                                <label class="switch">
-                                    <input id="log_ser" type="checkbox" value="t" onchange="enableElmt('log_save','log_cancel');">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                            <div class="w3-cell w3-padding-small">Loggy Service</div>
-                        </div>  
+                        <!-- Conditional Elements -->
+                        <span buildflag="LOG_SERIAL_ONLY" class="pre-conditional">
+                            <div class="w3-row">
+                                <div class="w3-cell w3-padding-8">
+                                    <label class="switch">
+                                        <input id="log_ser" type="checkbox" value="t" onchange="enableElmt('log_save','log_cancel');">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="w3-cell w3-padding-small">Loggy Service</div>
+                            </div>  
 
-                        <div class="w3-container w3-padding-horz">
-                            <div class="w3-col" style="line-height: 40px;width:100px;">
-                                Loggly URL
+                            <div class="w3-container w3-padding-horz">
+                                <div class="w3-col" style="line-height: 40px;width:100px;">
+                                    Loggly URL
+                                </div>
+                                <div class="w3-col w3-padding-small" style="width:150px">
+                                    <input id="log_url" class="w3-input w3-border w3-padding-small" type="text" maxlength="31" onchange="enableElmt('log_save','log_cancel');">
+                                </div>
                             </div>
-                            <div class="w3-col w3-padding-small" style="width:150px">
-                                <input id="log_url" class="w3-input w3-border w3-padding-small" type="text" maxlength="31" onchange="enableElmt('log_save','log_cancel');">
-                            </div>
-                        </div>
 
-                        <div class="w3-container w3-padding-horz">
-                            <div class="w3-col" style="line-height: 40px;width:100px;">
-                                Loggly Token
+                            <div class="w3-container w3-padding-horz">
+                                <div class="w3-col" style="line-height: 40px;width:100px;">
+                                    Loggly Token
+                                </div>
+                                <div class="w3-col w3-padding-small" style="width:150px">
+                                    <input id="log_key" class="w3-input w3-border w3-padding-small" type="text" maxlength="39" onchange="enableElmt('log_save','log_cancel');">
+                                </div>
                             </div>
-                            <div class="w3-col w3-padding-small" style="width:150px">
-                                <input id="log_key" class="w3-input w3-border w3-padding-small" type="text" maxlength="39" onchange="enableElmt('log_save','log_cancel');">
-                            </div>
-                        </div>
-                        
-                        <div class="w3-row">
-                            <div class="w3-cell w3-padding-8">
-                                <label class="switch">
-                                    <input id="log_tick" type="checkbox" value="t" onchange="enableElmt('log_save','log_cancel');">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                            <div class="w3-cell w3-padding-small">Loggly ticker</div>
-                        </div>  
+                            
+                            <div class="w3-row">
+                                <div class="w3-cell w3-padding-8">
+                                    <label class="switch">
+                                        <input id="log_tick" type="checkbox" value="t" onchange="enableElmt('log_save','log_cancel');">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <div class="w3-cell w3-padding-small">Loggly ticker</div>
+                            </div>  
 
-                        <div class="w3-container w3-padding-horz">
-                            <div class="w3-col" style="line-height: 40px;width:100px;">
-                                Tick interval
+                            <div class="w3-container w3-padding-horz">
+                                <div class="w3-col" style="line-height: 40px;width:100px;">
+                                    Tick interval
+                                </div>
+                                <div class="w3-col w3-padding-small" style="width:75px">
+                                    <input id="log_tick_int" class="w3-input w3-border w3-padding-small" type="text" maxlength="3" onchange="enableElmt('log_save','log_cancel');">
+                                </div>
+                                <div class="w3-col" style="line-height: 40px;width:90px;">
+                                    (Seconds)
+                                </div>
                             </div>
-                            <div class="w3-col w3-padding-small" style="width:75px">
-                                <input id="log_tick_int" class="w3-input w3-border w3-padding-small" type="text" maxlength="3" onchange="enableElmt('log_save','log_cancel');">
-                            </div>
-                            <div class="w3-col" style="line-height: 40px;width:90px;">
-                                (Seconds)
-                            </div>
-                        </div>
-
+                        </span>
                         <div class="w3-container w3-padding-horz">
                             <div class="w3-col" style="line-height: 40px;width:100px;">
                                 Global Tags

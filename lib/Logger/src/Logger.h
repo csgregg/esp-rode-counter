@@ -129,7 +129,7 @@ SOFTWARE. */
     static const char cVerbose[] PROGMEM    = "Verbose ";
     #define LOG_MAX_TYPE_DESC_LEN 9
 
-    // Tag names
+    // Tag names                                                // TODO - Remove tags - they are not used
     static const char cDebug[] PROGMEM  = "DEBUG ";
     static const char cStatus[] PROGMEM = "Status";
 
@@ -147,11 +147,13 @@ SOFTWARE. */
             bool serialModeOn;                          // Serial port on or off
             uint serialBaud;                            // Serial port baud
 
+#ifndef LOG_SERIAL_ONLY
             bool serviceModeOn;                         // Loggly service on or off           
             char serviceURL[LOG_MAX_SERVICE_LEN];       // URL for Loggly service (doesn't include 'http://')
             char serviceKey[LOG_MAX_KEY_LEN];           // Token for Loggy service
             bool tickModeOn;                            // Loggly tick on or off
             uint tickInterval;                          // Time interval for Loggly tick
+#endif
 
             char globalTags[LOG_MAX_GLOBAL_TAG_LEN];    // Tags used on all Loggly posts
             LogLevel level = LOGGING_LEVEL_NORMAL;      // Current logging level
@@ -160,23 +162,27 @@ SOFTWARE. */
             
             bool operator== ( const LoggerSettings& other ) const {
                 return serialBaud == other.serialBaud
+                    && serialModeOn == other.serialModeOn
+#ifndef LOG_SERIAL_ONLY
                     && ( strcmp( serviceURL, other.serviceURL ) == 0 )
                     && ( strcmp( serviceKey, other.serviceKey ) == 0 )
-                    && serialModeOn == other.serialModeOn
                     && serviceModeOn == other.serviceModeOn
                     && tickModeOn == other.tickModeOn
                     && tickInterval == other.tickInterval
+#endif
                     && ( strcmp( globalTags, other.globalTags ) == 0 )
                     && level == other.level;
             }
             bool operator!= ( const LoggerSettings& other ) const {
                 return serialBaud != other.serialBaud
+                    || serialModeOn != other.serialModeOn
+#ifndef LOG_SERIAL_ONLY
                     || ( strcmp( serviceURL, other.serviceURL ) != 0 )
                     || ( strcmp( serviceKey, other.serviceKey ) != 0 )
-                    || serialModeOn != other.serialModeOn
                     || serviceModeOn != other.serviceModeOn
                     || tickModeOn != other.tickModeOn
                     || tickInterval != other.tickInterval
+#endif
                     || ( strcmp( globalTags, other.globalTags ) != 0 )
                     || level != other.level;
             }
@@ -319,25 +325,35 @@ SOFTWARE. */
              *  @param message   message to send as a char array */
             void LogToSerial( const LogType type, const LogTag tag, const char* message );
 
+#ifndef LOG_SERIAL_ONLY
             /** Logs a message to the Loggy service
              *  @param type      'type' of log to log    
              *  @param tag       tags to apply to
              *  @param message   message to send asd a char array */
             void LogToService( const LogType type, const LogTag tag, const char* message );
+#endif
 
+#ifndef LOG_SERIAL_ONLY
             /** Logs a tick to the Loggy service containing the minimum data set */
             void HandleTick();
+#endif
             
+#ifndef LOG_SERIAL_ONLY
             /** Function called by Ticker interrupt */
             static void TriggerTick() { _doTick = true; }
+#endif
 
+#ifndef LOG_SERIAL_ONLY
             WiFiClient* _client;            // Pointer to reuseable WiFiClient
+#endif
             LoggerSettings* _settings;      // Pointer to the data struct holding the logger settings
 
+#ifndef LOG_SERIAL_ONLY
             char _fullServiceURL[LOG_MAX_GLOBAL_TAG_LEN+LOG_MAX_KEY_LEN+LOG_MAX_SERVICE_LEN+16];    // The URL for the Loggly service, fully prepared
 
             Ticker _tickCheck;              // Ticker object to trigger tick events to Loggly service
             static bool _doTick;            // Flag that indicates time to do send a tick
+#endif
 
             // Array of descriptions for the log types
             const char* const _logTypeDescriptions[LOG_MAX_LOG_TYPES] = { cCritical, cNormal, cHigh, cVerbose };

@@ -46,12 +46,16 @@ Setup and Loop
 
 
 void ICACHE_FLASH_ATTR setup() {
+#ifndef NO_LOGGING
     delay( 1000 );
-Serial.begin(115200);
+    Serial.begin(115200);       // Split this from logger
+#endif
     // Services started in the proper order
     device.Begin();
-    config.Begin();
+    config.Begin(true);
+#ifndef NO_LOGGING
     logger.Begin( network.GetWiFiClient(), config.settings.loggerSettings );  
+#endif
     network.Begin( config.settings.networkSettings );
 #ifndef TIMELOC_DISABLE
     timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
@@ -76,7 +80,9 @@ void loop() {
 #ifndef UPDATER_DISABLE
     updater.Handle();
 #endif
+#ifndef NO_LOGGING
     logger.Handle();
+#endif
 #ifndef TIMELOC_DISABLE
     timelocation.Handle();
 #endif

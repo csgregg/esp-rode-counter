@@ -137,16 +137,20 @@ SOFTWARE. */
     static const uint flag_UPDATER_INTERVAL = atoi(ESCAPEQUOTE(UPDATER_INTERVAL));              // Interval between update checks (sec)
 #endif
 
+#ifndef NO_LOGGING
     // Used by Logger library
     static const bool flag_LOGGER_AS_SERIAL = atoi(ESCAPEQUOTE(LOGGER_AS_SERIAL));              // 0 - 1 to turn on serial logging
+#ifndef LOG_SERIAL_ONLY
     static const bool flag_LOGGER_AS_SERVICE = atoi(ESCAPEQUOTE(LOGGER_AS_SERVICE));            // 0 - 1 to turn on logging to Loggly service
     static const bool flag_LOGGER_TICKER = atoi(ESCAPEQUOTE(LOGGER_TICKER));                    // 0 - 1 to turn on ticking to Loggly service
     static const uint flag_LOGGER_TICK_INTERVAL = atoi(ESCAPEQUOTE(LOGGER_TICK_INTERVAL));      // Internal between ticks (sec)
-    static const uint flag_LOGGER_LEVEL = atoi(ESCAPEQUOTE(LOGGER_LEVEL));                      // 0 - 4 to set log level
-    static const char flag_LOGGER_SERVICE [] PROGMEM = ESCAPEQUOTE(LOGGER_SERVICE);             // Path to Loggly API
     static const char flag_LOGGER_SERVICE_KEY [] PROGMEM = ESCAPEQUOTE(LOGGER_SERVICE_KEY);     // Loggly API key - stored in credentials.h for privacy
+    static const char flag_LOGGER_SERVICE [] PROGMEM = ESCAPEQUOTE(LOGGER_SERVICE);             // Path to Loggly API
+#endif
+    static const uint flag_LOGGER_LEVEL = atoi(ESCAPEQUOTE(LOGGER_LEVEL));                      // 0 - 4 to set log level
     static const char flag_LOGGER_GLOBAL_TAGS [] PROGMEM = ESCAPEQUOTE(LOGGER_GLOBAL_TAGS);     // Tags to globally apply to logs
     static const uint flag_MONITOR_SPEED = atoi(ESCAPEQUOTE(MONITOR_SPEED));                    // Monitor baud
+#endif
 
 #ifndef TIMELOC_DISABLE
     // Used by Time / Location Library

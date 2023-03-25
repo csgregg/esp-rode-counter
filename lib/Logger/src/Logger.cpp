@@ -78,15 +78,19 @@ Use https://arduinojson.org/v6/assistant/ to determine size of file.
 
 // Resest the logger settings to defaults
 void ICACHE_FLASH_ATTR LoggerSettings::SetDefaults() {
+#ifndef NO_LOGGING
     serialBaud = flag_MONITOR_SPEED;
+#ifndef LOG_SERIAL_ONLY
     strcpy_P( serviceURL, flag_LOGGER_SERVICE );
     strcpy_P( serviceKey, flag_LOGGER_SERVICE_KEY );
-    serialModeOn = flag_LOGGER_AS_SERIAL;
     serviceModeOn = flag_LOGGER_AS_SERVICE;
-    strcpy_P( globalTags, flag_LOGGER_GLOBAL_TAGS );
-    level = LogLevel(flag_LOGGER_LEVEL);
     tickModeOn = flag_LOGGER_TICKER;
     tickInterval = flag_LOGGER_TICK_INTERVAL;
+#endif
+    serialModeOn = flag_LOGGER_AS_SERIAL;
+    strcpy_P( globalTags, flag_LOGGER_GLOBAL_TAGS );
+    level = LogLevel(flag_LOGGER_LEVEL);
+#endif
 }
 
 
@@ -98,7 +102,9 @@ void ICACHE_FLASH_ATTR LoggerSettings::SetDefaults() {
 // Sets up logging service
 void ICACHE_FLASH_ATTR LoggerClient::Begin( WiFiClient& client, LoggerSettings& settings )
 {
+#ifndef LOG_SERIAL_ONLY
     _client = &client;
+#endif
     Restart( settings );
 }
 
@@ -110,6 +116,7 @@ void ICACHE_FLASH_ATTR LoggerClient::Restart( LoggerSettings& settings )
 
 #ifndef NO_LOGGING
 
+#ifndef LOG_SERIAL_ONLY
     // Clear any ticker timer
     _doTick = false;
     if( _tickCheck.active() ) _tickCheck.detach();
@@ -124,6 +131,7 @@ void ICACHE_FLASH_ATTR LoggerClient::Restart( LoggerSettings& settings )
         strcat( _fullServiceURL, _settings->globalTags );
         strcat_P( _fullServiceURL, PSTR("/") );
     }
+#endif
 
     if( _settings->serialModeOn ) {
         delay( 1000 );
@@ -133,13 +141,17 @@ void ICACHE_FLASH_ATTR LoggerClient::Restart( LoggerSettings& settings )
 
     LOGF_HIGH( PSTR("(Logger) Logging set at level: %i"), _settings->level );
 
+#ifndef LOG_SERIAL_ONLY
     if( _settings->serviceModeOn ) LOG_HIGH( PSTR("(Logger) Logging Service: ON") );
+#endif
 
+#ifndef LOG_SERIAL_ONLY
     // Start the tick timer
     if( _settings->tickModeOn ) {
         LOG_HIGH(PSTR("(Logger) Tick Service: ON"));
         _tickCheck.attach( _settings->tickInterval, TriggerTick );
     }
+#endif
 
 #endif
 
@@ -156,7 +168,9 @@ void ICACHE_FLASH_ATTR LoggerClient::println( const LogType type, const LogTag t
     if( uint(type) >= uint(_settings->level) ) return;
 
     if( _settings->serialModeOn ) LogToSerial( type, tag, message );
+#ifndef LOG_SERIAL_ONLY
     if( _settings->serviceModeOn ) LogToService( type, tag, message );
+#endif
 
 #endif
 
@@ -403,10 +417,12 @@ void LoggerClient::Handle() {
 
     if( !_settings ) return;
 
+#ifndef LOG_SERIAL_ONLY
     if ( _settings->tickModeOn && _doTick && WiFi.status() == WL_CONNECTED ) {
         _doTick = false;
         HandleTick();
     }
+#endif
 
 #endif
 
@@ -415,7 +431,9 @@ void LoggerClient::Handle() {
 
 // Protected:
 
+#ifndef LOG_SERIAL_ONLY
 bool LoggerClient::_doTick = false;        // Initialize the static member
+#endif
 
 // Create and log prefix - needs to be followed by message using Serial.println()
 void LoggerClient::LogPrefix( const LogType type, const LogTag tag ){
@@ -444,7 +462,7 @@ void ICACHE_FLASH_ATTR LoggerClient::LogToSerial( LogType type, LogTag tag, cons
 
 }
 
-
+#ifndef LOG_SERIAL_ONLY
 // Log message to Loggly Service
 void ICACHE_FLASH_ATTR LoggerClient::LogToService( const LogType type, const LogTag tag, const char* message ){
 
@@ -547,8 +565,9 @@ void ICACHE_FLASH_ATTR LoggerClient::LogToService( const LogType type, const Log
 #endif
 
 }
+#endif
 
-
+#ifndef LOG_SERIAL_ONLY
 // Send tick to Loggly Service
 void LoggerClient::HandleTick( ) {
 
@@ -638,6 +657,6 @@ void LoggerClient::HandleTick( ) {
 #endif
 
 }
-
+#endif
 
 LoggerClient logger;       // Create the global instance
