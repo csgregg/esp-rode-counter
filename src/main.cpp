@@ -29,6 +29,8 @@ Setup and Loop
 */
 
 
+
+
 #include "Env.h"
 #include "ConfigManager.h"
 #include "Logger.h"
@@ -37,7 +39,9 @@ Setup and Loop
 #ifndef UPDATER_DISABLE
     #include "OTAUpdater.h"
 #endif
-#include "TimeLocation.h"
+#ifndef TIMELOC_DISABLE
+    #include "TimeLocation.h"
+#endif
 #include "RodeCounter.h"
 
 
@@ -49,7 +53,9 @@ Serial.begin(115200);
     config.Begin();
     logger.Begin( network.GetWiFiClient(), config.settings.loggerSettings );  
     network.Begin( config.settings.networkSettings );
-//    timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
+#ifndef TIMELOC_DISABLE
+    timelocation.Begin( network.GetWiFiClient(), config.settings.timelocSettings );
+#endif
     website.Begin( config.settings.networkSettings.dnsSettings.hostName );
 #ifndef UPDATER_DISABLE
     updater.Begin( network.GetWiFiClient(), config.settings.otaUpdaterSettings );
@@ -71,7 +77,9 @@ void loop() {
     updater.Handle();
 #endif
     logger.Handle();
-//    timelocation.Handle();
+#ifndef TIMELOC_DISABLE
+    timelocation.Handle();
+#endif
     rodecounter.Handle();
 
 }
