@@ -119,11 +119,13 @@ SOFTWARE. */
     static const char flag_DEVICE_NAME [] PROGMEM = ESCAPEQUOTE(DEVICE_NAME);                   // Full device name
     static const uint flag_BUILD_NO = atoi(ESCAPEQUOTE(BUILD_NUMBER));                          // Get build number
     static const char flag_BUILD_TIMESTAMP [] PROGMEM = ESCAPEQUOTE(BUILD_TIMESTAMP);           // Set build date and time
-    
+
+#ifndef NETCHECK_DISABLE
     // Used by Netork Manager
     static const bool flag_NET_CHECKER = atoi(ESCAPEQUOTE(NET_CHECKER));                        // 0 - 1 to turn on internet connectivity checker
     static const char flag_NET_CHECK_SERVICE [] PROGMEM = ESCAPEQUOTE(NET_CHECK_SERVICE);       // Generate 204 script
     static const uint flag_NET_CHECK_INTERVAL = atoi(ESCAPEQUOTE(NET_CHECK_INTERVAL));          // Interval between checks for internet connectivity
+#endif
 
 #ifndef UPDATER_DISABLE
     // Used by Remote OTA library
@@ -146,10 +148,11 @@ SOFTWARE. */
     static const char flag_LOGGER_GLOBAL_TAGS [] PROGMEM = ESCAPEQUOTE(LOGGER_GLOBAL_TAGS);     // Tags to globally apply to logs
     static const uint flag_MONITOR_SPEED = atoi(ESCAPEQUOTE(MONITOR_SPEED));                    // Monitor baud
 
+#ifndef TIMELOC_DISABLE
     // Used by Time / Location Library
     static const char flag_TLO_IPINFO_TOKEN [] PROGMEM = ESCAPEQUOTE(TLO_IPINFO_TOKEN);         // Token for IPInfo.io service
     static const char flag_TLO_IPINFO_SERVICE [] PROGMEM = ESCAPEQUOTE(TLO_IPINFO_SERVICE);     // URL for IPInfo.io service
-
+#endif
 
     /** @class IOT Device Class
      *  @brief Expand the EspClass to add build flags, and contains any hardware specifics. */

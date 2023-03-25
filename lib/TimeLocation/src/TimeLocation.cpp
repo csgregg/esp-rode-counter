@@ -154,17 +154,19 @@ bool ICACHE_FLASH_ATTR TimeLocationManager::DetectLocation() {
     LOG_HIGH( PSTR("(TimeLoc) Detecting location") );
 
     _isLocationSet = false;
-
+#ifndef TIMELOC_DISABLE
     if( _settings->ipInfoToken[0] == '\0' ) {
         LOG( PSTR("(TimeLoc) Missing IPInfo token") );
         return false;
     }
 
     // Build URL for IPInfo.io request
+
     char url[sizeof("http://")+sizeof(flag_TLO_IPINFO_SERVICE)+TLO_IPINFO_MAX_TOKEN_LEN];
     strcpy_P(url,PSTR("http://"));
     strcat_P(url,flag_TLO_IPINFO_SERVICE);
     strcat(url,_settings->ipInfoToken);
+
 
     // Start connection
     HTTPClient http;
@@ -216,7 +218,9 @@ bool ICACHE_FLASH_ATTR TimeLocationManager::DetectLocation() {
     if( _isLocationSet ) LOGF_HIGH( PSTR("(TimeLoc) Timezone set to: %s"), _settings->location.timezone );
     else LOG( PSTR("(TimeLoc) Timezone not set") );
 
-    return _isLocationSet;            
+#endif    
+    return _isLocationSet;  
+       
 }
 
 

@@ -46,9 +46,11 @@ SOFTWARE. */
 
 // Resets checker settings to defaults
 void ICACHE_FLASH_ATTR NetCheckSettings::setDefaults() {
+#ifndef NETCHECK_DISABLE
     enabled = flag_NET_CHECKER;
     strcpy_P( checkService, flag_NET_CHECK_SERVICE );
     interval = flag_NET_CHECK_INTERVAL;
+#endif
 }
 
 
