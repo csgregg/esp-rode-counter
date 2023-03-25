@@ -43,7 +43,9 @@ SOFTWARE. */
 // Resets network settings to default
 void ICACHE_FLASH_ATTR NetworkSettings::SetDefaults() {
     wifiSettings.SetDefaults();
+#ifndef NETCHECK_DISABLE
     netCheckSettings.setDefaults();
+#endif
     dnsSettings.setDefaults();
 }
 
@@ -71,13 +73,16 @@ void ICACHE_FLASH_ATTR NetworkManager::Begin( NetworkSettings& settings ) {
     // Start all network services
     _wifi.Begin( _settings->wifiSettings );
     _dns.Begin( _settings->dnsSettings, _wifi.IsAPRunning() );
+#ifndef NETCHECK_DISABLE
     _netCheck.Begin( _wifi.GetWiFiClient(), _settings->netCheckSettings );
+#endif
 
 }
 
 
 // Get the status of the network
 NetworkManager::NetworkStatus ICACHE_FLASH_ATTR NetworkManager::GetNetworkStatus() {
+#ifndef NETCHECK_DISABLE
     if( _settings->netCheckSettings.enabled ) {                                             // If we are using NetChecker, then needs to validate before returning normal
         if( _netCheck.isInternetConnected() ) return NetworkStatus::NORMAL;
         if( _wifi.IsWiFiConnected() || _wifi.CountAPConnections() > 0 ) return NetworkStatus::NOINETERNET;
@@ -86,6 +91,10 @@ NetworkManager::NetworkStatus ICACHE_FLASH_ATTR NetworkManager::GetNetworkStatus
         // If we are not using NetChecker, then just check that we are connected as Wifi client or if in AP mode, if there are any connected clients
         if( _wifi.IsWiFiConnected() || _wifi.CountAPConnections() > 0 ) return NetworkStatus::NORMAL;                         
     }
+#else
+    // If we are not using NetChecker, then just check that we are connected as Wifi client or if in AP mode, if there are any connected clients
+    if( _wifi.IsWiFiConnected() || _wifi.CountAPConnections() > 0 ) return NetworkStatus::NORMAL;   
+#endif
     return NetworkStatus::DISCONNECTED;
 }
 
@@ -93,7 +102,9 @@ NetworkManager::NetworkStatus ICACHE_FLASH_ATTR NetworkManager::GetNetworkStatus
 // Handle any repeating network tasks
 void NetworkManager::Handle() {
     _wifi.Handle();
+#ifndef NETCHECK_DISABLE
     _netCheck.Handle();
+#endif
     _dns.Handle();
 }
 

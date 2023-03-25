@@ -122,6 +122,7 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         }
     #endif
 
+#ifndef TIMELOC_DISABLE
     // Reset time and location settings
     if( website.AjaxID == F("btn_rst_tlo") ) {
         config.settings.timelocSettings.SetDefaults();
@@ -129,6 +130,7 @@ void ICACHE_FLASH_ATTR SystemPage::HandleAjax(){
         timelocation.Restart( config.settings.timelocSettings );
         return;
     }
+#endif
 
     // Reset rode settings
     if( website.AjaxID == F("btn_rst_rode") ) {

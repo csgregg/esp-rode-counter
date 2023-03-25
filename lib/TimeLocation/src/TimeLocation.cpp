@@ -87,7 +87,9 @@ void ICACHE_FLASH_ATTR Location::SetDefaults() {
 // Resets time and location settings to default
 void ICACHE_FLASH_ATTR TimeLocationSettings::SetDefaults() {
     enabled = true;
+#ifndef TIMELOC_DISABLE
     strcpy_P( ipInfoToken, flag_TLO_IPINFO_TOKEN );
+#endif
     strcpy_P( posix, PSTR("UTC") );
     location.SetDefaults();
 }

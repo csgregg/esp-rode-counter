@@ -44,7 +44,9 @@ SOFTWARE. */
 #ifndef UPDATER_DISABLE
     #include "OTAUpdater.h"
 #endif
+#ifndef TIMELOC_DISABLE
     #include "TimeLocation.h"
+#endif
     #include "RodeCounter.h"
 
     #define CONFIG_START_MARKER "CONFIG_START_23"               // Marker used to confirm presence of configs in EEPROM
@@ -63,7 +65,9 @@ SOFTWARE. */
 #ifndef UPDATER_DISABLE
             OTAUpdaterSettings otaUpdaterSettings;      // Settings for OTA Update Manager Class
 #endif
+#ifndef TIMELOC_DISABLE
             TimeLocationSettings timelocSettings;       // Settings Time and Location Manager Class
+#endif
             RodeSettings rodeSettings;                  // Rode counter settings class
 
             /** Resets all the settings to the default values */
@@ -77,7 +81,9 @@ SOFTWARE. */
 #ifndef UPDATER_DISABLE
                     && otaUpdaterSettings == other.otaUpdaterSettings
 #endif
+#ifndef TIMELOC_DISABLE
                     && timelocSettings == other.timelocSettings
+#endif
                     && rodeSettings == other.rodeSettings;
             }
             bool operator!= ( const DeviceSettings& other ) const {
@@ -86,7 +92,9 @@ SOFTWARE. */
 #ifndef UPDATER_DISABLE
                     || otaUpdaterSettings != other.otaUpdaterSettings
 #endif
+#ifndef TIMELOC_DISABLE
                     || timelocSettings != other.timelocSettings
+#endif
                     || rodeSettings != other.rodeSettings;
             }
 

@@ -234,10 +234,12 @@ void ICACHE_FLASH_ATTR WebsiteManager::Begin( char* hostName ) {
                     // Clear the message and don't need acknowledgement
                     if( post_message.getStatus() == EmbAJAXClientFunction::SUCCESS ) post_message.Call();
 
-                    // Update date time string
-                    if( timelocation.IsTimeSet() ) timelocation.StrcpyTimeDate(_dateTime);                              
-                    else strcpy_P( _dateTime, PSTR("Time not set") );
-                    date_time.setValue( _dateTime );
+                    #ifndef TIMELOC_DISABLE
+                        // Update date time string
+                        if( timelocation.IsTimeSet() ) timelocation.StrcpyTimeDate(_dateTime);                              
+                        else strcpy_P( _dateTime, PSTR("Time not set") );
+                        date_time.setValue( _dateTime );
+                    #endif
                 }
 
                 // Find and call AJAX handler
@@ -394,5 +396,7 @@ void ICACHE_FLASH_ATTR WebsiteManager::RedirectCaptivePortal() {
 // Create the global instances
 EmbAJAXVarInt net_status("net_status",0);
 EmbAJAXClientFunction post_message("post_message");
+#ifndef TIMELOC_DISABLE
 EmbAJAXMutableSpan date_time("date_time");
+#endif
 WebsiteManager website;

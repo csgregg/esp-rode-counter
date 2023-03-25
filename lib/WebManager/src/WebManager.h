@@ -298,8 +298,13 @@ SOFTWARE. */
 
 
     // Elements that go on every page and are declared in this lib
+#ifndef TIMELOC_DISABLE
     #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message,&date_time
     #define WEB_PAGE_COMMON_ELEMENTS_COUNT 3
+#else
+    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message
+    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 2
+#endif
 
 
 
@@ -376,7 +381,9 @@ SOFTWARE. */
 
     extern EmbAJAXVarInt net_status;                // Status indicator state
     extern EmbAJAXClientFunction post_message;      // Message popup function
+#ifndef TIMELOC_DISABLE
     extern EmbAJAXMutableSpan date_time;            // Date and time element
+#endif
 
     extern WebsiteManager website;                  // Declaring the global instance
 

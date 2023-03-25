@@ -54,7 +54,9 @@ void ICACHE_FLASH_ATTR DeviceSettings::SetDefaults() {
 #ifndef UPDATER_DISABLE
     otaUpdaterSettings.SetDefaults();
 #endif
+#ifndef TIMELOC_DISABLE
     timelocSettings.SetDefaults();
+#endif
     rodeSettings.SetDefaults();
 }
 

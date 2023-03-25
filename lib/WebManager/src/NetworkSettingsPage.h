@@ -89,12 +89,14 @@ SOFTWARE. */
 
             EmbAJAXClientFunction ClearLoader;                      // Client side function clear the spinning loader
 
+#ifndef NETCHECK_DISABLE
             // Internet check elements
 
             EmbAJAXCheckButton net_ck_enabled;                      // Check box for connectivity checker enabled
             EmbAJAXTextInput<4> net_ck_int;                         // Input box for connectivity checker interval (secs)
             EmbAJAXTextInput<NETCHECK_MAX_SERVICE_LEN> net_ck_url;  // Input box for connectivity checker URL
             EmbAJAXServerFunction net_ck_save;                      // Connectivity checker save button
+#endif
 
             // DNS mode elements
 
@@ -103,6 +105,7 @@ SOFTWARE. */
             EmbAJAXTextInput<DNS_MAX_HOSTNAME_LEN> dns_name;        // Input box for hostname           // TODO - check this functionality
             EmbAJAXServerFunction dns_save;                         // DNS save button
 
+#ifndef TIMELOC_DISABLE
             // Time and Location elemetns
 
             EmbAJAXServerFunction tlo_detect;                       // Detect location function
@@ -111,9 +114,17 @@ SOFTWARE. */
             EmbAJAXMutableSpan tlo_tz;                              // Span for reported timezone
             EmbAJAXCheckButton tlo_ntp;                             // Check box for NTP enabled
             EmbAJAXServerFunction tlo_save;                         // Time and Locations save button
+#endif
 
-            // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 42] = {
+            // Array of page elements 28 + 4 + 4 + 6
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 28 + 4
+                #ifndef NETCHECK_DISABLE
+                     + 4 
+                #endif
+                #ifndef TIMELOC_DISABLE
+                    + 6 
+                #endif
+            ] = {
 
                 WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
 
@@ -151,22 +162,26 @@ SOFTWARE. */
 
                 &ClearLoader,
 
+#ifndef NETCHECK_DISABLE
                 &net_ck_enabled,
                 &net_ck_int,
                 &net_ck_url,
                 &net_ck_save,
+#endif
 
                 &dns_enabled,
                 &dns_mdns,
                 &dns_name,
                 &dns_save,
 
+#ifndef TIMELOC_DISABLE
                 &tlo_detect,
                 &tlo_token,
                 &tlo_loc,
                 &tlo_tz,
                 &tlo_ntp,
                 &tlo_save,
+#endif
 
             };
 
@@ -209,22 +224,26 @@ SOFTWARE. */
 
                 ClearLoader( "ClearLoader" ),
 
+#ifndef NETCHECK_DISABLE
                 net_ck_enabled( "net_ck_enabled", "" ),
                 net_ck_int( "net_ck_int" ),
                 net_ck_url( "net_ck_url" ),
                 net_ck_save( "net_ck_save" ),
+#endif
 
                 dns_enabled( "dns_enabled", "" ),
                 dns_mdns( "dns_mdns", "" ),
                 dns_name( "dns_name" ),
                 dns_save( "dns_save" ),
 
-                tlo_detect( "tlo_detect" ),
-                tlo_token( "tlo_token" ),
-                tlo_loc( "tlo_loc" ),
-                tlo_tz( "tlo_tz" ),
-                tlo_ntp( "tlo_ntp", "" ),
-                tlo_save( "tlo_save" ),
+                #ifndef TIMELOC_DISABLE
+                    tlo_detect( "tlo_detect" ),
+                    tlo_token( "tlo_token" ),
+                    tlo_loc( "tlo_loc" ),
+                    tlo_tz( "tlo_tz" ),
+                    tlo_ntp( "tlo_ntp", "" ),
+                    tlo_save( "tlo_save" ),
+                #endif
 
                 // Setup the EmbAJAX page base
                 ajax( page_elements, "" )
@@ -264,12 +283,15 @@ SOFTWARE. */
             /** Save AP settings from page */
             void ICACHE_FLASH_ATTR SaveAP();
 
+#ifndef NETCHECK_DISABLE
             /** Save connectivity checker settings from page */
             void ICACHE_FLASH_ATTR SaveNetCheck();
+#endif
 
             /** Save DNS settings from page */
             void ICACHE_FLASH_ATTR SaveDNS();
 
+#ifndef TIMELOC_DISABLE
             /** Save time and location settings from page */
             void ICACHE_FLASH_ATTR SaveTimeLocation();
 
@@ -278,7 +300,7 @@ SOFTWARE. */
 
             /** Call detect location using IPInfo.io */
             void ICACHE_FLASH_ATTR DetectLocation();
-
+#endif
     };
     
     

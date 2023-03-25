@@ -39,7 +39,9 @@ SOFTWARE. */
     // Project Libraries
     #include "WiFiManager.h"
     #include "DNSManager.h"
+#ifndef NETCHECK_DISABLE
     #include "NetCheckManager.h"
+#endif
 
  
     /** @class Network settings
@@ -52,19 +54,25 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR SetDefaults();
 
             WiFiSettings wifiSettings;                  // WiFi settings
+#ifndef NETCHECK_DISABLE
             NetCheckSettings netCheckSettings;          // Connectivity checker settings
+#endif
             DNSSettings dnsSettings;                    // DNS settings
         
             // Create a compare operators
             
             bool operator== ( const NetworkSettings& other ) const {
                 return wifiSettings == other.wifiSettings
+#ifndef NETCHECK_DISABLE
                     && netCheckSettings == other.netCheckSettings
+#endif
                     && dnsSettings == other.dnsSettings;
             }
             bool operator!= ( const NetworkSettings& other ) const {
                 return wifiSettings != other.wifiSettings
+#ifndef NETCHECK_DISABLE
                     || netCheckSettings != other.netCheckSettings
+#endif
                     || dnsSettings != other.dnsSettings;
             }
 
@@ -143,7 +151,9 @@ SOFTWARE. */
             // The only instances of the network services
             WiFiManager _wifi;              // WiFi service
             DNSManager _dns;                // DNS service
+#ifndef NETCHECK_DISABLE
             NetCheckManager _netCheck;      // Net Check service
+#endif
 
     };
 

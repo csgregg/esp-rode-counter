@@ -61,6 +61,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::InitializeAjax(){
     wifi_mode_stn.setChecked( wifimode == WIFI_STA || wifimode == WIFI_AP_STA );
     wifi_mode_ap.setChecked( wifimode == WIFI_AP || wifimode == WIFI_AP_STA );
 
+#ifndef NETCHECK_DISABLE
     // Connectivity Settings
     char buffer[5];
     NetCheckSettings netStatus = config.settings.networkSettings.netCheckSettings;
@@ -68,6 +69,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::InitializeAjax(){
     net_ck_int.setValue( itoa( netStatus.interval, buffer, 10 ) );
     net_ck_url.setValue( netStatus.checkService );
     net_ck_save.setEnabled( false );
+#endif
 
     // DNS Settings
     DNSSettings dns = config.settings.networkSettings.dnsSettings;
@@ -76,12 +78,14 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::InitializeAjax(){
     dns_name.setValue( dns.hostName );
     dns_save.setEnabled( false );
 
+#ifndef TIMELOC_DISABLE
     // Time and Location Settings
     TimeLocationSettings tlo = config.settings.timelocSettings;
     tlo_ntp.setChecked( tlo.enabled );
     tlo_token.setValue( tlo.ipInfoToken );
     LoadTimeLocation();
     tlo_save.setEnabled( false );
+#endif
 
 }
 
@@ -128,11 +132,13 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::HandleAjax(){
         return;
     }
 
+#ifndef NETCHECK_DISABLE
     // Save connectivity checker settings
     if( website.AjaxID == F("net_ck_save") ) {
         SaveNetCheck();
         return;
     }
+#endif
 
     // Save DNS settings
     if( website.AjaxID == F("dns_save") ) {
@@ -140,6 +146,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::HandleAjax(){
         return;
     }
 
+#ifndef TIMELOC_DISABLE
     // Save Time and Location settings
     if( website.AjaxID == F("tlo_save") ) {
         SaveTimeLocation();
@@ -151,6 +158,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::HandleAjax(){
         DetectLocation();
         return;
     }
+#endif
 
 }
 
@@ -265,6 +273,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveAP() {
 }
 
 
+#ifndef NETCHECK_DISABLE
 // Save connectivity checker settings from page
 void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveNetCheck() {
 
@@ -281,6 +290,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveNetCheck() {
     network.RestartDNS();
 
 }
+#endif
 
 
 // Save DNS settings from page
@@ -298,7 +308,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveDNS() {
     
 }
 
-
+#ifndef TIMELOC_DISABLE
 // Save time and location settings from page
 void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveTimeLocation() {
 
@@ -330,7 +340,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::LoadTimeLocation() {
 void ICACHE_FLASH_ATTR NetworkSettingsPage::DetectLocation() {
     if( timelocation.DetectLocation() ) LoadTimeLocation();
 }
-
+#endif
 
 // Create instance of page class and wrap methods for EmbAJAX
 NetworkSettingsPage networksettingspage(
