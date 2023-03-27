@@ -52,7 +52,7 @@ void ICACHE_FLASH_ATTR setup() {
 #endif
     // Services started in the proper order
     device.Begin();
-    config.Begin(true);
+    config.Begin();
 #ifndef NO_LOGGING
     logger.Begin( network.GetWiFiClient(), config.settings.loggerSettings );  
 #endif

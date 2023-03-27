@@ -50,6 +50,8 @@ function SureYes() {
         doRequest(sureAction,1,ClearLoader);
 
         disableElmt("log_save","log_cancel");
+
+        return;
     }
 
     if( sureAction == "ota_save" ) {
@@ -74,16 +76,22 @@ function SureYes() {
         doRequest(sureAction,1,ClearLoader);
 
         disableElmt("ota_save","ota_cancel");
+
+        return;
     }
 
     if( sureAction == "btn_restart" ) {
         showLoader(document.getElementById('device_box'));
         doRequest(sureAction,1,reloadPage);
+
+        return;
     }
     else {
         // All the settings resets
         showLoader(document.getElementById('reset_box'));
         doRequest(sureAction,1,reloadPage);
+
+        return;
     }
 }
 

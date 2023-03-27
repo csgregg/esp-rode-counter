@@ -42,11 +42,15 @@ function SureYes() {
         doRequest(sureAction,1,ClearLoader);
 
         disableElmt("rode_save","rode_cancel");
+
+        return;
     }
 
     if( sureAction == "btn_reset" ) {
         showLoader(document.getElementById('reset_box'));
         doRequest(sureAction,1,reloadPage);
+
+        return;
     }
 
 }

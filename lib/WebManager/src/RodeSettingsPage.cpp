@@ -66,13 +66,12 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::HandleAjax(){
 
     // Reset Chain
     if( website.AjaxID == F("btn_reset") ) {
-        rodecounter.ResetToZero();
+        rodecounter.ResetRodeToZero();
     }
 
     // Save rode settings
     if( website.AjaxID == F("rode_save") ) {
         SaveRodeSettings();
-        return;
     }
 }
 
@@ -90,7 +89,8 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::SaveRodeSettings() {
 
     config.settings.rodeSettings = settings;
     config.Save();
-    rodecounter.Begin( settings );
+
+    rodecounter.LoadRodeSettings();
 
 }
 

@@ -54,8 +54,6 @@ SOFTWARE. */
             bool windlassReversed;          // Are the windlass controls reversed
             uint chainLength;               // Overall length of the chain (cm)
             uint waterLine;                 // The water line on the chain (cm)
-            uint currentRode;               // Current deployed rode (cm)
-
 
              // Create a compare operators
 
@@ -64,16 +62,14 @@ SOFTWARE. */
                     && windlassSpeed == other.windlassSpeed
                     && windlassReversed == other.windlassReversed
                     && chainLength == other.chainLength
-                    && waterLine == other.waterLine
-                    && currentRode == other.currentRode;
+                    && waterLine == other.waterLine;
             }
             bool operator!= ( const RodeSettings& other ) const {
                 return windlassDiameter != other.windlassDiameter
                     || windlassSpeed != other.windlassSpeed
                     || windlassReversed != other.windlassReversed
                     || chainLength != other.chainLength
-                    || waterLine != other.waterLine
-                    || currentRode != other.currentRode;
+                    || waterLine != other.waterLine;
             }
     };
 
@@ -92,7 +88,7 @@ SOFTWARE. */
             void Handle();
 
             /** Resets the current rode deployed to zero */
-            void ResetToZero();
+            void ResetRodeToZero() { _currentRode = 0; };
 
             /** Is the chain going up */
             bool isChainUp(){ return _chainUp; };
@@ -102,6 +98,9 @@ SOFTWARE. */
 
             /** Get the current deployed rode */
             uint getCurrentRode(){ return _currentRode; };
+
+            /** Load rode counter settings */
+            void LoadRodeSettings();
 
         protected:
 

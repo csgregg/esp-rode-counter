@@ -174,6 +174,8 @@ function SureYes() {
     if( sureAction == "wifi_stn_forget" ) {
         x.value = "";
         sureAction = "wifi_stn_save";
+
+        return;
     }
 
     if( sureAction == "wifi_stn_save") {
@@ -202,6 +204,8 @@ function SureYes() {
 
         // Hide dialog
         document.getElementById('wifi_stn_dlg').style.display='none';
+
+        return;
     }
 
     if( sureAction == "wifi_ap_save" ) {
@@ -226,6 +230,7 @@ function SureYes() {
 
         disableElmt("wifi_ap_save","wifi_ap_cancel");
         
+        return;
     }
 
     if( sureAction == "wifi_mode_stn" || sureAction == "wifi_mode_ap" ) {
@@ -247,6 +252,8 @@ function SureYes() {
         showLoader(document.getElementById('wifi_mode_box'));
   
         doRequest('wifi_mode_save',mode);
+
+        return;
     }
 
     if( sureAction == "wifi_stn_cnct" ) {
@@ -254,6 +261,8 @@ function SureYes() {
         showLoader(document.getElementById('wifi_saved_box'));
 
         doRequest('wifi_stn_cnct',wifiStationID);
+
+        return;
     }
 
     if( sureAction == "net_ck_save" ) {
@@ -272,6 +281,8 @@ function SureYes() {
         doRequest(sureAction,1,ClearLoader);
 
         disableElmt("net_ck_save","net_ck_cancel");
+
+        return;
     }
 
     if( sureAction == "dns_save" ) {
@@ -290,6 +301,8 @@ function SureYes() {
         doRequest(sureAction,1,ClearLoader);
 
         disableElmt("dns_save","dns_cancel");
+
+        return;
     }
 
     if( sureAction == "tlo_save" ) {
@@ -306,6 +319,8 @@ function SureYes() {
         doRequest(sureAction,1,ClearLoader);
 
         disableElmt("tlo_save","tlo_cancel");
+
+        return;
     }
 
 }

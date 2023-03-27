@@ -59,19 +59,24 @@ void ICACHE_FLASH_ATTR RodeCounter::Begin( RodeSettings& settings ) {
 
     _settings = &settings;
 
-    _currentRode = _settings->currentRode;
+    LoadRodeSettings();
 
+    _time = millis();
+}
+
+
+void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
     indexpage.water_line.setValue(_settings->waterLine);
     indexpage.rode_len.setValue(_settings->chainLength);
     indexpage.warn_limit_1.setValue(_settings->waterLine + 500);        // Water line + 5m
     indexpage.warn_limit_2.setValue(_settings->chainLength - 700);        // Length - 7m
     indexpage.warn_limit_3.setValue(_settings->chainLength - 200);        // Length - 2m
 
-    _currentRode = 0;
-    _chainDown = false;
-    _chainUp = true;
 
-    _time = millis();
+    ResetRodeToZero();
+
+    _chainDown = true;
+    _chainUp = false;
 }
 
 
@@ -81,42 +86,21 @@ void RodeCounter::Handle() {
     if( millis() > _time + 1000 ) {
         _time = millis();
         _currentRode += ( _chainDown ? 100 : -100 );
-        if( _currentRode > _settings->chainLength || _currentRode < 0 ) {
+        DEBUG(_currentRode);
+        if( _currentRode == _settings->chainLength || _currentRode == 0 ) {
             _chainDown = !_chainDown;
             _chainUp = !_chainUp;
-            DEBUG("Reverse");
+            indexpage.chain_up.setValue(_chainUp);
+            indexpage.chain_down.setValue(_chainDown);
         }
+        indexpage.current_rode.setValue(_currentRode);
+
     }
 
-    indexpage.chain_up.setValue(_chainUp);
-    indexpage.chain_down.setValue(_chainDown);
-    indexpage.current_rode.setValue(_currentRode);
-
-}
-
-
-// Resets the current rode deployed to zero
-void ICACHE_FLASH_ATTR RodeCounter::ResetToZero() {
-
-    LOG( PSTR("(Rode) Resetting rode to zero") );
-
-    _currentRode = 0;
-
-    StoreCurrentRode();
 }
 
 
 // Protected:
-
-// Stores the current rode to memory
-void ICACHE_FLASH_ATTR RodeCounter::StoreCurrentRode() {
-
-    LOG( PSTR("(Rode) Saving current rode to memory") );
-
-    config.settings.rodeSettings.currentRode = _currentRode;
-    config.Save();
-
-}
 
 
 RodeCounter rodecounter;         // Create the global instance
