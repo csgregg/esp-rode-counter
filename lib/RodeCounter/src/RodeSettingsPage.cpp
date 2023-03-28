@@ -51,9 +51,9 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::InitializeAjax(){
 
     windlass_dia.setValue( itoa(settings.windlassDiameter, buffer, 10) );
     windlass_rpm.setValue( itoa(settings.windlassSpeed, buffer, 10) );
-    windlass_rev.setChecked( settings.windlassReversed );
-    chain_len.setValue(itoa( settings.chainLength, buffer, 10) );
-    water_line.setValue(itoa( settings.waterLine, buffer, 10) );
+    windlass_rev.setChecked( settings.windlassReversed );                       // TODO - reverse it
+    chain_len.setValue(itoa( settings.chainLength/10, buffer, 10) );            // Convert mm to cm
+    water_line.setValue(itoa( settings.waterLine/10, buffer, 10) );             // Convert mm to cm
     rode_save.setEnabled( false ) ;
 
 }
@@ -84,8 +84,8 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::SaveRodeSettings() {
     settings.windlassDiameter = atoi( windlass_dia.value() );
     settings.windlassSpeed = atoi( windlass_rpm.value() );
     settings.windlassReversed = windlass_rev.isChecked();
-    settings.chainLength = atoi( chain_len.value() );
-    settings.waterLine = atoi( water_line.value() );
+    settings.chainLength = atoi( chain_len.value() ) * 10;      // Convert cm to mm
+    settings.waterLine = atoi( water_line.value() ) * 10;       // Convert cm to mm
 
     config.settings.rodeSettings = settings;
     config.Save();

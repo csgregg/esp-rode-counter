@@ -66,9 +66,13 @@ void ICACHE_FLASH_ATTR setup() {
 #endif
     rodecounter.Begin( config.settings.rodeSettings );
 
+    delay(1000);
+
     LOG(PSTR("(Loop) Starting"));        // TODO - Check all LOG levels for all instances
-    
+
 }
+
+
 
 
 void loop() {

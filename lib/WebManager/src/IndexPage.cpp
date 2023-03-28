@@ -61,9 +61,11 @@ void ICACHE_FLASH_ATTR IndexPage::HandleAjax(){
 // Updates windlass status to page
 void ICACHE_FLASH_ATTR IndexPage::UpdateWindlassStatus( ) {
 
-    chain_up.setValue( rodecounter.isChainUp() );
-    chain_down.setValue( rodecounter.isChainDown() );
-    current_rode.setValue( rodecounter.getCurrentRode() );
+    chain_up.setValue( rodecounter.GetChainDirection() == UP );
+    chain_down.setValue( rodecounter.GetChainDirection() == DOWN );
+    current_rode.setValue( rodecounter.GetCurrentRode()/10 );               // Convert mm to cm
+
+    DEBUG(rodecounter.GetCurrentRode());
 }
 
 

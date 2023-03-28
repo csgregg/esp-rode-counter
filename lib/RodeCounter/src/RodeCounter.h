@@ -40,6 +40,15 @@ SOFTWARE. */
     #include "NetworkManager.h"
     #include "TimeLocation.h"
 
+
+    // Chain movement
+    enum Direction : uint {
+        STOPPED = 0,
+        UP = 1,
+        DOWN = 2
+    };
+
+
     /** @class RodeSettings
      *  @brief Data struct class to store the rode settings */
     class RodeSettings {
@@ -52,8 +61,8 @@ SOFTWARE. */
             uint windlassDiameter;          // The diameter of the windlass (mm)
             uint windlassSpeed;             // The speed of the windlass (rpm)
             bool windlassReversed;          // Are the windlass controls reversed
-            uint chainLength;               // Overall length of the chain (cm)
-            uint waterLine;                 // The water line on the chain (cm)
+            uint chainLength;               // Overall length of the chain (mm)
+            uint waterLine;                 // The water line on the chain (mm)
 
              // Create a compare operators
 
@@ -74,6 +83,9 @@ SOFTWARE. */
     };
 
 
+
+
+
     /** @class RodeCounter
      *  @brief Manages the rode counting */
     class RodeCounter {
@@ -88,16 +100,13 @@ SOFTWARE. */
             void Handle();
 
             /** Resets the current rode deployed to zero */
-            void ResetRodeToZero() { _currentRode = 0; };
+            void ResetRodeToZero() { _currentRode = 0; _chainDirection = DOWN; };
 
             /** Is the chain going up */
-            bool isChainUp(){ return _chainUp; };
-
-            /** Is the chain going down */
-            bool isChainDown(){ return _chainDown; };
+            bool GetChainDirection(){ return _chainDirection; };
 
             /** Get the current deployed rode */
-            uint getCurrentRode(){ return _currentRode; };
+            uint GetCurrentRode(){ return _currentRode; };
 
             /** Load rode counter settings */
             void LoadRodeSettings();
@@ -106,14 +115,18 @@ SOFTWARE. */
 
             RodeSettings* _settings;        // Pointer to data struct containing rode settings
 
-            bool _chainUp = false;           // Is the chain traveling up
-            bool _chainDown = false;         // Is the chain traveling down 
+            Direction _chainDirection;       // What is the chain doing
 
-            uint _currentRode = 0;           // Current amount of rode deployed (cm)
+            uint _currentRode = 0;           // Current amount of rode deployed (mm)
 
             void ICACHE_FLASH_ATTR StoreCurrentRode();      // Stores the current rode to memory
 
             uint _time;
+
+            void WindlassPulseRising();         // Interrupt triggered on a rising edge (sensor closing)
+
+            void WindlassPulseFalling();       // Interrupt triggered on a falling edge (sensor opening)
+
 
     };
 
