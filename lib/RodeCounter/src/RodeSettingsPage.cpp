@@ -66,7 +66,7 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::HandleAjax(){
 
     // Reset Chain
     if( website.AjaxID == F("btn_reset") ) {
-        rodecounter.ResetRodeToZero();
+        rodecounter.ResetRode();
     }
 
     // Save rode settings

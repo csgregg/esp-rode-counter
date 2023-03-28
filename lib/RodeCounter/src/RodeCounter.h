@@ -100,10 +100,10 @@ SOFTWARE. */
             void Handle();
 
             /** Resets the current rode deployed to zero */
-            void ResetRodeToZero() { _currentRode = 0; _chainDirection = DOWN; };
+            void ResetRode() { _currentRode = 0; _chainDirection = DOWN; };
 
             /** Is the chain going up */
-            bool GetChainDirection(){ return _chainDirection; };
+            Direction GetChainDirection(){ return _chainDirection; };
 
             /** Get the current deployed rode */
             uint GetCurrentRode(){ return _currentRode; };

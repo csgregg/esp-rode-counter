@@ -32,7 +32,7 @@ SOFTWARE. */
 // Project Libraries
 #include "DNSManager.h"
 #include "Logger.h"
-#include "Env.h"
+#include "Device.h"
 
 
 ////////////////////////////////////////////

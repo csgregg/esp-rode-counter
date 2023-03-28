@@ -75,7 +75,7 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
     indexpage.warn_limit_2.setValue((_settings->chainLength - 700)/10);        // Length - 7m
     indexpage.warn_limit_3.setValue((_settings->chainLength - 200)/10);        // Length - 2m
    
-    ResetRodeToZero();
+    ResetRode();
 
 }
 

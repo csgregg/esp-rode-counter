@@ -35,7 +35,7 @@ SOFTWARE. */
 
 // Project Libraries
 #include "Logger.h"
-#include "Env.h"
+#include "Device.h"
 
 
 /* The Loggly service requires a JSON file :
