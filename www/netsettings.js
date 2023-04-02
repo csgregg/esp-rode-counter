@@ -331,3 +331,7 @@ function DetectLocation() {
     enableElmt("tlo_save","tlo_cancel");
     doRequest("tlo_detect",1,ClearLoader);
 }
+
+function pageDisconnected() {
+    // console.log("Status - Page Disconnected");
+}

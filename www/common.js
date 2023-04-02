@@ -270,10 +270,13 @@ class embajaxstatus {
        this.flash = false;
    }
    out() {
-       if( this.misses < 5 ) if(++(this.misses) >= 5) this.div.style.background = "red";
+       if( this.misses < (1000/poll_period)*5 ) if(++(this.misses) >= (1000/poll_period)*5) {
+         this.div.style.background = "red";
+         pageDisconnected();
+       }
    }
    in() {
-       if( this.misses > 4 ) {
+       if( this.misses > (1000/poll_period)*4 ) {
           this.div.style.background = "orange";
           initPage();
        }

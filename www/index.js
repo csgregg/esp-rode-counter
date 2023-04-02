@@ -6,6 +6,7 @@ var rode_len = 0;
 var warn_limit_1 = 0;
 var warn_limit_2 = 0;
 var warn_limit_3 = 0;
+var connected = false;
 
 
 // https://github.com/naikus/svg-gauge
@@ -38,12 +39,20 @@ var rode_gauge = Gauge(
 
 function initPage() {
     // console.log("Status - Initialize Page");
+    doRequestAll(updatePage);
+}
 
+function pageDisconnected() {
+    // console.log("Status - Page Disconnected");
+
+    // Stop chain animation
+    chain_down = 'f';
+    chain_up = 'f';
     updatePage();
 }
 
 function updatePage() {
-    //console.log("Status - Update Page");
+    // console.log("Status - Update Page");
 
     // Set gauge value and max in m
     var x = current_rode / 100;

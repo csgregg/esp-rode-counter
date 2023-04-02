@@ -2,9 +2,13 @@
 function initPage() {
     // console.log("Status - Initialize Page");
 
-    doRequest("","");
+    doRequestAll();
 }
 
 function updatePage() {
     // console.log("Status - Update Page");  
+}
+
+function pageDisconnected() {
+    // console.log("Status - Page Disconnected");
 }

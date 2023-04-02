@@ -12,6 +12,9 @@ function updatePage() {
 
 }
 
+function pageDisconnected() {
+    // console.log("Status - Page Disconnected");
+}
 
 function SureNo() {
     document.getElementById('sure_dlg').style.display='none';
