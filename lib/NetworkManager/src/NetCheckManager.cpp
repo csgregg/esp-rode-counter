@@ -76,7 +76,7 @@ void ICACHE_FLASH_ATTR NetCheckManager::Begin (WiFiClient& client, NetCheckSetti
 
 
 // Handles repeated checking tasks
-void NetCheckManager::Handle() {
+void ICACHE_FLASH_ATTR NetCheckManager::Handle() {
 
     if ( _doNetCheck ) {
 

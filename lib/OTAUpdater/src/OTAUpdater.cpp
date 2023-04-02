@@ -138,7 +138,7 @@ void ICACHE_FLASH_ATTR OTAUpdater::Restart( OTAUpdaterSettings& settings ) {
 
 
 // Handles any repeating tasks for the OTA update service
-void OTAUpdater::Handle() {
+void ICACHE_FLASH_ATTR OTAUpdater::Handle() {
 
     if ( _doUpdateCheck && ( network.GetNetworkStatus() == NetworkManager::NetworkStatus::NORMAL ) ) {
 

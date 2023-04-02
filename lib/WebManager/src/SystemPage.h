@@ -166,7 +166,7 @@ SOFTWARE. */
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
-           SystemPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
+           ICACHE_FLASH_ATTR SystemPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
               
                 btn_restart("btn_restart"),
                 btn_rst_net("btn_rst_net"),

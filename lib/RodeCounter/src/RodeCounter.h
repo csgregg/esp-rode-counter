@@ -37,16 +37,12 @@ SOFTWARE. */
     #include <Arduino.h>
 
     // Project Libraries
+    #include "Device.h"
     #include "NetworkManager.h"
     #include "TimeLocation.h"
 
 
-    // Chain movement
-    enum Direction : uint {
-        STOPPED = 0,
-        UP = 1,
-        DOWN = 2
-    };
+
 
 
     /** @class RodeSettings
@@ -83,50 +79,58 @@ SOFTWARE. */
     };
 
 
-
-
-
     /** @class RodeCounter
      *  @brief Manages the rode counting */
     class RodeCounter {
                 
-            public:
+        public:
+
+            // Chain movement
+            enum Direction : uint {
+                STOPPED = 0,
+                UP = 1,
+                DOWN = 2
+            };
+
+            // Constructor
+            ICACHE_FLASH_ATTR RodeCounter() : 
+                _sensorInput(D2, HardwareSwitch::ACTIVE_LOW, CHANGE),      // Setup the hardware pins
+                _upInput(D3, HardwareSwitch::ACTIVE_LOW, CHANGE),
+                _downInput(D4, HardwareSwitch::ACTIVE_LOW, CHANGE)
+            {}
 
             /** Starts the rode counter
              * @param settings      Reference of rode settings struct */
             void ICACHE_FLASH_ATTR Begin( RodeSettings& settings );
 
             /** Handles any repeated rode counting tasks */
-            void Handle();
+            void ICACHE_FLASH_ATTR Handle();
 
-            /** Resets the current rode deployed to zero */
-            void ResetRode() { _currentRode = 0; _chainDirection = DOWN; };
+            /** Resets the current rode deployed to zero and ready to go down - should only happen when anchor is completely raised and stowed */
+            void ICACHE_FLASH_ATTR ResetRode() { _currentRode = 0; _chainDirection = DOWN; };
 
             /** Is the chain going up */
-            Direction GetChainDirection(){ return _chainDirection; };
+            Direction ICACHE_FLASH_ATTR GetChainDirection(){ return _chainDirection; };
 
             /** Get the current deployed rode */
-            uint GetCurrentRode(){ return _currentRode; };
+            uint ICACHE_FLASH_ATTR GetCurrentRode(){ return _currentRode; };
 
             /** Load rode counter settings */
-            void LoadRodeSettings();
+            void ICACHE_FLASH_ATTR LoadRodeSettings();
 
         protected:
 
             RodeSettings* _settings;        // Pointer to data struct containing rode settings
 
             Direction _chainDirection;       // What is the chain doing
-
             uint _currentRode = 0;           // Current amount of rode deployed (mm)
 
-            void ICACHE_FLASH_ATTR StoreCurrentRode();      // Stores the current rode to memory
+            uint _time;       // TODO - Remove
 
-            uint _time;
-
-            void WindlassPulseRising();         // Interrupt triggered on a rising edge (sensor closing)
-
-            void WindlassPulseFalling();       // Interrupt triggered on a falling edge (sensor opening)
-
+            // Hardware pins
+            HardwareSwitch _sensorInput;
+            HardwareSwitch _upInput;
+            HardwareSwitch _downInput;
 
     };
 

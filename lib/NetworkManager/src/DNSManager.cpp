@@ -81,7 +81,7 @@ void ICACHE_FLASH_ATTR DNSManager::Begin( DNSSettings& settings, bool isInApMode
 
 
 // Handle repeating DNS tasks
-void DNSManager::Handle() {
+void ICACHE_FLASH_ATTR DNSManager::Handle() {
 
     if( _dnsStarted ) {
         MDNS.update();                          // Handle mDNS

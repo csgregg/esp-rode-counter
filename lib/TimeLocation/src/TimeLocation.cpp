@@ -129,7 +129,7 @@ void ICACHE_FLASH_ATTR TimeLocationManager::Restart( TimeLocationSettings& setti
 
 
 // Handles any repeasting time and location tasks
-void TimeLocationManager::Handle() {
+void ICACHE_FLASH_ATTR TimeLocationManager::Handle() {
 
     if( _settings->enabled ) {
         if( network.GetNetworkStatus() == NetworkManager::NetworkStatus::NORMAL ) {

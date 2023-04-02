@@ -411,7 +411,7 @@ void ICACHE_FLASH_ATTR LoggerClient::printFlag( const LogType type, const LogTag
 
 
 // Handles any repeating device actions
-void LoggerClient::Handle() {
+void ICACHE_FLASH_ATTR LoggerClient::Handle() {
 
 #ifndef NO_LOGGING
 
@@ -436,7 +436,7 @@ bool LoggerClient::_doTick = false;        // Initialize the static member
 #endif
 
 // Create and log prefix - needs to be followed by message using Serial.println()
-void LoggerClient::LogPrefix( const LogType type, const LogTag tag ){
+void ICACHE_FLASH_ATTR LoggerClient::LogPrefix( const LogType type, const LogTag tag ){
 
 #ifndef NO_LOGGING
 
@@ -569,7 +569,7 @@ void ICACHE_FLASH_ATTR LoggerClient::LogToService( const LogType type, const Log
 
 #ifndef LOG_SERIAL_ONLY
 // Send tick to Loggly Service
-void LoggerClient::HandleTick( ) {
+void ICACHE_FLASH_ATTR LoggerClient::HandleTick( ) {
 
 #ifndef NO_LOGGING
 

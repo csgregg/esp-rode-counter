@@ -110,7 +110,7 @@ void ICACHE_FLASH_ATTR WiFiManager::Begin( WiFiSettings& settings ) {
 
 
 // Handle WiFi Connectivity
-void WiFiManager::Handle( const bool force ) {
+void ICACHE_FLASH_ATTR WiFiManager::Handle( const bool force ) {
     
     if( force ) ResetConnectedStatus();
 
@@ -247,7 +247,7 @@ char* ICACHE_FLASH_ATTR WiFiManager::GetAssignedIP() {
 // Protected:
 
 // Handles any repeating WiFi station tasks
-bool WiFiManager::HandleWiFiStations( const bool force ) {
+bool ICACHE_FLASH_ATTR WiFiManager::HandleWiFiStations( const bool force ) {
 
     bool connected = ( WiFi.status() == WL_CONNECTED );
 
@@ -298,7 +298,7 @@ bool WiFiManager::HandleWiFiStations( const bool force ) {
 
 
 // Handles any repeating WiFi AP tasks
-bool WiFiManager::HandleWiFiAP(const bool force) {
+bool ICACHE_FLASH_ATTR WiFiManager::HandleWiFiAP(const bool force) {
 
     uint connections = WiFi.softAPgetStationNum();
 

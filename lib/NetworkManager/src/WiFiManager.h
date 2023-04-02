@@ -80,7 +80,7 @@ SOFTWARE. */
 
             // Create a compare operators
 
-            bool operator== ( const StationSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const StationSettings& other ) const {
                 return ( strcmp( SSID, other.SSID ) == 0 )
                     && ( strcmp( password, other.password ) == 0 )
                     && DHCPMode == other.DHCPMode
@@ -90,7 +90,7 @@ SOFTWARE. */
                     && dns1 == other.dns1
                     && dns2 == other.dns2;
             }
-            bool operator!= ( const StationSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const StationSettings& other ) const {
                 return ( strcmp( SSID, other.SSID ) != 0 )
                     || ( strcmp( password, other.password ) != 0 )
                     || DHCPMode != other.DHCPMode
@@ -111,7 +111,7 @@ SOFTWARE. */
         public:
 
             /** Resets WiFi AP settings to defaults */
-            void SetDefaults();
+            void ICACHE_FLASH_ATTR SetDefaults();
 
             char SSID[NET_MAX_SSID_LEN];                // SSID for WiFi AP
             char password[NET_MAX_PASSWORD_LEN];        // Password for WiFi AP
@@ -122,7 +122,7 @@ SOFTWARE. */
 
             // Create a compare operators
 
-            bool operator== ( const APSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const APSettings& other ) const {
                 return ( strcmp( SSID, other.SSID ) == 0 )
                     && ( strcmp( password, other.password ) == 0 )
                     && channel == other.channel
@@ -130,7 +130,7 @@ SOFTWARE. */
                     && subnet == other.subnet
                     && gateway == other.gateway;
             }
-            bool operator!= ( const APSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const APSettings& other ) const {
                 return ( strcmp( SSID, other.SSID ) != 0 )
                     || ( strcmp( password, other.password ) !=0 )
                     || channel != other.channel
@@ -149,7 +149,7 @@ SOFTWARE. */
         public:
 
             /** Resets WiFi settings to defaults */
-            void SetDefaults();
+            void ICACHE_FLASH_ATTR SetDefaults();
 
             WiFiMode wifiMode;                                          // WiFi Mode        
             StationSettings stationSettings[NET_MAX_STATIONS];          // Multiple stations settings
@@ -158,7 +158,7 @@ SOFTWARE. */
 
             // Create a compare operators
 
-            bool operator== ( const WiFiSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const WiFiSettings& other ) const {
                 bool stations = true;
                 for( int i = 0; i < NET_MAX_STATIONS; i++ ) if( stationSettings[i] != other.stationSettings[i] ) stations = false;
                 return wifiMode == other.wifiMode
@@ -166,7 +166,7 @@ SOFTWARE. */
                     && lastStation == other.lastStation
                     && apSettings == other.apSettings;
             }
-            bool operator!= ( const WiFiSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const WiFiSettings& other ) const {
                 bool stations = false;
                 for( int i = 0; i < NET_MAX_STATIONS; i++ ) if( stationSettings[i] != other.stationSettings[i] ) stations = true;
                 return wifiMode != other.wifiMode
@@ -185,7 +185,7 @@ SOFTWARE. */
         public:
 
             /** Constructor */
-            WiFiManager()  {
+            ICACHE_FLASH_ATTR WiFiManager()  {
                 _isAPRunning = false;
                 _nAPConnections = 0;
             }
@@ -199,7 +199,7 @@ SOFTWARE. */
             /** Handle any repeating WiFi tasks
              *  This detects if WiFi should be connected and if not, reconnects 
              *  @param force        Forces reconnect */
-            void Handle( const bool force = false );
+            void ICACHE_FLASH_ATTR Handle( const bool force = false );
 
             /** Sets the WiFi Mode
              * @param mode          WiFiMode */
@@ -253,14 +253,14 @@ SOFTWARE. */
              * @param force         Force the reconnection of the WiFi stations
              * @return true         Successfully connected
              * @return false        Failed to connect */
-            bool HandleWiFiStations( const bool force = false );
+            bool ICACHE_FLASH_ATTR HandleWiFiStations( const bool force = false );
 
             /** Handles any repeating WiFi AP tasks
              *  Including starting the AP
              * @param force         Force the restart of the AP
              * @return true         Successfully started
              * @return false        Failed to start */
-            bool HandleWiFiAP( const bool force = false );
+            bool ICACHE_FLASH_ATTR HandleWiFiAP( const bool force = false );
 
             /** Start the WiFi Access Point
              * @return true         Successfully started

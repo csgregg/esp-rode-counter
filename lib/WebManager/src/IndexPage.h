@@ -49,12 +49,12 @@ SOFTWARE. */
 
             EmbAJAXVarBool chain_up;            // Chain is moving up
             EmbAJAXVarBool chain_down;          // Chain is moving up
-            EmbAJAXVarInt current_rode;         // Current rode deployed
-            EmbAJAXVarInt water_line;           // Water line
-            EmbAJAXVarInt rode_len;             // Overall length
-            EmbAJAXVarInt warn_limit_1;         // 1st warning limit
-            EmbAJAXVarInt warn_limit_2;         // 2nd warning limit
-            EmbAJAXVarInt warn_limit_3;         // 2nd warning limit
+            EmbAJAXVarInt current_rode;         // Current rode deployed (cm)
+            EmbAJAXVarInt water_line;           // Water line (cm)
+            EmbAJAXVarInt rode_len;             // Overall length (cm)
+            EmbAJAXVarInt warn_limit_1;         // 1st warning limit (cm)
+            EmbAJAXVarInt warn_limit_2;         // 2nd warning limit (cm)
+            EmbAJAXVarInt warn_limit_3;         // 2nd warning limit (cm)
 
             // Array of page elements
             EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 8] = {
@@ -75,7 +75,7 @@ SOFTWARE. */
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
-            IndexPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
+            ICACHE_FLASH_ATTR IndexPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
 
                 chain_up("chain_up"),
                 chain_down("chain_down"),

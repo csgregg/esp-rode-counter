@@ -85,7 +85,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Begin( WiFiClient& client, NetCheckSettings& settings );
 
             /** Handle repeated net check tasks */
-            void Handle();
+            void ICACHE_FLASH_ATTR Handle();
 
             /** Checks status of internet connectivity flag
              * @return true:         Connected to internet

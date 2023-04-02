@@ -80,7 +80,7 @@ SOFTWARE. */
 
             /** Contructor
              *  @param id       ID for this element */
-            EmbAJAXClientFunction( const char* id ) : EmbAJAXElement( id ) {
+            ICACHE_FLASH_ATTR EmbAJAXClientFunction( const char* id ) : EmbAJAXElement( id ) {
                 setBasicProperty( EmbAJAXBase::HTMLAllowed, false );
                 _arg = 0;
             }
@@ -88,19 +88,19 @@ SOFTWARE. */
             /** Gets the value of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */
-            const char* value( uint8_t which ) const;
+            const char* ICACHE_FLASH_ATTR value( uint8_t which ) const;
 
             /** Gets the value property of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */
-            const char* valueProperty( uint8_t which = EmbAJAXBase::Value ) const override;
+            const char* ICACHE_FLASH_ATTR valueProperty( uint8_t which = EmbAJAXBase::Value ) const override;
 
             /** Gets the value from the AJAX request
              *  @param argname      Name of argment */
-            void updateFromDriverArg(const char* argname) override;
+            void ICACHE_FLASH_ATTR updateFromDriverArg(const char* argname) override;
 
             /** Placeholder for required overload */
-            void print() const override {} 
+            void ICACHE_FLASH_ATTR print() const override {} 
 
             // Additional Functionality
             
@@ -108,18 +108,18 @@ SOFTWARE. */
              *  Only require acknowledge for first call, not response from function 
              *  @param arg       Argument to be passed (char array pointer)
              *  @param ack       Do we need an acknowledgement */
-            void Call( char* arg, bool ack = true );
+            void ICACHE_FLASH_ATTR Call( char* arg, bool ack = true );
 
             /** Initiates a call of the function
              *  No arguments or acknowledgement needed */
-            void Call();
+            void ICACHE_FLASH_ATTR Call();
 
             /** Resets the function call */
-            void Reset() { _status = NONE; }
+            void ICACHE_FLASH_ATTR Reset() { _status = NONE; }
 
             /** Returns the status of the function call
              *  @return FunctionStatus */
-            FunctionStatus getStatus() { return _status; }
+            FunctionStatus ICACHE_FLASH_ATTR getStatus() { return _status; }
 
 
         protected:
@@ -139,7 +139,7 @@ SOFTWARE. */
             /** Constructor 
              *  @param id       ID for this element
              *  @param initial  Initial value */
-            EmbAJAXVarString( const char* id, const char* initial ) : EmbAJAXElement( id ) {
+            ICACHE_FLASH_ATTR EmbAJAXVarString( const char* id, const char* initial ) : EmbAJAXElement( id ) {
                 setBasicProperty( EmbAJAXBase::HTMLAllowed, false );
                 strcpy( _value, initial );
             }
@@ -149,7 +149,7 @@ SOFTWARE. */
             /** Gets the value of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */
-            const char* value( uint8_t which = EmbAJAXBase::Value ) const override {
+            const char* ICACHE_FLASH_ATTR value( uint8_t which = EmbAJAXBase::Value ) const override {
                 if( which == EmbAJAXBase::Value) return _value;
                 return EmbAJAXElement::value( which );
             }
@@ -157,23 +157,23 @@ SOFTWARE. */
             /** Gets the value property of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */
-            const char* valueProperty( uint8_t which = EmbAJAXBase::Value ) const override {
+            const char* ICACHE_FLASH_ATTR valueProperty( uint8_t which = EmbAJAXBase::Value ) const override {
                 if( which == EmbAJAXBase::Value ) return "embajax_var";
                 return EmbAJAXElement::valueProperty( which );
             }
 
             /** Gets the value from the AJAX request
              *  @param argname      Name of argment */
-            void updateFromDriverArg( const char* argname ) override { _driver->getArg( argname, _value, SIZE ); }
+            void ICACHE_FLASH_ATTR updateFromDriverArg( const char* argname ) override { _driver->getArg( argname, _value, SIZE ); }
 
             /** Placeholder for required overload */
-            void print() const override {} 
+            void ICACHE_FLASH_ATTR print() const override {} 
 
             // Additional Functionality
 
             /** Sets value of element varialbe
              * @param value     Value */
-            void setValue( const char* value ) {
+            void ICACHE_FLASH_ATTR setValue( const char* value ) {
                 strncpy( _value, value, SIZE );
                 setChanged();
             }
@@ -194,7 +194,7 @@ SOFTWARE. */
             /** Constructor 
              *  @param id       ID for this element
              *  @param initial  Initial value */
-            EmbAJAXVariable( const char* id, T initial = 0 ) : EmbAJAXElement( id ) {
+            ICACHE_FLASH_ATTR EmbAJAXVariable( const char* id, T initial = 0 ) : EmbAJAXElement( id ) {
                 setBasicProperty(EmbAJAXBase::HTMLAllowed, false);
                 _value = initial;
             }
@@ -204,28 +204,28 @@ SOFTWARE. */
             /** Gets the value of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */
-            const char* value(uint8_t which = EmbAJAXBase::Value) const override;
+            const char* ICACHE_FLASH_ATTR value(uint8_t which = EmbAJAXBase::Value) const override;
 
             /** Gets the value property of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */            
-            const char* valueProperty(uint8_t which = EmbAJAXBase::Value) const override {
+            const char* ICACHE_FLASH_ATTR valueProperty(uint8_t which = EmbAJAXBase::Value) const override {
                 if (which == EmbAJAXBase::Value) return "embajax_var";
                 return EmbAJAXElement::valueProperty(which);
             }
 
             /** Gets the value from the AJAX request
              *  @param argname      Name of argment */
-            void updateFromDriverArg(const char* argname) override;
+            void ICACHE_FLASH_ATTR updateFromDriverArg(const char* argname) override;
             
             /** Placeholder for required overload */
-            void print() const override {} 
+            void ICACHE_FLASH_ATTR print() const override {} 
 
             // Additional Functionality
 
             /** Sets value of element variable
              * @param value     Value */
-            void setValue( T value ) {
+            void ICACHE_FLASH_ATTR setValue( T value ) {
                 if( _value != value ) {
                     _value = value;
                     setChanged();      
@@ -234,11 +234,11 @@ SOFTWARE. */
 
             /** gets the value of element variable as an int
              * @return int     Value */
-            int GetIntValue() const;
+            int ICACHE_FLASH_ATTR GetIntValue() const;
 
             /** gets the value of element variable as a bool
              * @return book     Value */
-            bool GetBoolValue() const;
+            bool ICACHE_FLASH_ATTR GetBoolValue() const;
 
 
         protected:
@@ -261,7 +261,7 @@ SOFTWARE. */
 
             /** Constructor 
              *  @param id       ID for this element */
-            EmbAJAXStyle( const char* id ) : EmbAJAXMutableSpan( id ) {
+            ICACHE_FLASH_ATTR EmbAJAXStyle( const char* id ) : EmbAJAXMutableSpan( id ) {
                 _style = 0;
                 setBasicProperty( EmbAJAXBase::HTMLAllowed, false );
             }
@@ -271,12 +271,12 @@ SOFTWARE. */
             /** Gets the value of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */
-            const char* value(uint8_t which = EmbAJAXBase::Value) const override;
+            const char* ICACHE_FLASH_ATTR value(uint8_t which = EmbAJAXBase::Value) const override;
 
             /** Gets the value property of the element
              *  @param which         Which value
              *  @return const char*  Pointer to value */   
-            const char* valueProperty(uint8_t which = EmbAJAXBase::Value) const override;
+            const char* ICACHE_FLASH_ATTR valueProperty(uint8_t which = EmbAJAXBase::Value) const override;
 
             // Adds a new property to the EMBAjaxBase
             enum Property {                                                     
@@ -287,7 +287,7 @@ SOFTWARE. */
 
             /** Sets the style for the element
              *  @param style    Style string to apply to element */
-            void setStyle(const char* style);
+            void ICACHE_FLASH_ATTR setStyle(const char* style);
 
 
         protected:
@@ -315,7 +315,7 @@ SOFTWARE. */
         public:
 
             /** Constructor */
-            WebsiteManager()
+            ICACHE_FLASH_ATTR WebsiteManager()
                 : _server( WEB_PORT )           // Initialize webserver
                 , _ajax( &_server )             // Initialze EmbAJAX
             {}
@@ -325,7 +325,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Begin( char* hostname );
 
             /** Handle repeating web server tasks */
-            void Handle() { _ajax.loopHook(); }
+            void ICACHE_FLASH_ATTR Handle() { _ajax.loopHook(); }
 
             /** Send message to web client message popup
              * @param msg       Message to send (char array) */

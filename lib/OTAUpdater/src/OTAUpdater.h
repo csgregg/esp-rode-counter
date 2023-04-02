@@ -132,7 +132,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Restart( OTAUpdaterSettings& settings );
 
             /** Handles any repeating tasks for the OTA update service */
-            void Handle();
+            void ICACHE_FLASH_ATTR Handle();
 
 
         protected:

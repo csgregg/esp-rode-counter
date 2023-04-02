@@ -52,6 +52,11 @@ void ICACHE_FLASH_ATTR RodeSettings::SetDefaults() {
 }
 
 
+////////////////////////////////////////////
+//// RodeCounter Class
+
+// Public:
+
 // Initializes the rode counter
 void ICACHE_FLASH_ATTR RodeCounter::Begin( RodeSettings& settings ) {
 
@@ -61,11 +66,17 @@ void ICACHE_FLASH_ATTR RodeCounter::Begin( RodeSettings& settings ) {
 
     LoadRodeSettings();
 
-    _time = millis();   
+    _time = millis();           // TODO - Remove
+
+    // Start up the hardware pins for debounce, etc
+    _upInput.Begin();
+    _downInput.Begin();
+    _sensorInput.Begin();
 
 }
 
 
+// Loads rode counter settings
 void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
 
     // Convertions from mm to cm needed for each
@@ -81,15 +92,56 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
 
 
 // Handles any repeasting rode counting tasks
-void RodeCounter::Handle() {
+void ICACHE_FLASH_ATTR RodeCounter::Handle() {
+
+    // Check if chain has started moving up and update GUI
+    if( _upInput.IsChanged() != HardwareSwitch::INACTIVE ) {
+        _upInput.ResetTrigger();
+        _chainDirection = _upInput.GetState() ? Direction::UP : Direction::STOPPED;
+        indexpage.UpdateWindlassStatus();
+    }
+
+    // Check if chain has started moving down and update GUI
+    if( _downInput.IsChanged() != HardwareSwitch::INACTIVE ) {
+        _downInput.ResetTrigger();
+        _chainDirection = _downInput.GetState() ? Direction::DOWN : Direction::STOPPED;
+        indexpage.UpdateWindlassStatus();
+    }
+
+    // Check if the sensor has triggered rising or falling
+    if( _sensorInput.IsChanged() != HardwareSwitch::INACTIVE ) {
+
+        _sensorInput.ResetTrigger();
+
+        // Only count down on sensor going active
+        if( _sensorInput.IsChanged() == HardwareSwitch::GOING_ACTIVE && _chainDirection == DOWN ) {
+            _currentRode += _settings->windlassDiameter;
+            indexpage.UpdateWindlassStatus();
+        }
+
+        // Only count uo on sensor going inactive
+        if( _sensorInput.IsChanged() == HardwareSwitch::GOING_INACTIVE && _chainDirection == UP ) {
+            _currentRode -= _settings->windlassDiameter;
+            indexpage.UpdateWindlassStatus();
+        }
+    }
 
 
+    // TODO - remove section
     if( millis() > _time + 1000 ) {
         _time = millis();
         
-        WindlassPulseRising();
+        if( _chainDirection == DOWN ) {
+            _currentRode += _settings->windlassDiameter;
+            indexpage.UpdateWindlassStatus();
+        }
+
         delay(100);
-        WindlassPulseFalling();
+
+        if( _chainDirection == UP ) {
+            _currentRode -= _settings->windlassDiameter;
+            indexpage.UpdateWindlassStatus();
+        }
         
         if( _currentRode >= _settings->chainLength || _currentRode <= 0 ) {
             _chainDirection = _chainDirection == UP ? DOWN : UP;
@@ -97,28 +149,10 @@ void RodeCounter::Handle() {
         }
     }
 
-
 }
 
 
 // Protected:
 
-
-void ICACHE_RAM_ATTR RodeCounter::WindlassPulseRising() {
-
-    if( _chainDirection == DOWN ) {
-        _currentRode += _settings->windlassDiameter;
-        indexpage.UpdateWindlassStatus();
-    }
-}
-
-
-void ICACHE_RAM_ATTR RodeCounter::WindlassPulseFalling() {
-
-    if( _chainDirection == UP ) {
-        _currentRode -= _settings->windlassDiameter;
-        indexpage.UpdateWindlassStatus();
-    }
-}
 
 RodeCounter rodecounter;         // Create the global instance

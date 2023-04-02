@@ -51,21 +51,21 @@ SOFTWARE. */
 // Public:
 
 // Gets the value of the element
-const char* EmbAJAXClientFunction::value( uint8_t which ) const {
+const char* ICACHE_FLASH_ATTR EmbAJAXClientFunction::value( uint8_t which ) const {
     if( which == EmbAJAXBase::Value ) return _arg;
     return EmbAJAXElement::value( which );
 }
 
 
 // Gets the value property of the element
-const char* EmbAJAXClientFunction::valueProperty( uint8_t which ) const {
+const char* ICACHE_FLASH_ATTR EmbAJAXClientFunction::valueProperty( uint8_t which ) const {
     if( which == EmbAJAXBase::Value ) return "embajax_func";
     return EmbAJAXElement::valueProperty( which );
 }
 
 
 // Gets the value from the AJAX request
-void EmbAJAXClientFunction::updateFromDriverArg(const char* argname) {
+void ICACHE_FLASH_ATTR EmbAJAXClientFunction::updateFromDriverArg(const char* argname) {
     char buff[1];
     _driver->getArg( argname, buff, 1 );
     if( _status == SENT && buff[0] == 0 ) _status = SUCCESS;         // Function should return "" to acknowledge
@@ -73,7 +73,7 @@ void EmbAJAXClientFunction::updateFromDriverArg(const char* argname) {
 
 
 // Initiates a call of the function
-void EmbAJAXClientFunction::Call( char* arg, bool ack ) {
+void ICACHE_FLASH_ATTR EmbAJAXClientFunction::Call( char* arg, bool ack ) {
     _arg = arg;
     if( ack ) _status = SENT;
     else _status = NONE;
@@ -82,7 +82,7 @@ void EmbAJAXClientFunction::Call( char* arg, bool ack ) {
 
 
 // Initiates a call of the function
-void EmbAJAXClientFunction::Call() {
+void ICACHE_FLASH_ATTR EmbAJAXClientFunction::Call() {
     _arg = '\0';
     _status = NONE;
     setChanged();               // Triggers the response to client
@@ -181,21 +181,21 @@ template<> bool EmbAJAXVariable<bool>::GetBoolValue() const {
 // Public:
 
 // Gets the value of the element
-const char* EmbAJAXStyle::value( uint8_t which ) const {
+const char* ICACHE_FLASH_ATTR EmbAJAXStyle::value( uint8_t which ) const {
     if( which == EmbAJAXStyle::Style ) return _style;
     return EmbAJAXMutableSpan::value( which );
 }
 
 
 // Gets the value property of the element
-const char* EmbAJAXStyle::valueProperty( uint8_t which ) const {
+const char* ICACHE_FLASH_ATTR EmbAJAXStyle::valueProperty( uint8_t which ) const {
     if( which == EmbAJAXStyle::Style ) return "style";
     return EmbAJAXMutableSpan::valueProperty( which );
 }
 
 
 // Sets the style for the element
-void EmbAJAXStyle::setStyle( const char* style ) {
+void ICACHE_FLASH_ATTR EmbAJAXStyle::setStyle( const char* style ) {
     _style = style;
     setChanged();
 }

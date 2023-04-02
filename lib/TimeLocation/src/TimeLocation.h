@@ -68,7 +68,7 @@ SOFTWARE. */
             };
 
             /** Resets location to default */
-            void SetDefaults();
+            void ICACHE_FLASH_ATTR SetDefaults();
 
             IPAddress publicIP;                                 // Public IP address
             char city[TLO_IPINFO_MAX_CITY_LEN];                 // City
@@ -80,7 +80,7 @@ SOFTWARE. */
 
              // Create a compare operators
              
-            bool operator== ( const Location& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const Location& other ) const {
                 return ( strcmp( city, other.city ) == 0 )
                     && ( strcmp( region, other.region ) == 0 )
                     && ( strcmp( country, other.country ) == 0 )
@@ -89,7 +89,7 @@ SOFTWARE. */
                     && ( strcmp( postal, other.postal ) == 0 )
                     && ( strcmp( timezone, other.timezone ) == 0 );
             }
-            bool operator!= ( const Location& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const Location& other ) const {
                 return ( strcmp( city, other.city ) != 0 )
                     || ( strcmp( region, other.region ) != 0 )
                     || ( strcmp( country, other.country ) != 0 )
@@ -118,13 +118,13 @@ SOFTWARE. */
 
              // Create a compare operators
 
-            bool operator== ( const TimeLocationSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const TimeLocationSettings& other ) const {
                 return enabled == other.enabled
                     && ( strcmp( ipInfoToken, other.ipInfoToken ) == 0 )
                     && location == other.location
                     && ( strcmp( posix, other.posix ) == 0 );
             }
-            bool operator!= ( const TimeLocationSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const TimeLocationSettings& other ) const {
                 return enabled != other.enabled
                     || ( strcmp( ipInfoToken, other.ipInfoToken ) != 0 )
                     || location != other.location
@@ -150,7 +150,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Restart( TimeLocationSettings &settings );
 
             /** Handles any repeasting time and location tasks */
-            void Handle();
+            void ICACHE_FLASH_ATTR Handle();
 
             /** Detect location using IPInfo.io */
             bool ICACHE_FLASH_ATTR DetectLocation();

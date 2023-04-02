@@ -77,7 +77,7 @@ SOFTWARE. */
 
             // Create a compare operators
             
-            bool operator== ( const DeviceSettings& other ) const {
+            bool ICACHE_FLASH_ATTR  operator== ( const DeviceSettings& other ) const {
                 return networkSettings == other.networkSettings
 #ifndef NO_LOGGING
                     && loggerSettings == other.loggerSettings
@@ -90,7 +90,7 @@ SOFTWARE. */
 #endif
                     && rodeSettings == other.rodeSettings;
             }
-            bool operator!= ( const DeviceSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const DeviceSettings& other ) const {
                 return networkSettings != other.networkSettings
 #ifndef NO_LOGGING
                     || loggerSettings != other.loggerSettings

@@ -45,6 +45,77 @@ DoubleResetDetector drd( DRD_TIMEOUT, DRD_ADDRESS );
 
 // Public:
 
+
+bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
+
+    int8_t irq = digitalPinToInterrupt(_pin);
+    
+    if (irq != NOT_AN_INTERRUPT)
+    {
+        pinMode( _pin, _type == PinType::ACTIVE_HIGH ? INPUT : INPUT_PULLUP );
+        _state = _type != PinType::ACTIVE_HIGH;
+
+        // assign ourselves a ISR ID ...
+        _myISRId = UINT8_MAX;
+        for (uint8_t i = 0; i < MAX_ISR; i++) {
+            if (!(_ISRUsed & _BV(i))) {    // found a free ISR Id? 
+                _myISRId = i;                 // remember who this instance is
+                _myInstance[_myISRId] = this; // record this instance
+                _ISRUsed |= _BV(_myISRId);    // lock this in the allocations table
+                break;
+            }
+        }
+
+        // ... and attach corresponding ISR callback from the lookup table
+        static void((*ISRfunc[MAX_ISR])()) =
+        {
+            // Declare all the [MAX_ISR] encoder ISRs
+            #define GISRM2(i, _) CAT(globalISR,i), 
+            EVAL(REPEAT( MAX_ISR, GISRM2, ~))
+        };
+  
+        ResetTrigger();
+        _count = 0;
+
+        if (_myISRId != UINT8_MAX) {
+          if( _trigger == CHANGE ) attachInterrupt(irq, ISRfunc[_myISRId], CHANGE );
+          if( _type == PinType::ACTIVE_HIGH ) attachInterrupt(irq, ISRfunc[_myISRId], ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ) ? RISING : FALLING ) ;
+        } else irq = NOT_AN_INTERRUPT;
+
+    }
+    return(irq != NOT_AN_INTERRUPT);
+}
+
+
+// Instance ISR handler called from static ISR globalISRx
+void ICACHE_RAM_ATTR HardwareSwitch::instanceISR() { 
+    _triggerTime = millis();
+    if( _lastTriggerTime == 0 ){
+        _state = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW);
+        if( _trigger == CHANGE ) _change = _state ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
+        else _change = ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ? RISING : FALLING ) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
+        _count++;
+        _lastTriggerTime = _triggerTime;
+
+    }
+    else if( _triggerTime - _lastTriggerTime > DEBOUNCE_TIME ) _lastTriggerTime = 0;
+}   
+
+
+// Interrupt handling declarations required outside the class
+uint8_t HardwareSwitch::_ISRUsed = 0;           // allocation table for the globalISRx()
+HardwareSwitch* HardwareSwitch::_myInstance[MAX_ISR]; // callback instance handle for the ISR
+ 
+// ISR for each _myISRId
+#define GISRM3(i, _) void ICACHE_RAM_ATTR HardwareSwitch::CAT(globalISR,i)(){ HardwareSwitch::_myInstance[i]->instanceISR(); };
+EVAL(REPEAT( MAX_ISR, GISRM3, ~))
+
+
+////////////////////////////////////////////
+//// Device Manager Class
+
+// Public:
+
 // Sets up the device hardware and build environment
 void ICACHE_FLASH_ATTR Device::Begin() {
 
@@ -64,8 +135,9 @@ void ICACHE_FLASH_ATTR Device::Begin() {
 
 // Handles any repeating tasks
 void ICACHE_FLASH_ATTR Device::Handle(){
-  drd.loop();       // Handle double reset detection
+    drd.loop();       // Handle double reset detection
 }
 
 
 Device device;           // Create the global instance
+

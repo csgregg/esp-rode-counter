@@ -73,7 +73,7 @@ SOFTWARE. */
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
-            RodeSettingsPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
+            ICACHE_FLASH_ATTR RodeSettingsPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
 
                 windlass_dia("windlass_dia"),
                 windlass_rpm("windlass_rpm"),

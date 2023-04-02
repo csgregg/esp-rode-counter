@@ -160,7 +160,7 @@ SOFTWARE. */
 
             // Create a compare operators
             
-            bool operator== ( const LoggerSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const LoggerSettings& other ) const {
                 return serialBaud == other.serialBaud
                     && serialModeOn == other.serialModeOn
 #ifndef LOG_SERIAL_ONLY
@@ -173,7 +173,7 @@ SOFTWARE. */
                     && ( strcmp( globalTags, other.globalTags ) == 0 )
                     && level == other.level;
             }
-            bool operator!= ( const LoggerSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const LoggerSettings& other ) const {
                 return serialBaud != other.serialBaud
                     || serialModeOn != other.serialModeOn
 #ifndef LOG_SERIAL_ONLY
@@ -308,7 +308,7 @@ SOFTWARE. */
              *  @param flag      Build flag as a unsigned int */
             void ICACHE_FLASH_ATTR printFlag( const LogType type, const LogTag tag, const char* name, const uint flag );
 
-            void Handle();      /** Handles any repeating device actions */ 
+            void ICACHE_FLASH_ATTR Handle();      /** Handles any repeating device actions */ 
 
 
         protected:
@@ -317,25 +317,25 @@ SOFTWARE. */
              *  Also adds timer and head if in verbose mode
              *  @param type      'type' of log to log    
              *  @param tag       tags to apply to */
-            void inline LogPrefix(const LogType type, const LogTag tag);
+            void inline ICACHE_FLASH_ATTR LogPrefix(const LogType type, const LogTag tag);
 
             /** Logs a message to the serial port
              *  @param type      'type' of log to log    
              *  @param tag       tags to apply to
              *  @param message   message to send as a char array */
-            void LogToSerial( const LogType type, const LogTag tag, const char* message );
+            void ICACHE_FLASH_ATTR LogToSerial( const LogType type, const LogTag tag, const char* message );
 
 #ifndef LOG_SERIAL_ONLY
             /** Logs a message to the Loggy service
              *  @param type      'type' of log to log    
              *  @param tag       tags to apply to
              *  @param message   message to send asd a char array */
-            void LogToService( const LogType type, const LogTag tag, const char* message );
+            void ICACHE_FLASH_ATTR LogToService( const LogType type, const LogTag tag, const char* message );
 #endif
 
 #ifndef LOG_SERIAL_ONLY
             /** Logs a tick to the Loggy service containing the minimum data set */
-            void HandleTick();
+            void ICACHE_FLASH_ATTR HandleTick();
 #endif
             
 #ifndef LOG_SERIAL_ONLY

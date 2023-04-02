@@ -39,6 +39,7 @@ SOFTWARE. */
     
     // Project Libraries
     #include "Credentials.h"                // Contains private definitions (excluded from repo)
+    #include "precomputils.h"
 
     #ifndef BUILD_NUMBER
         #include "Version.h"                // Defines local build number
@@ -158,6 +159,100 @@ SOFTWARE. */
     static const char flag_TLO_IPINFO_SERVICE [] PROGMEM = ESCAPEQUOTE(TLO_IPINFO_SERVICE);     // URL for IPInfo.io service
 #endif
 
+
+    // Debouncer
+    #define MAX_ISR         3       // Max number of interrupt service rountines supported (only used what's needed)
+    #define DEBOUNCE_TIME   20      // milliseconds
+
+
+    /** @class Hardware Switch Class
+     *  @brief Sets up the hardware switch on an input pin with debounce 
+     *         https://arduinoplusplus.wordpress.com/2021/02/05/interrupts-and-c-class-instances/ */
+    class HardwareSwitch
+    {
+        public:
+
+            // How is the pin used?
+            enum PinType : uint8_t {
+                ACTIVE_LOW,
+                ACTIVE_HIGH
+            };
+
+            // State changes to the pin
+            enum ActiveChange : uint8_t {
+                INACTIVE,
+                GOING_ACTIVE,
+                GOING_INACTIVE
+            };
+
+            /** Constructor */
+            ICACHE_FLASH_ATTR HardwareSwitch(uint8_t _pin, PinType _type, uint8_t _trigger ) : 
+                _pin(_pin),
+                _type(_type),
+                _trigger(_trigger)
+                {}
+        
+            /** Destructor */
+            ICACHE_FLASH_ATTR ~HardwareSwitch()
+            {
+                detachInterrupt(digitalPinToInterrupt(_pin));
+                _ISRUsed &= ~_BV(_myISRId);   // free up the ISR slot for someone else
+            }
+
+            /** Checks to see if there is a change in pin state
+             *  @return Status change */
+            ActiveChange ICACHE_FLASH_ATTR IsChanged(){ return _change; };
+
+            /** Gets the pin state
+             *  @return Pin state (true = active) */
+            bool ICACHE_FLASH_ATTR GetState(){ return _state; };
+        
+            /** Starts up the pin debounce
+             *  @return Successful if there was a spare ISR to use */
+            bool ICACHE_FLASH_ATTR Begin();
+
+            /** Gets the current counter for the pin
+             *  @return Pin count */
+            uint ICACHE_FLASH_ATTR GetCount(){ return _count; };
+
+            /** Resets the pin counter to zero */
+            void ICACHE_FLASH_ATTR ResetCount(){ _count = 0; };
+        
+            /** Resets the trigger for this pin */
+            void ICACHE_FLASH_ATTR ResetTrigger(){ 
+                _change = ActiveChange::INACTIVE;                     
+                _triggerTime = 0;  
+                _lastTriggerTime = 0;  
+            };
+
+    
+        private:
+
+            // Define the class variables
+            uint8_t _pin;                 // The interrupt pin used
+            PinType _type;               // If the active is when pin is high
+            uint8_t _trigger;               // ISR trigger type
+
+            uint8_t _myISRId;                // This is my instance ISR Id for _myInstance[x] and encoderISRx
+
+            volatile uint16_t _count;        // Encoder interrupt counter
+            volatile ActiveChange _change;                    
+            volatile ulong _triggerTime;  
+            volatile ulong _lastTriggerTime; 
+            volatile bool _state;
+
+            static uint8_t _ISRUsed;                     // Keep track of which ISRs are used (global bit field)
+            static HardwareSwitch* _myInstance[];        // Callback instance for the ISR to reach instanceISR()
+            
+            void ICACHE_RAM_ATTR instanceISR();         // Instance ISR handler called from static ISR globalISRx
+            
+            // Declare all the [MAX_ISR] encoder ISRs
+            #define GISRM1(i, _) static void ICACHE_RAM_ATTR CAT(globalISR,i)(); 
+            EVAL(REPEAT( MAX_ISR, GISRM1, ~))
+    };
+
+
+
     /** @class IOT Device Class
      *  @brief Expand the EspClass to add build flags, and contains any hardware specifics. */
     class Device : public EspClass
@@ -196,7 +291,6 @@ SOFTWARE. */
             /** Handles any repeating device actions */    
             void ICACHE_FLASH_ATTR Handle();
 
-
         protected:
 
             char _buildNo[FLAG_MAX_BUILD_NO_LEN];               // Stores the build number as char array                // TODO - this is double storage. Must be a better way.
@@ -205,6 +299,7 @@ SOFTWARE. */
             char _buildEnv[FLAG_MAX_BUILDENV_LEN];              // Stores build environment as char array
 
             StartMode _startMode = NORMAL;                      // The mode the device was started in. Defaults to NORMAL
+
     };
 
     // Declaring the global instances

@@ -188,7 +188,7 @@ SOFTWARE. */
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
-            NetworkSettingsPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
+            ICACHE_FLASH_ATTR NetworkSettingsPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
                
                 wifi_mode_ap( "wifi_mode_ap", "" ),
                 wifi_mode_stn( "wifi_mode_stn", "" ),

@@ -61,14 +61,14 @@ SOFTWARE. */
         
             // Create a compare operators
             
-            bool operator== ( const NetworkSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator== ( const NetworkSettings& other ) const {
                 return wifiSettings == other.wifiSettings
 #ifndef NETCHECK_DISABLE
                     && netCheckSettings == other.netCheckSettings
 #endif
                     && dnsSettings == other.dnsSettings;
             }
-            bool operator!= ( const NetworkSettings& other ) const {
+            bool ICACHE_FLASH_ATTR operator!= ( const NetworkSettings& other ) const {
                 return wifiSettings != other.wifiSettings
 #ifndef NETCHECK_DISABLE
                     || netCheckSettings != other.netCheckSettings
@@ -97,7 +97,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Begin( NetworkSettings& settings );
 
             /** Handles any repeated nertwork tasks */
-            void Handle();
+            void ICACHE_FLASH_ATTR Handle();
 
             // WiFi wrappers
 

@@ -89,7 +89,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Begin( DNSSettings& settings, bool isInApMode );
 
             /** Handles any repeated DNS tasks */
-            void Handle();
+            void ICACHE_FLASH_ATTR Handle();
 
 
         protected:

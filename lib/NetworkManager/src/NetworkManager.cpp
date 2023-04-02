@@ -100,7 +100,7 @@ NetworkManager::NetworkStatus ICACHE_FLASH_ATTR NetworkManager::GetNetworkStatus
 
 
 // Handle any repeating network tasks
-void NetworkManager::Handle() {
+void ICACHE_FLASH_ATTR NetworkManager::Handle() {
     _wifi.Handle();
 #ifndef NETCHECK_DISABLE
     _netCheck.Handle();

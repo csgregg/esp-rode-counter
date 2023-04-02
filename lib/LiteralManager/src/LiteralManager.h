@@ -74,17 +74,17 @@ SOFTWARE. */
             /** Retrieve literal by ID
              *  @param id      The ID of the literal
              *  @returns       String class for the literal */
-            String GetString( literalID id );
+            String ICACHE_FLASH_ATTR GetString( literalID id );
             
             /** Retrieve literal by ID
              *  @param id      The ID of the literal
              *  @returns       Char pointer to the literal */
-            const char* GetChar( literalID id );
+            const char* ICACHE_FLASH_ATTR GetChar( literalID id );
 
             /** Retrieve literal by ID
              *  @param id      The ID of the literal
              *  @returns       Size of the literal */
-	        size_t GetSize( literalID id ) { return strlen( LiteralRefs[id] ); };
+	        size_t ICACHE_FLASH_ATTR GetSize( literalID id ) { return strlen( LiteralRefs[id] ); };
 
 
         protected:

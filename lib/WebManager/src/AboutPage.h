@@ -68,7 +68,7 @@ SOFTWARE. */
             /** Construct a new page object
              * @param ajaxHander        Pointer to the lamda function that handles ajax for this page
              * @param initHandler       Pointer to the lamda function that initializes this page */
-            AboutPage( void(*ajaxHander)(), void(*initHandler)() ) : 
+            ICACHE_FLASH_ATTR AboutPage( void(*ajaxHander)(), void(*initHandler)() ) : 
                
                 device_id( "device_id" ),
                 build_env( "build_env" ),
