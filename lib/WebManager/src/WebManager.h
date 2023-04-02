@@ -49,6 +49,8 @@ SOFTWARE. */
 
     #define WEB_PORT 80
     #define WEB_MAX_MESSAGE_LEN 100
+
+    #define DEFAULT_POLL_PERIOD 1000    // Page update period (ms)
     
 
     // Describes a page for the EmbAJAX functionality
@@ -299,11 +301,11 @@ SOFTWARE. */
 
     // Elements that go on every page and are declared in this lib
 #ifndef TIMELOC_DISABLE
-    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message,&date_time
-    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 3
+    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message,&date_time,&poll_period
+    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 4
 #else
-    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message
-    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 2
+    #define WEB_PAGE_COMMON_ELEMENTS &net_status,&post_message,&poll_period
+    #define WEB_PAGE_COMMON_ELEMENTS_COUNT 3
 #endif
 
 
@@ -381,6 +383,7 @@ SOFTWARE. */
 
     extern EmbAJAXVarInt net_status;                // Status indicator state
     extern EmbAJAXClientFunction post_message;      // Message popup function
+    extern EmbAJAXVarInt poll_period;               // Sets the polling period for the page - use poll_period.SetVale() to change it
 #ifndef TIMELOC_DISABLE
     extern EmbAJAXMutableSpan date_time;            // Date and time element
 #endif

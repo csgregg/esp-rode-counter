@@ -44,11 +44,11 @@ SOFTWARE. */
 // Resets rode settings to default
 void ICACHE_FLASH_ATTR RodeSettings::SetDefaults() {
 
-    windlassDiameter = 300;             // The diameter of the windlass (mm)
-    windlassSpeed = 75;                 // The speed of the windlass (rpm)
-    windlassReversed = false;           // Are the windlass controls reversed
-    chainLength = 50000;                // Overall length of the chain (mm)
-    waterLine = 2000;                   // The water line on the chain (mm)
+    windlassDiameter = DEFAULT_WINDLASS_DIAMETER;       // The diameter of the windlass (mm)
+    windlassSpeed = DEFAULT_WINDLASS_SPEED;             // The speed of the windlass (rpm)
+    windlassReversed = DEFAULT_WINDLASS_REVERSED;       // Are the windlass controls reversed
+    chainLength = DEFAULT_CHAIN_LENGTH;                 // Overall length of the chain (mm)
+    waterLine = DEFAULT_WATER_LINE;                     // The water line on the chain (mm)
 }
 
 
@@ -97,14 +97,14 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     // Check if chain has started moving up and update GUI
     if( _upInput.IsChanged() != HardwareSwitch::INACTIVE ) {
         _upInput.ResetTrigger();
-        _chainDirection = _upInput.GetState() ? Direction::UP : Direction::STOPPED;
+        _chainDirection = _upInput.GetState() ? ( _settings->windlassReversed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
     }
 
     // Check if chain has started moving down and update GUI
     if( _downInput.IsChanged() != HardwareSwitch::INACTIVE ) {
         _downInput.ResetTrigger();
-        _chainDirection = _downInput.GetState() ? Direction::DOWN : Direction::STOPPED;
+        _chainDirection = _downInput.GetState() ? ( _settings->windlassReversed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
     }
 
@@ -113,7 +113,7 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
 
         _sensorInput.ResetTrigger();
 
-        // Only count down on sensor going active
+        // Only count down on sensor going active - don't need to worry if windlass is reversed
         if( _sensorInput.IsChanged() == HardwareSwitch::GOING_ACTIVE && _chainDirection == DOWN ) {
             _currentRode += _settings->windlassDiameter;
             indexpage.UpdateWindlassStatus();

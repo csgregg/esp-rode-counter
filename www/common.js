@@ -1,6 +1,6 @@
-
-// Available station
 var net_status;
+var poll_period = 1000;
+
 var loader_element=document.getElementById('device_box');
 
 
@@ -299,11 +299,13 @@ class embajaxstatus {
 } 
 
 
+// Check for new updates to page
 
 function doPoll() {
-   // console.log("Status - Poll");
+   //console.log("Status - Poll");
    
    doRequest('','',updatePage);  
+   setTimeout(doPoll,poll_period);
 }
 
  
@@ -314,4 +316,4 @@ function doPoll() {
 ajaxstatus = new embajaxstatus(document.getElementById('EmbAjaxStatusInd'));
 initPage();
 menu_highlight();
-setInterval(doPoll,500);
+doPoll();

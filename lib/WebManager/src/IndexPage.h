@@ -39,6 +39,8 @@ SOFTWARE. */
     // Project Libraries
     #include "WebManager.h"
 
+    #define INDEX_PAGE_POLLING 250
+
     /** @class IndexPage
      *  @brief Server-side functions for index.html page */
     class IndexPage {
@@ -91,6 +93,7 @@ SOFTWARE. */
                     handler.URL = "/index.html";
                     handler.ajaxHander = ajaxHandler;
                     handler.initHandler = initHandler;
+
                 };
 
             EmbAJAXPage<sizeof(page_elements)/sizeof(EmbAJAXBase*)> ajax;       // Instance of EmbAJAX for this page

@@ -396,6 +396,7 @@ void ICACHE_FLASH_ATTR WebsiteManager::RedirectCaptivePortal() {
 // Create the global instances
 EmbAJAXVarInt net_status("net_status",0);
 EmbAJAXClientFunction post_message("post_message");
+EmbAJAXVarInt poll_period("poll_period",DEFAULT_POLL_PERIOD);
 #ifndef TIMELOC_DISABLE
 EmbAJAXMutableSpan date_time("date_time");
 #endif
