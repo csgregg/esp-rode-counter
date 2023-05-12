@@ -63,10 +63,7 @@ void ICACHE_FLASH_ATTR RodeCounter::Begin( RodeSettings& settings ) {
     LOG( PSTR("(Rode) Starting rode counter") );
 
     _settings = &settings;
-
     LoadRodeSettings();
-
-    _time = millis();           // TODO - Remove
 
     // Start up the hardware pins for debounce, etc
     _upInput.Begin();
@@ -94,59 +91,45 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
 // Handles any repeasting rode counting tasks
 void ICACHE_FLASH_ATTR RodeCounter::Handle() {
 
+    _upInput.Handle();
+    _downInput.Handle();
+    _sensorInput.Handle();
+
     // Check if chain has started moving up and update GUI
     if( _upInput.IsChanged() != HardwareSwitch::INACTIVE ) {
-        _upInput.ResetTrigger();
-        _chainDirection = _upInput.GetState() ? ( _settings->windlassReversed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
+
+        _chainDirection = _upInput.isActive() ? ( _settings->windlassReversed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
+
+        _upInput.ResetTrigger();
     }
 
     // Check if chain has started moving down and update GUI
     if( _downInput.IsChanged() != HardwareSwitch::INACTIVE ) {
-        _downInput.ResetTrigger();
-        _chainDirection = _downInput.GetState() ? ( _settings->windlassReversed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
+
+        _chainDirection = _downInput.isActive() ? ( _settings->windlassReversed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
+
+        _downInput.ResetTrigger();
     }
 
     // Check if the sensor has triggered rising or falling
     if( _sensorInput.IsChanged() != HardwareSwitch::INACTIVE ) {
 
-        _sensorInput.ResetTrigger();
-
         // Only count down on sensor going active - don't need to worry if windlass is reversed
-        if( _sensorInput.IsChanged() == HardwareSwitch::GOING_ACTIVE && _chainDirection == DOWN ) {
+        if( _sensorInput.IsChanged() == HardwareSwitch::ActiveChange::GOING_ACTIVE && _chainDirection == Direction::DOWN ) {
             _currentRode += _settings->windlassDiameter;
             indexpage.UpdateWindlassStatus();
         }
 
-        // Only count uo on sensor going inactive
-        if( _sensorInput.IsChanged() == HardwareSwitch::GOING_INACTIVE && _chainDirection == UP ) {
+        // Only count up on sensor going inactive
+        if( _sensorInput.IsChanged() == HardwareSwitch::ActiveChange::GOING_INACTIVE && _chainDirection == Direction::UP ) {
             _currentRode -= _settings->windlassDiameter;
-            indexpage.UpdateWindlassStatus();
-        }
-    }
-
-
-    // TODO - remove section
-    if( millis() > _time + 1000 ) {
-        _time = millis();
-        
-        if( _chainDirection == DOWN ) {
-            _currentRode += _settings->windlassDiameter;
+            if(_currentRode < 0) _currentRode = 0;
             indexpage.UpdateWindlassStatus();
         }
 
-        delay(100);
-
-        if( _chainDirection == UP ) {
-            _currentRode -= _settings->windlassDiameter;
-            indexpage.UpdateWindlassStatus();
-        }
-        
-        if( _currentRode >= _settings->chainLength || _currentRode <= 0 ) {
-            _chainDirection = _chainDirection == UP ? DOWN : UP;
-            DEBUG("Reverse");
-        }
+        _sensorInput.ResetTrigger();
     }
 
 }
