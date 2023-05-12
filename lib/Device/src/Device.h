@@ -161,8 +161,8 @@ SOFTWARE. */
 
 
     // Debouncer
-    #define MAX_ISR         3       // Max number of interrupt service rountines supported (only used what's needed)
-    #define DEBOUNCE_TIME   20      // milliseconds
+    #define MAX_ISR         3       // Max number of interrupt service rountines supported (only use what's needed)
+    #define DEBOUNCE_TIME   50      // milliseconds
 
 
     /** @class Hardware Switch Class
@@ -185,6 +185,11 @@ SOFTWARE. */
                 GOING_INACTIVE
             };
 
+            enum PinFunction : uint8_t {
+                LEVEL,
+                INTERRUPT
+            };
+
             /** Constructor */
             ICACHE_FLASH_ATTR HardwareSwitch(uint8_t _pin, PinType _type, uint8_t _trigger ) : 
                 _pin(_pin),
@@ -205,27 +210,22 @@ SOFTWARE. */
 
             /** Gets the pin state
              *  @return Pin state (true = active) */
-            bool ICACHE_FLASH_ATTR GetState(){ return _state; };
+            bool ICACHE_FLASH_ATTR isActive(){ return (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW); };
         
             /** Starts up the pin debounce
              *  @return Successful if there was a spare ISR to use */
             bool ICACHE_FLASH_ATTR Begin();
-
-            /** Gets the current counter for the pin
-             *  @return Pin count */
-            uint ICACHE_FLASH_ATTR GetCount(){ return _count; };
-
-            /** Resets the pin counter to zero */
-            void ICACHE_FLASH_ATTR ResetCount(){ _count = 0; };
         
             /** Resets the trigger for this pin */
             void ICACHE_FLASH_ATTR ResetTrigger(){ 
                 _change = ActiveChange::INACTIVE;                     
-                _triggerTime = 0;  
-                _lastTriggerTime = 0;  
             };
 
-    
+            /** Handle - clears the trigger after the debounce time */
+            void ICACHE_FLASH_ATTR Handle(){
+                if( _firstTriggerTime !=0 && millis() - _firstTriggerTime > DEBOUNCE_TIME ) _firstTriggerTime = 0;
+            };
+
         private:
 
             // Define the class variables
@@ -235,11 +235,9 @@ SOFTWARE. */
 
             uint8_t _myISRId;                // This is my instance ISR Id for _myInstance[x] and encoderISRx
 
-            volatile uint16_t _count;        // Encoder interrupt counter
-            volatile ActiveChange _change;                    
-            volatile ulong _triggerTime;  
-            volatile ulong _lastTriggerTime; 
-            volatile bool _state;
+            volatile ActiveChange _change;                    // If the there a change
+            volatile ulong _firstTriggerTime;       // Time of first trigger
+        //    volatile bool _state;               // State of pin
 
             static uint8_t _ISRUsed;                     // Keep track of which ISRs are used (global bit field)
             static HardwareSwitch* _myInstance[];        // Callback instance for the ISR to reach instanceISR()

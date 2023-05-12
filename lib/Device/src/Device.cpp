@@ -48,12 +48,13 @@ DoubleResetDetector drd( DRD_TIMEOUT, DRD_ADDRESS );
 
 bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
 
+    pinMode( _pin, _type == PinType::ACTIVE_HIGH ? INPUT : INPUT_PULLUP );
+  //  _state = _type != PinType::ACTIVE_HIGH;
+
     int8_t irq = digitalPinToInterrupt(_pin);
     
     if (irq != NOT_AN_INTERRUPT)
     {
-        pinMode( _pin, _type == PinType::ACTIVE_HIGH ? INPUT : INPUT_PULLUP );
-        _state = _type != PinType::ACTIVE_HIGH;
 
         // assign ourselves a ISR ID ...
         _myISRId = UINT8_MAX;
@@ -75,7 +76,6 @@ bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
         };
   
         ResetTrigger();
-        _count = 0;
 
         if (_myISRId != UINT8_MAX) {
           if( _trigger == CHANGE ) attachInterrupt(irq, ISRfunc[_myISRId], CHANGE );
@@ -89,18 +89,18 @@ bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
 
 // Instance ISR handler called from static ISR globalISRx
 void ICACHE_RAM_ATTR HardwareSwitch::instanceISR() { 
-    _triggerTime = millis();
-    if( _lastTriggerTime == 0 ){
-        _state = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW);
-        if( _trigger == CHANGE ) _change = _state ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
+
+    // First trigger
+    if( _firstTriggerTime == 0 ){
+
+        _firstTriggerTime = millis();;
+
+        if( _trigger == CHANGE ) _change = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
         else _change = ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ? RISING : FALLING ) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
-        _count++;
-        _lastTriggerTime = _triggerTime;
 
     }
-    else if( _triggerTime - _lastTriggerTime > DEBOUNCE_TIME ) _lastTriggerTime = 0;
-}   
 
+}   
 
 // Interrupt handling declarations required outside the class
 uint8_t HardwareSwitch::_ISRUsed = 0;           // allocation table for the globalISRx()
@@ -130,6 +130,7 @@ void ICACHE_FLASH_ATTR Device::Begin() {
     // Physical IO Setup
 
     pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN,HIGH);
 }
 
 
