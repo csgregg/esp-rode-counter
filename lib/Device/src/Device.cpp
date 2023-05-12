@@ -46,10 +46,13 @@ DoubleResetDetector drd( DRD_TIMEOUT, DRD_ADDRESS );
 // Public:
 
 
-bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
+bool ICACHE_FLASH_ATTR HardwareInput::Begin() {
 
     pinMode( _pin, _type == PinType::ACTIVE_HIGH ? INPUT : INPUT_PULLUP );
-  //  _state = _type != PinType::ACTIVE_HIGH;
+
+    if( _function == PinFunction::LEVEL) return true;
+
+    // Only do the rest if it is an interrupt pin
 
     int8_t irq = digitalPinToInterrupt(_pin);
     
@@ -59,10 +62,10 @@ bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
         // assign ourselves a ISR ID ...
         _myISRId = UINT8_MAX;
         for (uint8_t i = 0; i < MAX_ISR; i++) {
-            if (!(_ISRUsed & _BV(i))) {    // found a free ISR Id? 
-                _myISRId = i;                 // remember who this instance is
-                _myInstance[_myISRId] = this; // record this instance
-                _ISRUsed |= _BV(_myISRId);    // lock this in the allocations table
+            if (!(_ISRUsed & _BV(i))) {         // found a free ISR Id? 
+                _myISRId = i;                   // remember who this instance is
+                _myInstance[_myISRId] = this;   // record this instance
+                _ISRUsed |= _BV(_myISRId);      // lock this in the allocations table
                 break;
             }
         }
@@ -79,7 +82,7 @@ bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
 
         if (_myISRId != UINT8_MAX) {
           if( _trigger == CHANGE ) attachInterrupt(irq, ISRfunc[_myISRId], CHANGE );
-          if( _type == PinType::ACTIVE_HIGH ) attachInterrupt(irq, ISRfunc[_myISRId], ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ) ? RISING : FALLING ) ;
+          else if( _type == PinType::ACTIVE_HIGH ) attachInterrupt(irq, ISRfunc[_myISRId], ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ) ? RISING : FALLING ) ;
         } else irq = NOT_AN_INTERRUPT;
 
     }
@@ -88,7 +91,7 @@ bool ICACHE_FLASH_ATTR HardwareSwitch::Begin() {
 
 
 // Instance ISR handler called from static ISR globalISRx
-void ICACHE_RAM_ATTR HardwareSwitch::instanceISR() { 
+void ICACHE_RAM_ATTR HardwareInput::instanceISR() { 
 
     // First trigger
     if( _firstTriggerTime == 0 ){
@@ -103,11 +106,11 @@ void ICACHE_RAM_ATTR HardwareSwitch::instanceISR() {
 }   
 
 // Interrupt handling declarations required outside the class
-uint8_t HardwareSwitch::_ISRUsed = 0;           // allocation table for the globalISRx()
-HardwareSwitch* HardwareSwitch::_myInstance[MAX_ISR]; // callback instance handle for the ISR
+uint8_t HardwareInput::_ISRUsed = 0;           // allocation table for the globalISRx()
+HardwareInput* HardwareInput::_myInstance[MAX_ISR]; // callback instance handle for the ISR
  
 // ISR for each _myISRId
-#define GISRM3(i, _) void ICACHE_RAM_ATTR HardwareSwitch::CAT(globalISR,i)(){ HardwareSwitch::_myInstance[i]->instanceISR(); };
+#define GISRM3(i, _) void ICACHE_RAM_ATTR HardwareInput::CAT(globalISR,i)(){ HardwareInput::_myInstance[i]->instanceISR(); };
 EVAL(REPEAT( MAX_ISR, GISRM3, ~))
 
 
