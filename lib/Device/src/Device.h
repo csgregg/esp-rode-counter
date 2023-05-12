@@ -168,7 +168,7 @@ SOFTWARE. */
     /** @class Hardware Switch Class
      *  @brief Sets up the hardware switch on an input pin with debounce 
      *         https://arduinoplusplus.wordpress.com/2021/02/05/interrupts-and-c-class-instances/ */
-    class HardwareSwitch
+    class HardwareInput
     {
         public:
 
@@ -191,15 +191,19 @@ SOFTWARE. */
             };
 
             /** Constructor */
-            ICACHE_FLASH_ATTR HardwareSwitch(uint8_t _pin, PinType _type, uint8_t _trigger ) : 
+            ICACHE_FLASH_ATTR HardwareInput(uint8_t _pin, PinType _type, PinFunction _function, uint8_t _trigger = 0x00) : 
                 _pin(_pin),
                 _type(_type),
+                _function(_function),
                 _trigger(_trigger)
                 {}
         
             /** Destructor */
-            ICACHE_FLASH_ATTR ~HardwareSwitch()
+            ICACHE_FLASH_ATTR ~HardwareInput()
             {
+                if( _function == PinFunction::LEVEL) return;
+
+                // Only do this if it is an interrupt pin
                 detachInterrupt(digitalPinToInterrupt(_pin));
                 _ISRUsed &= ~_BV(_myISRId);   // free up the ISR slot for someone else
             }
@@ -223,26 +227,28 @@ SOFTWARE. */
 
             /** Handle - clears the trigger after the debounce time */
             void ICACHE_FLASH_ATTR Handle(){
+                if( _function == PinFunction::LEVEL ) return;
+                // Only do this if it is an interrupt pin
                 if( _firstTriggerTime !=0 && millis() - _firstTriggerTime > DEBOUNCE_TIME ) _firstTriggerTime = 0;
             };
 
         private:
 
             // Define the class variables
-            uint8_t _pin;                 // The interrupt pin used
-            PinType _type;               // If the active is when pin is high
+            uint8_t _pin;                   // The interrupt pin used
+            PinType _type;                  // If the active is when pin is high
+            PinFunction _function;
             uint8_t _trigger;               // ISR trigger type
 
-            uint8_t _myISRId;                // This is my instance ISR Id for _myInstance[x] and encoderISRx
+            uint8_t _myISRId;               // This is my instance ISR Id for _myInstance[x] and encoderISRx
 
-            volatile ActiveChange _change;                    // If the there a change
+            volatile ActiveChange _change;          // If the there a change
             volatile ulong _firstTriggerTime;       // Time of first trigger
-        //    volatile bool _state;               // State of pin
 
-            static uint8_t _ISRUsed;                     // Keep track of which ISRs are used (global bit field)
-            static HardwareSwitch* _myInstance[];        // Callback instance for the ISR to reach instanceISR()
+            static uint8_t _ISRUsed;                // Keep track of which ISRs are used (global bit field)
+            static HardwareInput* _myInstance[];   // Callback instance for the ISR to reach instanceISR()
             
-            void ICACHE_RAM_ATTR instanceISR();         // Instance ISR handler called from static ISR globalISRx
+            void ICACHE_RAM_ATTR instanceISR();     // Instance ISR handler called from static ISR globalISRx
             
             // Declare all the [MAX_ISR] encoder ISRs
             #define GISRM1(i, _) static void ICACHE_RAM_ATTR CAT(globalISR,i)(); 

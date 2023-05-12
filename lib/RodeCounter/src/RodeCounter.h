@@ -98,9 +98,9 @@ SOFTWARE. */
 
             // Constructor
             ICACHE_FLASH_ATTR RodeCounter() : 
-                _sensorInput(D5, HardwareSwitch::PinType::ACTIVE_LOW, CHANGE),      // Setup the hardware pins
-                _upInput(D6, HardwareSwitch::PinType::ACTIVE_LOW, CHANGE ),
-                _downInput(D7, HardwareSwitch::PinType::ACTIVE_LOW, CHANGE )
+                _sensorInput(D5, HardwareInput::PinType::ACTIVE_LOW, HardwareInput::PinFunction::INTERRUPT, CHANGE),      // Setup the hardware pins
+                _upInput(D6, HardwareInput::PinType::ACTIVE_LOW, HardwareInput::PinFunction::INTERRUPT, CHANGE ),
+                _downInput(D7, HardwareInput::PinType::ACTIVE_LOW, HardwareInput::PinFunction::INTERRUPT, CHANGE )
             {}
 
             /** Starts the rode counter
@@ -126,13 +126,13 @@ SOFTWARE. */
 
             RodeSettings* _settings;        // Pointer to data struct containing rode settings
 
-            Direction _chainDirection = STOPPED;       // What is the chain doing
-            uint _currentRode = 0;           // Current amount of rode deployed (mm)
+            Direction _chainDirection = STOPPED;        // What is the chain doing
+            uint _currentRode = 0;                      // Current amount of rode deployed (mm)
 
             // Hardware pins with debounce
-            HardwareSwitch _sensorInput;
-            HardwareSwitch _upInput;
-            HardwareSwitch _downInput;
+            HardwareInput _sensorInput;
+            HardwareInput _upInput;
+            HardwareInput _downInput;
 
     };
 

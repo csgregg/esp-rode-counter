@@ -79,9 +79,9 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
     // Convertions from mm to cm needed for each
     indexpage.water_line.setValue(_settings->waterLine/10);
     indexpage.rode_len.setValue(_settings->chainLength/10);
-    indexpage.warn_limit_1.setValue((_settings->waterLine + 500)/10);        // Water line + 5m
-    indexpage.warn_limit_2.setValue((_settings->chainLength - 700)/10);        // Length - 7m
-    indexpage.warn_limit_3.setValue((_settings->chainLength - 200)/10);        // Length - 2m
+    indexpage.warn_limit_1.setValue((_settings->waterLine + 500)/10);           // Water line + 5m
+    indexpage.warn_limit_2.setValue((_settings->chainLength - 700)/10);         // Length - 7m
+    indexpage.warn_limit_3.setValue((_settings->chainLength - 200)/10);         // Length - 2m
    
     ResetRode();
 
@@ -96,7 +96,7 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     _sensorInput.Handle();
 
     // Check if chain has started moving up and update GUI
-    if( _upInput.IsChanged() != HardwareSwitch::INACTIVE ) {
+    if( _upInput.IsChanged() != HardwareInput::INACTIVE ) {
 
         _chainDirection = _upInput.isActive() ? ( _settings->windlassReversed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
@@ -105,7 +105,7 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     }
 
     // Check if chain has started moving down and update GUI
-    if( _downInput.IsChanged() != HardwareSwitch::INACTIVE ) {
+    if( _downInput.IsChanged() != HardwareInput::INACTIVE ) {
 
         _chainDirection = _downInput.isActive() ? ( _settings->windlassReversed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
@@ -114,18 +114,19 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     }
 
     // Check if the sensor has triggered rising or falling
-    if( _sensorInput.IsChanged() != HardwareSwitch::INACTIVE ) {
+    if( _sensorInput.IsChanged() != HardwareInput::INACTIVE ) {
 
         // Only count down on sensor going active - don't need to worry if windlass is reversed
-        if( _sensorInput.IsChanged() == HardwareSwitch::ActiveChange::GOING_ACTIVE && _chainDirection == Direction::DOWN ) {
+        if( _sensorInput.IsChanged() == HardwareInput::ActiveChange::GOING_ACTIVE && _chainDirection == Direction::DOWN ) {
             _currentRode += _settings->windlassDiameter;
+            if( _currentRode > _settings->chainLength ) _currentRode = _settings->chainLength;              // Limit to max
             indexpage.UpdateWindlassStatus();
         }
 
         // Only count up on sensor going inactive
-        if( _sensorInput.IsChanged() == HardwareSwitch::ActiveChange::GOING_INACTIVE && _chainDirection == Direction::UP ) {
+        if( _sensorInput.IsChanged() == HardwareInput::ActiveChange::GOING_INACTIVE && _chainDirection == Direction::UP ) {
             _currentRode -= _settings->windlassDiameter;
-            if(_currentRode < 0) _currentRode = 0;
+            if( _currentRode < 0 ) _currentRode = 0;              // Limit to zero
             indexpage.UpdateWindlassStatus();
         }
 
