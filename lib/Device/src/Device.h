@@ -226,11 +226,7 @@ SOFTWARE. */
             };
 
             /** Handle - clears the trigger after the debounce time */
-            void ICACHE_FLASH_ATTR Handle(){
-                if( _function == PinFunction::LEVEL ) return;
-                // Only do this if it is an interrupt pin
-                if( _firstTriggerTime !=0 && millis() - _firstTriggerTime > DEBOUNCE_TIME ) _firstTriggerTime = 0;
-            };
+            void ICACHE_FLASH_ATTR Handle();
 
         private:
 
@@ -239,6 +235,7 @@ SOFTWARE. */
             PinType _type;                  // If the active is when pin is high
             PinFunction _function;
             uint8_t _trigger;               // ISR trigger type
+            bool _bouncing;
 
             uint8_t _myISRId;               // This is my instance ISR Id for _myInstance[x] and encoderISRx
 

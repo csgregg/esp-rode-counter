@@ -70,6 +70,9 @@ void ICACHE_FLASH_ATTR RodeCounter::Begin( RodeSettings& settings ) {
     _downInput.Begin();
     _sensorInput.Begin();
 
+    _chainDirection = Direction::STOPPED;
+    indexpage.UpdateWindlassStatus();
+
 }
 
 
@@ -98,6 +101,8 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     // Check if chain has started moving up and update GUI
     if( _upInput.IsChanged() != HardwareInput::INACTIVE ) {
 
+        DEBUG("Up");
+
         _chainDirection = _upInput.isActive() ? ( _settings->windlassReversed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
 
@@ -107,6 +112,8 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     // Check if chain has started moving down and update GUI
     if( _downInput.IsChanged() != HardwareInput::INACTIVE ) {
 
+        DEBUG("Down");
+
         _chainDirection = _downInput.isActive() ? ( _settings->windlassReversed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
         indexpage.UpdateWindlassStatus();
 
@@ -115,6 +122,8 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
 
     // Check if the sensor has triggered rising or falling
     if( _sensorInput.IsChanged() != HardwareInput::INACTIVE ) {
+
+        DEBUG("Step");
 
         // Only count down on sensor going active - don't need to worry if windlass is reversed
         if( _sensorInput.IsChanged() == HardwareInput::ActiveChange::GOING_ACTIVE && _chainDirection == Direction::DOWN ) {

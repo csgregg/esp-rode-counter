@@ -39,7 +39,6 @@ SOFTWARE. */
     // Project Libraries
     #include "Device.h"
     #include "NetworkManager.h"
-    #include "TimeLocation.h"
 
 
     #define DEFAULT_WINDLASS_DIAMETER 300;             // The diameter of the windlass (mm)

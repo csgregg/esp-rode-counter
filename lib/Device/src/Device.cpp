@@ -50,6 +50,9 @@ bool ICACHE_FLASH_ATTR HardwareInput::Begin() {
 
     pinMode( _pin, _type == PinType::ACTIVE_HIGH ? INPUT : INPUT_PULLUP );
 
+    _firstTriggerTime = 0;
+    _bouncing = false;
+
     if( _function == PinFunction::LEVEL) return true;
 
     // Only do the rest if it is an interrupt pin
@@ -93,17 +96,31 @@ bool ICACHE_FLASH_ATTR HardwareInput::Begin() {
 // Instance ISR handler called from static ISR globalISRx
 void ICACHE_RAM_ATTR HardwareInput::instanceISR() { 
 
-    // First trigger
-    if( _firstTriggerTime == 0 ){
+    // Only on first trigger
+    if( _firstTriggerTime == 0 ) {
+        _firstTriggerTime = millis();
+        _bouncing = true;
+        digitalWrite(BUILTIN_LED, LOW);
+    }
+}   
 
-        _firstTriggerTime = millis();;
+
+// Handle - clears the trigger after the debounce time
+void ICACHE_FLASH_ATTR HardwareInput::Handle(){
+    if( _function == PinFunction::LEVEL ) return;
+    // Only do this if it is an interrupt pin
+
+    if( _bouncing && millis() - _firstTriggerTime > DEBOUNCE_TIME ) {
+        _firstTriggerTime = 0;
+        _bouncing = false;
+
+        digitalWrite(BUILTIN_LED,HIGH);
 
         if( _trigger == CHANGE ) _change = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
         else _change = ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ? RISING : FALLING ) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
-
     }
+};
 
-}   
 
 // Interrupt handling declarations required outside the class
 uint8_t HardwareInput::_ISRUsed = 0;           // allocation table for the globalISRx()
