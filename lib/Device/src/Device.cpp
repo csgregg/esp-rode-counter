@@ -100,7 +100,6 @@ void ICACHE_RAM_ATTR HardwareInput::instanceISR() {
     if( _firstTriggerTime == 0 ) {
         _firstTriggerTime = millis();
         _bouncing = true;
-        digitalWrite(BUILTIN_LED, LOW);
     }
 }   
 
@@ -113,8 +112,6 @@ void ICACHE_FLASH_ATTR HardwareInput::Handle(){
     if( _bouncing && millis() - _firstTriggerTime > DEBOUNCE_TIME ) {
         _firstTriggerTime = 0;
         _bouncing = false;
-
-        digitalWrite(BUILTIN_LED,HIGH);
 
         if( _trigger == CHANGE ) _change = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
         else _change = ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ? RISING : FALLING ) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;

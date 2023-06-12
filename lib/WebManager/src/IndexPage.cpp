@@ -66,7 +66,6 @@ void ICACHE_FLASH_ATTR IndexPage::UpdateWindlassStatus( ) {
     chain_down.setValue( rodecounter.GetChainDirection() == RodeCounter::DOWN );
     current_rode.setValue( rodecounter.GetCurrentRode()/10 );               // Convert mm to cm
 
- //   DEBUG(rodecounter.GetCurrentRode());        // TODO - Remove
 }
 
 
