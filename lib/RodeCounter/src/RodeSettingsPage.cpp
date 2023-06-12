@@ -51,7 +51,7 @@ void ICACHE_FLASH_ATTR RodeSettingsPage::InitializeAjax(){
 
     windlass_dia.setValue( itoa(settings.windlassDiameter, buffer, 10) );
     windlass_rpm.setValue( itoa(settings.windlassSpeed, buffer, 10) );
-    windlass_rev.setChecked( settings.windlassReversed );                       // TODO - reverse it
+    windlass_rev.setChecked( settings.windlassReversed );
     chain_len.setValue(itoa( settings.chainLength/10, buffer, 10) );            // Convert mm to cm
     water_line.setValue(itoa( settings.waterLine/10, buffer, 10) );             // Convert mm to cm
     rode_save.setEnabled( false ) ;
