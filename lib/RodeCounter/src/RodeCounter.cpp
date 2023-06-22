@@ -37,6 +37,18 @@ SOFTWARE. */
 
 
 ////////////////////////////////////////////
+//// Global Functions
+
+// Interrupt service routine for pulse pin
+int pulseCounter = 0;       // Count of windlass rotations
+bool revsersed = false;     // Is the windlass reversed
+void ICACHE_RAM_ATTR pulseInterrupt() {
+    if( digitalRead( PULSE_PIN ) == LOW && digitalRead( UP_PIN ) == LOW ) pulseCounter -= (revsersed ? -1 : 1);      // Active rising pulse - up
+    if( digitalRead( PULSE_PIN ) == HIGH && digitalRead( DOWN_PIN ) == LOW ) pulseCounter += (revsersed ? -1 : 1);   // Active falling pulse - down
+}
+
+
+////////////////////////////////////////////
 //// RodeSettings Class
 
 // Public:
@@ -45,7 +57,6 @@ SOFTWARE. */
 void ICACHE_FLASH_ATTR RodeSettings::SetDefaults() {
 
     windlassDiameter = DEFAULT_WINDLASS_DIAMETER;       // The diameter of the windlass (mm)
-    windlassSpeed = DEFAULT_WINDLASS_SPEED;             // The speed of the windlass (rpm)
     windlassReversed = DEFAULT_WINDLASS_REVERSED;       // Are the windlass controls reversed
     chainLength = DEFAULT_CHAIN_LENGTH;                 // Overall length of the chain (mm)
     waterLine = DEFAULT_WATER_LINE;                     // The water line on the chain (mm)
@@ -65,15 +76,17 @@ void ICACHE_FLASH_ATTR RodeCounter::Begin( RodeSettings& settings ) {
     _settings = &settings;
     LoadRodeSettings();
 
-    // Start up the hardware pins for debounce, etc
-    _upInput.Begin();
-    _downInput.Begin();
-    _sensorInput.Begin();
+    // Pulse pin
+    pinMode( PULSE_PIN, INPUT_PULLUP );
+    attachInterrupt( PULSE_PIN, pulseInterrupt, CHANGE ) ;
+
+    // Direction pins
+    pinMode( UP_PIN, INPUT_PULLUP );    // Up
+    pinMode( DOWN_PIN, INPUT_PULLUP );    // Down
 
     delay(2000);
 
-    _chainDirection = Direction::STOPPED;
-    indexpage.UpdateWindlassStatus();
+    ResetRode();
 
 }
 
@@ -88,57 +101,34 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
     indexpage.warn_limit_2.setValue((_settings->chainLength - 700)/10);         // Length - 7m
     indexpage.warn_limit_3.setValue((_settings->chainLength - 200)/10);         // Length - 2m
    
-    ResetRode();
-
+    revsersed = _settings->windlassReversed;
 }
 
 
 // Handles any repeasting rode counting tasks
 void ICACHE_FLASH_ATTR RodeCounter::Handle() {
 
-    _upInput.Handle();
-    _downInput.Handle();
-    _sensorInput.Handle();
+    // Set direction
+    _chainDirection = digitalRead( UP_PIN ) == LOW ? ( revsersed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
+    _chainDirection = digitalRead( DOWN_PIN ) == LOW ? ( revsersed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
 
-    // Check if chain has started moving up and update GUI
-    if( _upInput.IsChanged() != HardwareInput::INACTIVE ) {
+    // Calculate length
+    _currentRode = pulseCounter * _settings->windlassDiameter;
 
-        _chainDirection = _upInput.isActive() ? ( _settings->windlassReversed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
-        indexpage.UpdateWindlassStatus();
+    // Limit to max and min
+    if( _currentRode > (int)_settings->chainLength ) _currentRode = _settings->chainLength;              
+    if( _currentRode < 0 ) _currentRode = 0;
 
-        _upInput.ResetTrigger();
-    }
-
-    // Check if chain has started moving down and update GUI
-    if( _downInput.IsChanged() != HardwareInput::INACTIVE ) {
-
-        _chainDirection = _downInput.isActive() ? ( _settings->windlassReversed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
-        indexpage.UpdateWindlassStatus();
-
-        _downInput.ResetTrigger();
-    }
-
-    // Check if the sensor has triggered rising or falling
-    if( _sensorInput.IsChanged() != HardwareInput::INACTIVE ) {
-
-        // Only count down on sensor going active - don't need to worry if windlass is reversed
-        if( _sensorInput.IsChanged() == HardwareInput::ActiveChange::GOING_ACTIVE && _chainDirection == Direction::DOWN ) {
-            _currentRode += _settings->windlassDiameter;
-            if( _currentRode > _settings->chainLength ) _currentRode = _settings->chainLength;              // Limit to max
-            indexpage.UpdateWindlassStatus();
-        }
-
-        // Only count up on sensor going inactive
-        if( _sensorInput.IsChanged() == HardwareInput::ActiveChange::GOING_INACTIVE && _chainDirection == Direction::UP ) {
-            _currentRode -= _settings->windlassDiameter;
-            if( _currentRode < 0 ) _currentRode = 0;              // Limit to zero
-            indexpage.UpdateWindlassStatus();
-        }
-
-        _sensorInput.ResetTrigger();
-    }
+    indexpage.UpdateWindlassStatus();
 
 }
+
+
+// Resets the current rode deployed to zero and ready to go down - should only happen when anchor is completely raised and stowed */
+void ICACHE_FLASH_ATTR RodeCounter::ResetRode() {
+    _chainDirection = STOPPED;
+    pulseCounter = 0;
+};
 
 
 // Protected:

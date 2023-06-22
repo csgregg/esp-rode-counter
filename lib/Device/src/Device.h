@@ -165,10 +165,16 @@ SOFTWARE. */
     #define DEBOUNCE_TIME   20      // milliseconds
 
 
-    /** @class Hardware Switch Class
+
+
+
+
+
+
+    /** @class Debounced Hardware Input Class
      *  @brief Sets up the hardware switch on an input pin with debounce 
      *         https://arduinoplusplus.wordpress.com/2021/02/05/interrupts-and-c-class-instances/ */
-    class HardwareInput
+    class DebouncedInput
     {
         public:
 
@@ -187,11 +193,12 @@ SOFTWARE. */
 
             enum PinFunction : uint8_t {
                 LEVEL,
-                INTERRUPT
+                INTERRUPT,
+                DEBOUNCED
             };
 
             /** Constructor */
-            ICACHE_FLASH_ATTR HardwareInput(uint8_t _pin, PinType _type, PinFunction _function, uint8_t _trigger = 0x00) : 
+            ICACHE_FLASH_ATTR DebouncedInput(uint8_t _pin, PinType _type, PinFunction _function, uint8_t _trigger = 0x00) : 
                 _pin(_pin),
                 _type(_type),
                 _function(_function),
@@ -199,7 +206,7 @@ SOFTWARE. */
                 {}
         
             /** Destructor */
-            ICACHE_FLASH_ATTR ~HardwareInput()
+            ICACHE_FLASH_ATTR ~DebouncedInput()
             {
                 if( _function == PinFunction::LEVEL) return;
 
@@ -225,8 +232,11 @@ SOFTWARE. */
                 _change = ActiveChange::INACTIVE;                     
             };
 
-            /** Handle - clears the trigger after the debounce time */
-            void ICACHE_FLASH_ATTR Handle();
+            /** Gets the current trigger count */
+            int ICACHE_FLASH_ATTR GetCount(){ return _triggercount; };
+
+            /** Reset trigger count */
+            void ICACHE_FLASH_ATTR ResetCount(){ _triggercount = 0; };
 
         private:
 
@@ -236,6 +246,7 @@ SOFTWARE. */
             PinFunction _function;
             uint8_t _trigger;               // ISR trigger type
             bool _bouncing;
+            int _triggercount;            // Counts each time interrupt triggered 
 
             uint8_t _myISRId;               // This is my instance ISR Id for _myInstance[x] and encoderISRx
 
@@ -243,7 +254,7 @@ SOFTWARE. */
             volatile ulong _firstTriggerTime;       // Time of first trigger
 
             static uint8_t _ISRUsed;                // Keep track of which ISRs are used (global bit field)
-            static HardwareInput* _myInstance[];   // Callback instance for the ISR to reach instanceISR()
+            static DebouncedInput* _myInstance[];   // Callback instance for the ISR to reach instanceISR()
             
             void ICACHE_RAM_ATTR instanceISR();     // Instance ISR handler called from static ISR globalISRx
             

@@ -48,7 +48,6 @@ SOFTWARE. */
             PageHandler handler;                // Handler for this page
 
             EmbAJAXTextInput<4> windlass_dia;   // Input box for windlass diameter
-            EmbAJAXTextInput<4> windlass_rpm;   // Input box for windlass speed
             EmbAJAXCheckButton windlass_rev;    // Check box for windlass reverse
             EmbAJAXTextInput<5> chain_len;      // Input box for overall chain length
             EmbAJAXTextInput<5> water_line;     // Input box for chain water line 
@@ -56,12 +55,11 @@ SOFTWARE. */
             EmbAJAXServerFunction rode_save;    // Save settings button
 
             // Array of page elements
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 7] = {
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 6] = {
       
                 WEB_PAGE_COMMON_ELEMENTS,       // Add the elements comment to every page
 
                 &windlass_dia,
-                &windlass_rpm,
                 &windlass_rev,
                 &chain_len,
                 &water_line,
@@ -76,7 +74,6 @@ SOFTWARE. */
             ICACHE_FLASH_ATTR RodeSettingsPage( void(*ajaxHandler)(), void(*initHandler)() ) : 
 
                 windlass_dia("windlass_dia"),
-                windlass_rpm("windlass_rpm"),
                 windlass_rev("windlass_rev",""),
                 chain_len("chain_len"),
                 water_line("water_line"),

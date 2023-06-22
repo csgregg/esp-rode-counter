@@ -46,12 +46,13 @@ DoubleResetDetector drd( DRD_TIMEOUT, DRD_ADDRESS );
 // Public:
 
 
-bool ICACHE_FLASH_ATTR HardwareInput::Begin() {
+bool ICACHE_FLASH_ATTR DebouncedInput::Begin() {
 
     pinMode( _pin, _type == PinType::ACTIVE_HIGH ? INPUT : INPUT_PULLUP );
 
     _firstTriggerTime = 0;
     _bouncing = false;
+    _triggercount = 0;
 
     if( _function == PinFunction::LEVEL) return true;
 
@@ -94,37 +95,49 @@ bool ICACHE_FLASH_ATTR HardwareInput::Begin() {
 
 
 // Instance ISR handler called from static ISR globalISRx
-void ICACHE_RAM_ATTR HardwareInput::instanceISR() { 
+void ICACHE_RAM_ATTR DebouncedInput::instanceISR() { 
+    
+    if( _function == PinFunction::INTERRUPT ) {
 
-    // Only on first trigger
-    if( _firstTriggerTime == 0 ) {
-        _firstTriggerTime = millis();
-        _bouncing = true;
-    }
-}   
+        // No debounce
 
-
-// Handle - clears the trigger after the debounce time
-void ICACHE_FLASH_ATTR HardwareInput::Handle(){
-    if( _function == PinFunction::LEVEL ) return;
-    // Only do this if it is an interrupt pin
-
-    if( _bouncing && millis() - _firstTriggerTime > DEBOUNCE_TIME ) {
-        _firstTriggerTime = 0;
-        _bouncing = false;
+        _triggercount++;
 
         if( _trigger == CHANGE ) _change = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
         else _change = ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ? RISING : FALLING ) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
+
+    } else {
+
+        // Debouncing
+
+        if( _bouncing && millis() - _firstTriggerTime > DEBOUNCE_TIME ) {
+
+            _firstTriggerTime = 0;
+            _bouncing = false;
+            _triggercount++;
+
+            if( _trigger == CHANGE ) _change = (_type == PinType::ACTIVE_HIGH) != (digitalRead( _pin ) == LOW) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
+            else _change = ( (_type == PinType::ACTIVE_HIGH) != (_trigger == FALLING) ? RISING : FALLING ) ? ActiveChange::GOING_ACTIVE : ActiveChange::GOING_INACTIVE;
+        }
+
+        // Only on first trigger
+        if( _firstTriggerTime == 0 ) {
+            _firstTriggerTime = millis();
+            _bouncing = true;
+        }
+
     }
-};
+
+}   
+
 
 
 // Interrupt handling declarations required outside the class
-uint8_t HardwareInput::_ISRUsed = 0;           // allocation table for the globalISRx()
-HardwareInput* HardwareInput::_myInstance[MAX_ISR]; // callback instance handle for the ISR
+uint8_t DebouncedInput::_ISRUsed = 0;           // allocation table for the globalISRx()
+DebouncedInput* DebouncedInput::_myInstance[MAX_ISR]; // callback instance handle for the ISR
  
 // ISR for each _myISRId
-#define GISRM3(i, _) void ICACHE_RAM_ATTR HardwareInput::CAT(globalISR,i)(){ HardwareInput::_myInstance[i]->instanceISR(); };
+#define GISRM3(i, _) void ICACHE_RAM_ATTR DebouncedInput::CAT(globalISR,i)(){ DebouncedInput::_myInstance[i]->instanceISR(); };
 EVAL(REPEAT( MAX_ISR, GISRM3, ~))
 
 

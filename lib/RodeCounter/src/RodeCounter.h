@@ -33,6 +33,12 @@ SOFTWARE. */
 
     #define RODE_COUNTER_H
 
+
+    // Define hardware pins
+    #define PULSE_PIN D5
+    #define UP_PIN D6
+    #define DOWN_PIN D7
+
     // Global Libraries
     #include <Arduino.h>
 
@@ -58,7 +64,6 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR SetDefaults();
 
             uint windlassDiameter;          // The diameter of the windlass (mm)
-            uint windlassSpeed;             // The speed of the windlass (rpm)
             bool windlassReversed;          // Are the windlass controls reversed
             uint chainLength;               // Overall length of the chain (mm)
             uint waterLine;                 // The water line on the chain (mm)
@@ -67,14 +72,12 @@ SOFTWARE. */
 
             bool operator== ( const RodeSettings& other ) const {
                 return windlassDiameter == other.windlassDiameter
-                    && windlassSpeed == other.windlassSpeed
                     && windlassReversed == other.windlassReversed
                     && chainLength == other.chainLength
                     && waterLine == other.waterLine;
             }
             bool operator!= ( const RodeSettings& other ) const {
                 return windlassDiameter != other.windlassDiameter
-                    || windlassSpeed != other.windlassSpeed
                     || windlassReversed != other.windlassReversed
                     || chainLength != other.chainLength
                     || waterLine != other.waterLine;
@@ -95,13 +98,6 @@ SOFTWARE. */
                 DOWN = 2
             };
 
-            // Constructor
-            ICACHE_FLASH_ATTR RodeCounter() : 
-                _sensorInput(D5, HardwareInput::PinType::ACTIVE_LOW, HardwareInput::PinFunction::INTERRUPT, CHANGE),      // Setup the hardware pins
-                _upInput(D6, HardwareInput::PinType::ACTIVE_LOW, HardwareInput::PinFunction::INTERRUPT, CHANGE ),
-                _downInput(D7, HardwareInput::PinType::ACTIVE_LOW, HardwareInput::PinFunction::INTERRUPT, CHANGE )
-            {}
-
             /** Starts the rode counter
              * @param settings      Reference of rode settings struct */
             void ICACHE_FLASH_ATTR Begin( RodeSettings& settings );
@@ -110,7 +106,7 @@ SOFTWARE. */
             void ICACHE_FLASH_ATTR Handle();
 
             /** Resets the current rode deployed to zero and ready to go down - should only happen when anchor is completely raised and stowed */
-            void ICACHE_FLASH_ATTR ResetRode() { _currentRode = 0; _chainDirection = DOWN; };
+            void ICACHE_FLASH_ATTR ResetRode();
 
             /** Is the chain going up */
             Direction ICACHE_FLASH_ATTR GetChainDirection(){ return _chainDirection; };
@@ -126,12 +122,7 @@ SOFTWARE. */
             RodeSettings* _settings;        // Pointer to data struct containing rode settings
 
             Direction _chainDirection = STOPPED;        // What is the chain doing
-            uint _currentRode = 0;                      // Current amount of rode deployed (mm)
-
-            // Hardware pins with debounce
-            HardwareInput _sensorInput;
-            HardwareInput _upInput;
-            HardwareInput _downInput;
+            int _currentRode = 0;                      // Current amount of rode deployed (mm)
 
     };
 
