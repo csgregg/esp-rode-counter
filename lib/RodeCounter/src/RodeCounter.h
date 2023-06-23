@@ -48,7 +48,6 @@ SOFTWARE. */
 
 
     #define DEFAULT_WINDLASS_DIAMETER 300;             // The diameter of the windlass (mm)
-    #define DEFAULT_WINDLASS_SPEED 75;                 // The speed of the windlass (rpm)
     #define DEFAULT_WINDLASS_REVERSED false;           // Are the windlass controls reversed
     #define DEFAULT_CHAIN_LENGTH 50000;                // Overall length of the chain (mm)
     #define DEFAULT_WATER_LINE 2000;                   // The water line on the chain (mm)

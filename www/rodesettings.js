@@ -31,8 +31,6 @@ function SureYes() {
 
         x = document.getElementById('windlass_dia');
         doRequestWait(x.id, x.value);
-        x = document.getElementById('windlass_rpm');
-        doRequestWait(x.id, x.value);
         x = document.getElementById('windlass_rev');
         doRequestWait(x.id, x.checked ? 't' : 'f');
         x = document.getElementById('chain_len');
