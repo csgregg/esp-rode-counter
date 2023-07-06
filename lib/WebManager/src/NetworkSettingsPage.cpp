@@ -53,7 +53,6 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::InitializeAjax(){
     wifi_ap_pwd.setValue( wifiAP.password );
     wifi_ap_ip.setValue( wifiAP.ip.toString().c_str() );
     wifi_ap_snet.setValue( wifiAP.subnet.toString().c_str() );
-    wifi_ap_gtwy.setValue( wifiAP.gateway.toString().c_str() );
     wifi_ap_ch.selectOption( wifiAP.channel );
     wifi_ap_save.setEnabled( false );
 
@@ -259,7 +258,7 @@ void ICACHE_FLASH_ATTR NetworkSettingsPage::SaveAP() {
     bool valid = true;
     valid = valid && ap.ip.fromString( wifi_ap_ip.value() );
     valid = valid && ap.subnet.fromString( wifi_ap_snet.value() );
-    valid = valid && ap.gateway.fromString( wifi_ap_gtwy.value() );
+    valid = valid && ap.gateway.fromString( "0.0.0.0" );        // Disable gateway so connected device doesn't route internet traffic here
     ap.channel = atoi( wifi_ap_ch.value() );
 
     if( valid ) {

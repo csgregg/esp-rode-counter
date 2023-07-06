@@ -218,8 +218,6 @@ function SureYes() {
         doRequestWait(x.id, x.value);
         x = document.getElementById('wifi_ap_snet');
         doRequestWait(x.id, x.value);
-        x = document.getElementById('wifi_ap_gtwy');
-        doRequestWait(x.id, x.value);
         x = document.getElementById('wifi_ap_ch');
         doRequestWait(x.id, x.value);
 

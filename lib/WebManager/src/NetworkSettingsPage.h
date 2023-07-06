@@ -61,7 +61,6 @@ SOFTWARE. */
             EmbAJAXTextInput<NET_MAX_PASSWORD_LEN> wifi_ap_pwd;     // Input box for AP password
             EmbAJAXTextInput<16> wifi_ap_ip;                        // Input box for AP IP address
             EmbAJAXTextInput<16> wifi_ap_snet;                      // Input box for AP subnet
-            EmbAJAXTextInput<16> wifi_ap_gtwy;                      // Input box for AP gateway
             EmbAJAXOptionSelect<13> wifi_ap_ch;                     // Dropdown select for AP channel
             const char* wifi_chs[13] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};       // AP channel options for dropdown
             
@@ -117,7 +116,7 @@ SOFTWARE. */
 #endif
 
             // Array of page elements 28 + 4 + 4 + 6
-            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 28 + 4
+            EmbAJAXBase* page_elements[WEB_PAGE_COMMON_ELEMENTS_COUNT + 27 + 4
                 #ifndef NETCHECK_DISABLE
                      + 4 
                 #endif
@@ -137,7 +136,6 @@ SOFTWARE. */
                 &wifi_ap_pwd,
                 &wifi_ap_ip,
                 &wifi_ap_snet,
-                &wifi_ap_gtwy,
                 &wifi_ap_ch,
 
                 &wifi_stn_save,
@@ -199,7 +197,6 @@ SOFTWARE. */
                 wifi_ap_pwd( "wifi_ap_pwd" ),
                 wifi_ap_ip( "wifi_ap_ip" ),
                 wifi_ap_snet( "wifi_ap_snet" ),
-                wifi_ap_gtwy( "wifi_ap_gtwy" ),
                 wifi_ap_ch( "wifi_ap_ch",wifi_chs),
 
                 wifi_stn_save( "wifi_stn_save" ),

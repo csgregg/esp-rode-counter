@@ -56,7 +56,7 @@ SOFTWARE. */
 
     #define NET_DEFAULT_AP_IP 0x0102A8C0            // Default AP IP address- 192.168.2.1
     #define NET_DEFAULT_AP_SUBNET 0x00FFFFFF        // Default AP IP subnet - 255.255.255.0
-    #define NET_DEFAULT_AP_GATEWAY 0xFE02A8C0       // Default AP gateway - 192.168.2.254
+    #define NET_DEFAULT_AP_GATEWAY 0x00000000       // Default AP gateway - 0.0.0.0 (Disabled)
     #define NET_DEFAULT_AP_CHANNEL 11               //Default AP radion channel
 
 
