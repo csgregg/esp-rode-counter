@@ -42,9 +42,15 @@ SOFTWARE. */
 // Interrupt service routine for pulse pin
 int pulseCounter = 0;       // Count of windlass rotations
 bool revsersed = false;     // Is the windlass reversed
+uint maxPulse = 0;
+
 void ICACHE_RAM_ATTR pulseInterrupt() {
+
     if( digitalRead( PULSE_PIN ) == LOW && digitalRead( UP_PIN ) == LOW ) pulseCounter -= (revsersed ? -1 : 1);      // Active rising pulse - up
-    if( digitalRead( PULSE_PIN ) == HIGH && digitalRead( DOWN_PIN ) == LOW ) pulseCounter += (revsersed ? -1 : 1);   // Active falling pulse - down
+    else if( digitalRead( PULSE_PIN ) == HIGH && digitalRead( DOWN_PIN ) == LOW ) pulseCounter += (revsersed ? -1 : 1);   // Active falling pulse - down
+
+    if( pulseCounter < 0 ) pulseCounter = 0;
+    if( pulseCounter > (int)maxPulse ) pulseCounter = maxPulse;
 }
 
 
@@ -97,11 +103,12 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
     // Convertions from mm to cm needed for each
     indexpage.water_line.setValue(_settings->waterLine/10);
     indexpage.rode_len.setValue(_settings->chainLength/10);
-    indexpage.warn_limit_1.setValue((_settings->waterLine + 500)/10);           // Water line + 5m
-    indexpage.warn_limit_2.setValue((_settings->chainLength - 700)/10);         // Length - 7m
-    indexpage.warn_limit_3.setValue((_settings->chainLength - 200)/10);         // Length - 2m
-   
+    indexpage.warn_limit_1.setValue((_settings->waterLine + 5000)/10);           // Water line + 5m
+    indexpage.warn_limit_2.setValue((_settings->chainLength - 7000)/10);         // Length - 7m
+    indexpage.warn_limit_3.setValue((_settings->chainLength - 2000)/10);         // Length - 2m
+
     revsersed = _settings->windlassReversed;
+    maxPulse = _settings->chainLength / _settings->windlassDiameter;
 }
 
 
@@ -109,15 +116,12 @@ void ICACHE_FLASH_ATTR RodeCounter::LoadRodeSettings() {
 void ICACHE_FLASH_ATTR RodeCounter::Handle() {
 
     // Set direction
-    _chainDirection = digitalRead( UP_PIN ) == LOW ? ( revsersed ? Direction::DOWN : Direction::UP ) : Direction::STOPPED;
-    _chainDirection = digitalRead( DOWN_PIN ) == LOW ? ( revsersed ? Direction::UP : Direction::DOWN ) : Direction::STOPPED;
+    _chainDirection = Direction::STOPPED;
+    if( digitalRead( UP_PIN ) == LOW ) _chainDirection = revsersed ? Direction::DOWN : Direction::UP;
+    if( digitalRead( DOWN_PIN ) == LOW ) _chainDirection = revsersed ? Direction::UP : Direction::DOWN;
 
     // Calculate length
-    _currentRode = pulseCounter * _settings->windlassDiameter;
-
-    // Limit to max and min
-    if( _currentRode > (int)_settings->chainLength ) _currentRode = _settings->chainLength;              
-    if( _currentRode < 0 ) _currentRode = 0;
+    _currentRode = pulseCounter * _settings->windlassDiameter;       
 
     indexpage.UpdateWindlassStatus();
 

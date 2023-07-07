@@ -22,17 +22,27 @@ var rode_gauge = Gauge(
         return value.toFixed(2) + "m";
       },
       color: function(value) {
+
+        var colour;
+
         if(value <= water_line/100 ) {
-          return "Tomato";
+          colour = "Tomato";
         }else if(value <= warn_limit_1/100) {
-          return "Orange";
+          colour = "Orange";
         }else if(value < warn_limit_2/100) {
-          return "MediumSeaGreen";
+          colour = "MediumSeaGreen";
         }else if(value < warn_limit_3/100) {
-            return "Orange";
+          colour = "Orange";
         }else {
-          return "Tomato";
+          colour = "Tomato";
         }
+
+        var elements = document.querySelectorAll('.gauge-container>.gauge .value-text');
+        for(var i=0; i<elements.length; i++){
+            elements[i].style.fill = colour
+        }
+
+        return colour;
       }
     }
   );
@@ -56,8 +66,8 @@ function updatePage() {
 
     // Set gauge value and max in m
     var x = current_rode / 100;
-    if( current_rode != 0 ) rode_gauge.setValue( x.toFixed(2));
-    if( rode_len != 0 ) rode_gauge.setMaxValue(rode_len/100);
+    rode_gauge.setValue( x.toFixed(2));
+    rode_gauge.setMaxValue(rode_len/100);
 
     // Set chain direction
     if( chain_up == 't' ) document.getElementById("chain").style.flexDirection = 'column-reverse';

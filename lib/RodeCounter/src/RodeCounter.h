@@ -121,7 +121,7 @@ SOFTWARE. */
             RodeSettings* _settings;        // Pointer to data struct containing rode settings
 
             Direction _chainDirection = STOPPED;        // What is the chain doing
-            int _currentRode = 0;                      // Current amount of rode deployed (mm)
+            uint _currentRode = 0;                      // Current amount of rode deployed (mm)
 
     };
 
