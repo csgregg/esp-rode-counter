@@ -162,7 +162,7 @@ SOFTWARE. */
 
     // Debouncer
     #define MAX_ISR         3       // Max number of interrupt service rountines supported (only use what's needed)
-    #define DEBOUNCE_TIME   20      // milliseconds
+    #define DEBOUNCE_TIME   40      // milliseconds
 
 
 

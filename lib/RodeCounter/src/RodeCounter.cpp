@@ -42,15 +42,20 @@ SOFTWARE. */
 // Interrupt service routine for pulse pin
 int pulseCounter = 0;       // Count of windlass rotations
 bool revsersed = false;     // Is the windlass reversed
-uint maxPulse = 0;
+uint maxPulse = 0;          // Upper limmit
+ulong bouncing = 0;         // Are we bouncing (ms)
+bool triggered = false;                 // Are we at end of debounce
+
 
 void ICACHE_RAM_ATTR pulseInterrupt() {
 
-    if( digitalRead( PULSE_PIN ) == LOW && digitalRead( UP_PIN ) == LOW ) pulseCounter -= (revsersed ? -1 : 1);      // Active rising pulse - up
-    else if( digitalRead( PULSE_PIN ) == HIGH && digitalRead( DOWN_PIN ) == LOW ) pulseCounter += (revsersed ? -1 : 1);   // Active falling pulse - down
-
-    if( pulseCounter < 0 ) pulseCounter = 0;
-    if( pulseCounter > (int)maxPulse ) pulseCounter = maxPulse;
+    ulong now = millis();
+    
+    if( now - bouncing > DEBOUNCE_TIME )
+    {
+        bouncing = now;
+        triggered = true;
+    }
 }
 
 
@@ -119,6 +124,18 @@ void ICACHE_FLASH_ATTR RodeCounter::Handle() {
     _chainDirection = Direction::STOPPED;
     if( digitalRead( UP_PIN ) == LOW ) _chainDirection = revsersed ? Direction::DOWN : Direction::UP;
     if( digitalRead( DOWN_PIN ) == LOW ) _chainDirection = revsersed ? Direction::UP : Direction::DOWN;
+
+    if( triggered ) {
+        if( digitalRead( PULSE_PIN ) == LOW && _chainDirection == Direction::UP) pulseCounter--;            // Active rising pulse - up
+        else if( digitalRead( PULSE_PIN ) == HIGH && _chainDirection == Direction::DOWN) pulseCounter++;    // Active falling pulse - down
+
+        digitalWrite( LED_BUILTIN, digitalRead( PULSE_PIN ) );
+
+        if( pulseCounter < 0 ) pulseCounter = 0;
+        if( pulseCounter > (int)maxPulse ) pulseCounter = maxPulse;
+
+        triggered = false;
+    }
 
     // Calculate length
     _currentRode = pulseCounter * _settings->windlassDiameter;       
